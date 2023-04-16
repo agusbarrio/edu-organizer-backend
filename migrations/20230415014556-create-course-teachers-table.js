@@ -1,7 +1,7 @@
 'use strict';
-const { TABLE_NAME } = require('../constants/courseTeachers');
-const { TABLE_NAME: COURSES_TABLE_NAME } = require('../constants/courses');
-const { TABLE_NAME: USERS_TABLE_NAME } = require('../constants/users');
+const { TABLE_NAME } = require('../constants/courseTeacher');
+const { TABLE_NAME: COURSES_TABLE_NAME } = require('../constants/course');
+const { TABLE_NAME: USERS_TABLE_NAME } = require('../constants/user');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {

@@ -1,9 +1,6 @@
 'use strict';
-const {
-  TABLE_NAME,
-  USER_PERMISSIONS,
-} = require('../constants/userPermissions');
-const { TABLE_NAME: USERS_TABLE_NAME } = require('../constants/users');
+const { TABLE_NAME, USER_PERMISSIONS } = require('../constants/userPermission');
+const { TABLE_NAME: USERS_TABLE_NAME } = require('../constants/user');
 const _ = require('lodash');
 
 /** @type {import('sequelize-cli').Migration} */
