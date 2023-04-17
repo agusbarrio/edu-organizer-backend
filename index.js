@@ -2,7 +2,7 @@
 const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const { ERRORS } = require('./constants/errors');
+const ERRORS = require('./constants/errors');
 const { envConfig } = require('./config/envConfig');
 
 const app = express();
@@ -23,9 +23,18 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-  res
-    .status(err.status || ERRORS.E500.status)
-    .send(err.message || ERRORS.E500.message);
+  const errorCode =
+    err.errorCode ??
+    (err.status === ERRORS.E400.status
+      ? ERRORS.E400.errorCode
+      : ERRORS.E500.errorCode);
+  const message = err.message ?? ERRORS.E500.message;
+  const data = err.data ?? undefined;
+  res.status(err.status || ERRORS.E500.status).json({
+    errorCode,
+    message,
+    data,
+  });
 });
 
 app.listen(app.get('port'), () => {

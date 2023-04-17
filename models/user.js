@@ -5,23 +5,37 @@ module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
       User.belongsTo(models.Organization, {
-        foreignKey: 'organizationId',
+        foreignKey: {
+          name: 'organizationId',
+          allowNull: false,
+        },
         as: 'organization',
       });
     }
   }
   User.init(
     {
-      firstName: DataTypes.STRING,
-      lastName: DataTypes.STRING,
-      email: DataTypes.STRING,
-      password: DataTypes.STRING,
+      firstName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      lastName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
     {
       sequelize,
       modelName: MODEL_NAME,
       tableName: TABLE_NAME,
-      timestamps: false,
     }
   );
   return User;

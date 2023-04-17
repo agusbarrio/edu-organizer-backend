@@ -5,18 +5,26 @@ const {
   MODEL_NAME,
   USER_PERMISSIONS,
 } = require('../constants/userPermission');
+const _ = require('lodash');
+
 module.exports = (sequelize, DataTypes) => {
   class UserPermission extends Model {
     static associate(models) {
       UserPermission.belongsTo(models.User, {
-        foreignKey: 'userId',
+        foreignKey: {
+          name: 'userId',
+          allowNull: false,
+        },
         as: 'user',
       });
     }
   }
   UserPermission.init(
     {
-      permission: DataTypes.ENUM(_.values(USER_PERMISSIONS)),
+      permission: {
+        type: DataTypes.ENUM(_.values(USER_PERMISSIONS)),
+        allowNull: false,
+      },
     },
     {
       sequelize,

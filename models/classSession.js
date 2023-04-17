@@ -5,18 +5,24 @@ module.exports = (sequelize, DataTypes) => {
   class ClassSession extends Model {
     static associate(models) {
       ClassSession.belongsTo(models.Course, {
-        foreignKey: 'courseId',
+        foreignKey: {
+          name: 'courseId',
+          allowNull: false,
+        },
         as: 'course',
       });
       ClassSession.belongsTo(models.Organization, {
-        foreignKey: 'organizationId',
+        foreignKey: {
+          name: 'organizationId',
+          allowNull: false,
+        },
         as: 'organization',
       });
     }
   }
   ClassSession.init(
     {
-      date: DataTypes.DATEONLY,
+      date: { type: DataTypes.DATEONLY, allowNull: false },
     },
     {
       sequelize,

@@ -7,13 +7,12 @@ module.exports = (sequelize, DataTypes) => {
   }
   Organization.init(
     {
-      name: DataTypes.STRING,
+      name: { type: DataTypes.STRING, allowNull: false },
     },
     {
       sequelize,
       modelName: MODEL_NAME,
       tableName: TABLE_NAME,
-      timestamps: false,
     }
   );
   return Organization;

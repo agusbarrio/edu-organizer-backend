@@ -5,11 +5,17 @@ module.exports = (sequelize, DataTypes) => {
   class CourseTeacher extends Model {
     static associate(models) {
       CourseTeacher.belongsTo(models.Course, {
-        foreignKey: 'courseId',
+        foreignKey: {
+          name: 'courseId',
+          allowNull: false,
+        },
         as: 'course',
       });
       CourseTeacher.belongsTo(models.User, {
-        foreignKey: 'teacherId',
+        foreignKey: {
+          name: 'teacherId',
+          allowNull: false,
+        },
         as: 'teacher',
       });
     }

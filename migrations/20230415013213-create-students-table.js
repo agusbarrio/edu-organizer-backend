@@ -25,7 +25,6 @@ module.exports = {
       },
       courseId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
         references: {
           model: COURSES_TABLE_NAME,
           key: 'id',
@@ -38,6 +37,16 @@ module.exports = {
           model: ORGANIZATIONS_TABLE_NAME,
           key: 'id',
         },
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
     });
   },

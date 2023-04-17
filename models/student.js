@@ -5,26 +5,35 @@ module.exports = (sequelize, DataTypes) => {
   class Student extends Model {
     static associate(models) {
       Student.belongsTo(models.Course, {
-        foreignKey: 'courseId',
+        foreignKey: {
+          name: 'courseId',
+        },
         as: 'course',
       });
       Student.belongsTo(models.Organization, {
-        foreignKey: 'organizationId',
+        foreignKey: {
+          name: 'organizationId',
+          allowNull: false,
+        },
         as: 'organization',
       });
     }
   }
   Student.init(
     {
-      name: DataTypes.STRING,
-      firstName: DataTypes.STRING,
-      lastName: DataTypes.STRING,
+      firstName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      lastName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
     {
       sequelize,
       modelName: MODEL_NAME,
       tableName: TABLE_NAME,
-      timestamps: false,
     }
   );
   return Student;
