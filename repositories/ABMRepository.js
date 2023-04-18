@@ -18,6 +18,9 @@ class ABMRepository {
   getAll(transaction) {
     return this.model.findAll({ transaction });
   }
+  bulkCreate(data, transaction) {
+    return this.model.bulkCreate(data, { transaction });
+  }
 }
 
 module.exports = ABMRepository;

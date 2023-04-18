@@ -11,6 +11,13 @@ module.exports = (sequelize, DataTypes) => {
         },
         as: 'organization',
       });
+      User.hasMany(models.UserPermission, {
+        foreignKey: {
+          name: 'userId',
+          allowNull: false,
+        },
+        as: 'permissions',
+      });
     }
   }
   User.init(

@@ -5,7 +5,7 @@ class UserRepository extends ABMRepository {
   constructor() {
     super(db.User);
   }
-  findByEmail(email, transaction) {
+  getOneByEmail(email, transaction) {
     return this.model.findOne({ where: { email }, transaction });
   }
 }
