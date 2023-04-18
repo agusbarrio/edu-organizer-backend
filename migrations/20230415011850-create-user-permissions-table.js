@@ -20,6 +20,8 @@ module.exports = {
           model: USERS_TABLE_NAME,
           key: 'id',
         },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       permission: {
         type: Sequelize.ENUM(_.values(USER_PERMISSIONS)),

@@ -10,6 +10,8 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: false,
         },
         as: 'organization',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       });
     }
   }
@@ -24,6 +26,8 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: MODEL_NAME,
       tableName: TABLE_NAME,
+      timestamps: true,
+      paranoid: true,
     }
   );
   return Course;

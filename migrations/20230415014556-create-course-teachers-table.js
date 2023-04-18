@@ -20,6 +20,8 @@ module.exports = {
           model: COURSES_TABLE_NAME,
           key: 'id',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       teacherId: {
         type: Sequelize.INTEGER,
@@ -28,6 +30,8 @@ module.exports = {
           model: USERS_TABLE_NAME,
           key: 'id',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
     });
   },

@@ -10,6 +10,8 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: false,
         },
         as: 'course',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       });
       CourseTeacher.belongsTo(models.User, {
         foreignKey: {
@@ -17,6 +19,8 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: false,
         },
         as: 'teacher',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       });
     }
   }

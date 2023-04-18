@@ -13,6 +13,8 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: MODEL_NAME,
       tableName: TABLE_NAME,
+      timestamps: true,
+      paranoid: true,
     }
   );
   return Organization;

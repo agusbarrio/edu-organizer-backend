@@ -5,10 +5,10 @@ module.exports = (sequelize, DataTypes) => {
   class Student extends Model {
     static associate(models) {
       Student.belongsTo(models.Course, {
-        foreignKey: {
-          name: 'courseId',
-        },
+        foreignKey: 'courseId',
         as: 'course',
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
       });
       Student.belongsTo(models.Organization, {
         foreignKey: {
@@ -16,6 +16,8 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: false,
         },
         as: 'organization',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       });
     }
   }
@@ -34,6 +36,8 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: MODEL_NAME,
       tableName: TABLE_NAME,
+      timestamps: true,
+      paranoid: true,
     }
   );
   return Student;

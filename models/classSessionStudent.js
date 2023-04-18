@@ -10,6 +10,8 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: false,
         },
         as: 'student',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       });
       ClassSessionStudent.belongsTo(models.ClassSession, {
         foreignKey: {
@@ -17,6 +19,8 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: false,
         },
         as: 'classSession',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       });
     }
   }
@@ -27,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       modelName: MODEL_NAME,
       tableName: TABLE_NAME,
       timestamps: false,
+      paranoid: true,
     }
   );
   return ClassSessionStudent;
