@@ -28,6 +28,14 @@ module.exports = {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       },
+      shortId: {
+        type: Sequelize.STRING(5),
+        allowNull: false,
+        unique: true,
+      },
+      accessKey: {
+        type: Sequelize.STRING(4),
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,

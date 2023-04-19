@@ -8,7 +8,8 @@
     "start": "node index.js",
     "migrate": "sequelize db:migrate",
     "install:migrate": "npm install && npm run migrate",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "migrate:undo:all": "sequelize db:migrate:undo:all"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
     "lodash": "^4.17.21",
     "morgan": "^1.10.0",
     "mysql2": "^3.2.1",
+    "nanoid": "^3.3.6",
     "sequelize": "^6.31.0",
     "yup": "^1.1.1",
     "yup-password": "^0.2.2"
