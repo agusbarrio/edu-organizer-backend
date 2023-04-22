@@ -8,6 +8,9 @@ class UserPermissionRepository extends ABMRepository {
   deleteAllByUserId(userId, transaction) {
     return this.model.destroy({ where: { userId }, transaction });
   }
+  getByUserId(userId, transaction) {
+    return this.model.findAll({ where: { userId } }, transaction)
+  }
 }
 
 const userPermissionRepositories = new UserPermissionRepository();

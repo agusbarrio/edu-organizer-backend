@@ -1,15 +1,21 @@
+const { TOKENS } = require('../constants/auth');
 const authServices = require('../services/auth');
 const validator = require('../services/validator');
 const authControllers = {
   login: async (req, res, next) => {
     try {
-      const result = await authServices.login(req, res, next);
-      res.send(result);
+      const schema = validator.createSchema({
+        email: validator.email(),
+        password: validator.text({ required: { value: true } })
+      })
+      const { email, password } = await validator.validate(schema, req.body)
+      const { token } = await authServices.login({ email, password });
+      res.cookie(TOKENS.SESSION.name, token)
+      res.send('Logged')
     } catch (error) {
       next(error);
     }
   },
-
   register: async (req, res, next) => {
     try {
       const schema = validator.createSchema({
@@ -36,21 +42,15 @@ const authControllers = {
 
   logout: async (req, res, next) => {
     try {
-      const result = await authServices.logout(req, res, next);
-      res.send(result);
+      await authServices.logout({ token: req.cookies[TOKENS.SESSION.name] });
+      res.clearCookie(TOKENS.SESSION.name)
+      res.send('Logout')
     } catch (error) {
       next(error);
     }
   },
 
-  recoverPassword: async (req, res, next) => {
-    try {
-      const result = await authServices.recoverPassword(req, res, next);
-      res.send(result);
-    } catch (error) {
-      next(error);
-    }
-  },
+
 };
 
 module.exports = authControllers;

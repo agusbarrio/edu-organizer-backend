@@ -1,3 +1,5 @@
+
+const { TOKENS } = require('../constants/auth');
 const ERRORS = require('../constants/errors');
 const { STATUSES } = require('../constants/user');
 const { USER_PERMISSIONS } = require('../constants/userPermission');
@@ -9,14 +11,12 @@ const encryptationServices = require('./encryptation');
 const userPermissionServices = require('./userPermission');
 const authServices = {
   login: async ({ email, password }) => {
-    const encryptedIncomingPassword =
-      await encryptationServices.convertTextToHash(password);
-    const user = await userRepositories.getOneActiveByEmailAndPassword({
-      email,
-      password: encryptedIncomingPassword,
-    });
+    const user = await userRepositories.getOneByEmail(email)
     if (!user) throw ERRORS.E401_1;
-    //Crear y guardar token
+    const isValidPassword = await encryptationServices.compareTextWithHash(password, user.password)
+    if (!isValidPassword) throw ERRORS.E401_1;
+    const token = encryptationServices.createToken({ id: user.id, organizationId: user.organizationId }, TOKENS.SESSION.type)
+    return { token }
   },
   /**
    * Servicio de registro de usuario. Crea un usuario y una organización.
@@ -62,12 +62,21 @@ const authServices = {
       );
     });
   },
-  logout: async (req, res, next) => {
-    console.log('logout');
+
+  logout: async ({ token }) => {
+    //TODO invalidar token
   },
-  recoverPassword: async (req, res, next) => {
-    console.log('recoverPassword');
-  },
+  validUserAccess: async ({ token, permissions: avaiblePermissions = [] }) => {
+    const decoded = encryptationServices.validToken(token)
+    const tokenData = decoded.data
+    const userId = tokenData.id
+    const organizationId = tokenData.organizationId
+    const userPermissions = await userPermissionRepositories.getByUserId(userId)
+    const currentPermissions = userPermissions.map((p) => p.permission)
+    if (avaiblePermissions.some((avaiblePermissions) => !currentPermissions.includes(avaiblePermissions))) throw ERRORS.E403
+    const userContext = { id: userId, organizationId }
+    return userContext
+  }
 };
 
 module.exports = authServices;

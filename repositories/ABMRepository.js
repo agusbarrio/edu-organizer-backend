@@ -1,25 +1,38 @@
 'use strict';
+const _ = require('lodash')
 class ABMRepository {
   constructor(model) {
     this.model = model;
   }
-  create(data, transaction) {
-    return this.model.create(data, { transaction });
+  async create(data, transaction) {
+    return await this.model.create(data, { transaction });
   }
-  editOneById(id, data, transaction) {
-    return this.model.update(data, { where: { id }, transaction });
+  async editOneById(id, data, transaction) {
+    const entity = await this.model.findByPk(id, { transaction });
+    _.keys(data).forEach((dataKey) => {
+      if (data[dataKey] !== undefined) entity[dataKey] = data[dataKey]
+    })
+    await entity.save({ transaction })
+    return entity
   }
-  deleteOneById(id, transaction) {
-    return this.model.destroy({ where: { id }, transaction });
+  async editEntity(entity, data, transaction) {
+    _.keys(data).forEach((dataKey) => {
+      if (data[dataKey] !== undefined) entity[dataKey] = data[dataKey]
+    })
+    await entity.save({ transaction })
+    return entity
   }
-  getOneById(id, transaction) {
-    return this.model.findOne({ where: { id }, transaction });
+  async deleteOneById(id, transaction) {
+    return await this.model.destroy({ where: { id }, transaction });
   }
-  getAll(transaction) {
-    return this.model.findAll({ transaction });
+  async getOneById(id, transaction) {
+    return await this.model.findOne({ where: { id }, transaction });
   }
-  bulkCreate(data, transaction) {
-    return this.model.bulkCreate(data, { transaction });
+  async getAll(transaction) {
+    return await this.model.findAll({ transaction });
+  }
+  async bulkCreate(data, transaction) {
+    return await this.model.bulkCreate(data, { transaction });
   }
 }
 

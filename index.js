@@ -4,17 +4,21 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const ERRORS = require('./constants/errors');
 const { envConfig } = require('./config/envConfig');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
 app.set('port', envConfig.PORT);
 
 app.use(helmet());
+app.use(cookieParser());
 app.use(express.json());
 if (envConfig.LOGGING) app.use(morgan('combined'));
 
 //routes
 app.use('/api/v1', require('./routes'));
+
+
 
 //error 404
 app.use(function (req, res, next) {
