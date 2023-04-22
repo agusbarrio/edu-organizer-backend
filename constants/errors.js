@@ -5,6 +5,7 @@ const ERRORS = {
   E400: { errorCode: 'E400', message: 'Bad request', status: 400 },
   //401
   E401: { errorCode: 'E401', message: 'Unauthorized', status: 401 },
+  E401_1: { errorCode: 'E401_1', message: 'Invalid credentials', status: 401 },
   //403
   E403: { errorCode: 'E403', message: 'Forbidden', status: 403 },
   //404

@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const { ERRORS } = require('../../core');
 const jwt = require('jsonwebtoken');
 const { envConfig } = require('../config/envConfig');
+const { nanoid } = require('nanoid');
 
 const cipher = crypto.createDecipheriv(
   'aes-256-cbc',
@@ -11,7 +12,10 @@ const cipher = crypto.createDecipheriv(
   Buffer.alloc(16, 0)
 );
 
-const utilsServices = {
+const encryptationServices = {
+  createShortId: function () {
+    return nanoid(5);
+  },
   convertTextToHash: async (data) => {
     const hash = await bcrypt.hash(data, 10);
     return hash;
@@ -44,4 +48,4 @@ const utilsServices = {
   },
 };
 
-module.exports = utilsServices;
+module.exports = encryptationServices;

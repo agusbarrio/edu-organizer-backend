@@ -1,8 +1,9 @@
 'use strict';
-const { TABLE_NAME } = require('../constants/user');
+const { TABLE_NAME, STATUSES } = require('../constants/user');
 const {
   TABLE_NAME: ORGANIZATIONS_TABLE_NAME,
 } = require('../constants/organization');
+const _ = require('lodash');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -28,6 +29,10 @@ module.exports = {
       },
       password: {
         type: Sequelize.STRING,
+      },
+      status: {
+        type: Sequelize.ENUM(_.values(STATUSES)),
+        allowNull: false,
       },
       organizationId: {
         type: Sequelize.INTEGER,

@@ -21,6 +21,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      shortId: {
+        type: DataTypes.STRING(5),
+        allowNull: false,
+        unique: true,
+      },
+      accessPin: {
+        type: DataTypes.STRING,
+      },
     },
     {
       sequelize,

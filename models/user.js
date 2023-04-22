@@ -1,6 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
-const { TABLE_NAME, MODEL_NAME } = require('../constants/user');
+const { TABLE_NAME, MODEL_NAME, STATUSES } = require('../constants/user');
+const _ = require('lodash');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
@@ -38,6 +39,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       password: {
         type: DataTypes.STRING,
+        allowNull: false,
+      },
+      status: {
+        type: DataTypes.ENUM(_.values(STATUSES)),
         allowNull: false,
       },
     },

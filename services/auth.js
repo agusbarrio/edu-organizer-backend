@@ -1,13 +1,22 @@
 const ERRORS = require('../constants/errors');
+const { STATUSES } = require('../constants/user');
 const { USER_PERMISSIONS } = require('../constants/userPermission');
 const db = require('../models');
 const organizationRepositories = require('../repositories/organization');
 const userRepositories = require('../repositories/user');
 const userPermissionRepositories = require('../repositories/userPermission');
+const encryptationServices = require('./encryptation');
 const userPermissionServices = require('./userPermission');
 const authServices = {
-  login: async (req, res, next) => {
-    console.log('login');
+  login: async ({ email, password }) => {
+    const encryptedIncomingPassword =
+      await encryptationServices.convertTextToHash(password);
+    const user = await userRepositories.getOneActiveByEmailAndPassword({
+      email,
+      password: encryptedIncomingPassword,
+    });
+    if (!user) throw ERRORS.E401_1;
+    //Crear y guardar token
   },
   /**
    * Servicio de registro de usuario. Crea un usuario y una organización.
@@ -26,10 +35,14 @@ const authServices = {
         { name: organizationName },
         t
       );
+      const encryptedPassword = await encryptationServices.convertTextToHash(
+        password
+      );
       const newUser = await userRepositories.create(
         {
           email,
-          password,
+          password: encryptedPassword,
+          status: STATUSES.ACTIVE,
           firstName,
           lastName,
           organizationId: newOrganization.id,

@@ -1,4 +1,5 @@
 'use strict';
+const { STATUSES } = require('../constants/user');
 const db = require('../models');
 const ABMRepository = require('./ABMRepository');
 class UserRepository extends ABMRepository {
@@ -7,6 +8,12 @@ class UserRepository extends ABMRepository {
   }
   getOneByEmail(email, transaction) {
     return this.model.findOne({ where: { email }, transaction });
+  }
+  getOneActiveByEmailAndPassword({ email, password }, transaction) {
+    return this.model.findOne({
+      where: { email, password, status: STATUSES.ACTIVE },
+      transaction,
+    });
   }
 }
 

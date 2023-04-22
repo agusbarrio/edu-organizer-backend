@@ -33,8 +33,8 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
-      accessKey: {
-        type: Sequelize.STRING(4),
+      accessPin: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         type: Sequelize.DATE,
