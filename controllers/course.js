@@ -28,7 +28,6 @@ const courseControllers = {
     },
     getAll: async (req, res, next) => {
         try {
-            console.log(req.user)
             const courses = await courseServices.getAll({ user: req.user })
             res.json(courses)
         } catch (error) {

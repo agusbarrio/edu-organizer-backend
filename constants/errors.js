@@ -13,6 +13,7 @@ const ERRORS = {
   E404: { errorCode: 'E404', message: 'Not found.', status: 404 },
   E404_1: { errorCode: 'E404_1', message: 'User not found.', status: 404 },
   E404_2: { errorCode: 'E404_2', message: 'Course not found.', status: 404 },
+  E404_3: { errorCode: 'E404_3', message: 'Student not found.', status: 404 },
   //409
   E409: { errorCode: 'E409', message: 'Conflict', status: 409 },
   E409_1: { errorCode: 'E409_1', message: 'Email already exists', status: 409 },

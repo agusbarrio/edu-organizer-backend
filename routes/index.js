@@ -5,5 +5,6 @@ const router = Router();
 router.use('/test', require('./test'));
 router.use('/auth', require('./auth'));
 router.use('/courses', require('./courses'));
+router.use('/students', require('./students'));
 
 module.exports = router;
