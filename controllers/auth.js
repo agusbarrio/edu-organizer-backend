@@ -39,18 +39,30 @@ const authControllers = {
       next(error);
     }
   },
-
   logout: async (req, res, next) => {
     try {
-      await authServices.logout({ token: req.cookies[TOKENS.SESSION.name] });
+      await authServices.logout({ sessionToken: req.cookies[TOKENS.SESSION.name], courseToken: req.cookies[TOKENS.COURSE_SESSION.name] })
       res.clearCookie(TOKENS.SESSION.name)
+      res.clearCookie(TOKENS.COURSE_SESSION.name)
       res.send('Logout')
     } catch (error) {
       next(error);
     }
   },
-
-
+  courseLogin: async (req, res, next) => {
+    try {
+      const schema = validator.createSchema({
+        accessPin: validator.text({ required: { value: true } }),
+        shortId: validator.text({ required: { value: true } }),
+      });
+      const { accessPin, shortId } = await validator.validate(schema, { accessPin: req.body.accessPin, shortId: req.params.shortId });
+      const { token } = await authServices.courseLogin({ accessPin, shortId });
+      res.cookie(TOKENS.COURSE_SESSION.name, token);
+      res.send('Course logged');
+    } catch (error) {
+      next(error)
+    }
+  },
 };
 
 module.exports = authControllers;

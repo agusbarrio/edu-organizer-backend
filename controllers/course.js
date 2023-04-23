@@ -47,7 +47,7 @@ const courseControllers = {
         } catch (error) {
             next(error)
         }
-    }
+    },
 }
 
 module.exports = courseControllers;

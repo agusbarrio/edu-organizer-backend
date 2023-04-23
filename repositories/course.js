@@ -12,6 +12,13 @@ class CourseRepository extends ABMRepository {
             }
         })
     }
+    getOneByShortId(shortId) {
+        return this.model.findOne({
+            where: {
+                shortId
+            }
+        })
+    }
 
 }
 

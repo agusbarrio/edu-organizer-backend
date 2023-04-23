@@ -4,6 +4,7 @@ const ERRORS = require('../constants/errors');
 const { STATUSES } = require('../constants/user');
 const { USER_PERMISSIONS } = require('../constants/userPermission');
 const db = require('../models');
+const courseRepositories = require('../repositories/course');
 const organizationRepositories = require('../repositories/organization');
 const userRepositories = require('../repositories/user');
 const userPermissionRepositories = require('../repositories/userPermission');
@@ -63,8 +64,9 @@ const authServices = {
     });
   },
 
-  logout: async ({ token }) => {
-    //TODO invalidar token
+  logout: async ({ sessionToken, courseToken }) => {
+    //TODO invalidar token de sesión
+    //TODO invalidar token de curso
   },
   validUserAccess: async ({ token, permissions: avaiblePermissions = [] }) => {
     const decoded = encryptationServices.validToken(token)
@@ -76,6 +78,24 @@ const authServices = {
     if (avaiblePermissions.some((avaiblePermissions) => !currentPermissions.includes(avaiblePermissions))) throw ERRORS.E403
     const userContext = { id: userId, organizationId }
     return userContext
+  },
+  validCourseAccess: async ({ token }) => {
+    const decoded = encryptationServices.validToken(token)
+    const tokenData = decoded.data
+    const courseId = tokenData.courseId
+    const organizationId = tokenData.organizationId
+    const course = await courseRepositories.getOneById(courseId)
+    if (!course) throw ERRORS.E403
+    const courseContext = { id: courseId, organizationId }
+    return courseContext
+  },
+  courseLogin: async ({ accessPin, shortId }) => {
+    const course = await courseRepositories.getOneByShortId(shortId)
+    if (!course) throw ERRORS.E404_2
+    const decryptedAccessPin = encryptationServices.decrypt({ encryptedData: course.accessPin, iv: course.iv })
+    if (decryptedAccessPin !== accessPin) throw ERRORS.E401_1
+    const token = encryptationServices.createToken({ id: course.id, organizationId: course.organizationId }, TOKENS.COURSE_SESSION.type)
+    return { token }
   }
 };
 
