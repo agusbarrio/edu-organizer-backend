@@ -36,6 +36,9 @@ module.exports = {
       accessPin: {
         type: Sequelize.STRING,
       },
+      iv: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -54,6 +57,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    queryInterface.dropTable(TABLE_NAME);
+    await queryInterface.dropTable(TABLE_NAME);
   },
 };

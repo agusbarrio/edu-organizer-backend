@@ -4,10 +4,11 @@ const courseControllers = {
     create: async (req, res, next) => {
         try {
             const schema = validator.createSchema({
-                name: validator.text({ required: { value: true } })
+                name: validator.text({ required: { value: true } }),
+                accessPin: validator.text({ required: { value: false } })
             })
-            const { name } = await validator.validate(schema, req.body)
-            await courseServices.create({ name, user: req.user })
+            const { name, accessPin } = await validator.validate(schema, req.body)
+            await courseServices.create({ name, accessPin, user: req.user })
             res.send('Created')
         } catch (error) {
             next(error)
@@ -17,10 +18,11 @@ const courseControllers = {
         try {
             const schema = validator.createSchema({
                 id: validator.id(),
-                name: validator.text({ required: { value: true } })
+                name: validator.text({ required: { value: true } }),
+                accessPin: validator.text({ required: { value: false } })
             })
-            const { id, name } = await validator.validate(schema, { name: req.body.name, id: req.params.id })
-            await courseServices.editOne({ id, name, user: req.user })
+            const { id, name, accessPin } = await validator.validate(schema, { name: req.body.name, accessPin: req.body.accessPin, id: req.params.id })
+            await courseServices.editOne({ id, name, accessPin, user: req.user })
             res.send('Edited')
         } catch (error) {
             next(error)

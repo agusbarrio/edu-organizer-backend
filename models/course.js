@@ -29,6 +29,9 @@ module.exports = (sequelize, DataTypes) => {
       accessPin: {
         type: DataTypes.STRING,
       },
+      iv: {
+        type: DataTypes.STRING,
+      },
     },
     {
       sequelize,

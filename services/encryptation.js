@@ -6,13 +6,17 @@ const jwt = require('jsonwebtoken');
 const { envConfig } = require('../config/envConfig');
 const { nanoid } = require('nanoid');
 const ERRORS = require('../constants/errors');
-/* 
-const cipher = crypto.createDecipheriv(
-  'aes-256-cbc',
-  envConfig.SECRET_CIPHER_KEY,
-  Buffer.alloc(16, 0)
-);
- */
+
+//Checking the crypto module
+const crypto = require('crypto');
+const algorithm = 'aes-256-cbc'; //Using AES encryption
+const key = crypto
+  .createHash('sha512')
+  .update(envConfig.ENCRYPTION_KEY)
+  .digest('hex')
+  .substring(0, 32)
+
+
 const encryptationServices = {
   createShortId: function () {
     return nanoid(5);
@@ -25,19 +29,6 @@ const encryptationServices = {
     const result = await bcrypt.compare(plainText, hash);
     return result;
   },
-  /*   cipherText: function (text) {
-      let encrypted = cipher.update(text, 'utf8', 'hex');
-      encrypted += cipher.final('hex');
-      return encrypted;
-    },
-    decipherText: function (text) {
-      let decrypted = cipher.update(text, 'hex', 'utf8');
-      decrypted += cipher.final('utf8');
-      return decrypted;
-    }, 
-  compareTextWithCipher: function (plainText, cipher) {
-    return this.cipherText(plainText) === cipher;
-  },*/
   createToken: (data, type, options = {}) => {
     const defaultOptions = { expiresIn: envConfig.DEFAULT_TOKEN_DURATION };
     const tokenOptions = _.merge(defaultOptions, options);
@@ -53,6 +44,20 @@ const encryptationServices = {
     });
     return decodedToken;
   },
+  encrypt: function (text) {
+    const iv = crypto.randomBytes(16);
+    let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
+    let encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
+  },
+  decrypt: function ({ encryptedData, iv }) {
+    let encryptedText = Buffer.from(encryptedData, 'hex');
+    let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), Buffer.from(iv, 'hex'));
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
+  }
 
 
 };
