@@ -2,17 +2,18 @@ const db = require("../models");
 const studentRepositories = require("../repositories/student");
 const { validTargetStudent, validTargetCourse } = require("./targetEntities");
 
-const studentServices = {
-    create: async function ({ user, firstName, lastName, courseId }) {
+const studentsServices = {
+    create: async function ({ organizationId, firstName, lastName, courseId }) {
         await db.sequelize.transaction(async (t) => {
-            if (courseId) await validTargetCourse({ user, id: courseId }, t)
-            await studentRepositories.create({ organizationId: user.organizationId, firstName, lastName, courseId }, t);
+            if (courseId) await validTargetCourse({ organizationId, id: courseId }, t)
+            await studentRepositories.create({ organizationId, firstName, lastName, courseId }, t);
         })
     },
     editOne: async function ({ id, firstName, lastName, courseId, user }) {
         await db.sequelize.transaction(async (t) => {
-            if (courseId) await validTargetCourse({ user, id: courseId }, t)
-            const student = await validTargetStudent({ user, id }, t)
+            const organizationId = user.organizationId
+            if (courseId) await validTargetCourse({ organizationId, id: courseId }, t)
+            const student = await validTargetStudent({ organizationId, id }, t)
             await studentRepositories.editEntity(student, { firstName, lastName, courseId }, t)
         })
     },
@@ -22,11 +23,15 @@ const studentServices = {
     },
     deleteOne: async function ({ id, user }) {
         await db.sequelize.transaction(async (t) => {
-            await validTargetStudent({ user, id }, t)
+            await validTargetStudent({ organizationId: user.organizationId, id }, t)
             await studentRepositories.deleteOneById(id, t)
         })
+    },
+    getByCourse: async function ({ courseId }) {
+        const students = await studentRepositories.getAllByCourseId({ courseId })
+        return students
     }
 
 }
 
-module.exports = studentServices;
+module.exports = studentsServices;

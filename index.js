@@ -18,8 +18,6 @@ if (envConfig.LOGGING) app.use(morgan('combined'));
 //routes
 app.use('/api/v1', require('./routes'));
 
-
-
 //error 404
 app.use(function (req, res, next) {
   next(ERRORS.E404);
@@ -34,6 +32,7 @@ app.use(function (err, req, res, next) {
       : ERRORS.E500.errorCode);
   const message = err.message ?? ERRORS.E500.message;
   const data = err.data ?? undefined;
+  console.error(err);
   res.status(err.status || ERRORS.E500.status).json({
     errorCode,
     message,

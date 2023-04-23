@@ -127,13 +127,19 @@ const url = (_config = {}) => {
   return yupUrl;
 };
 
-const array = (_config = {}) => {
-  const yupArray = Yup.array();
+const array = (config = {}) => {
+  let yupArray = Yup.array();
+  if (config.required && config.required?.value) {
+    yupArray = yupArray.required();
+  } else {
+    yupArray = yupArray.nullable();
+  }
   return yupArray;
 };
 
 const ids = (_config = {}) => {
-  const yupIds = array().of(id());
+  const config = _.merge(_.cloneDeep(DEFAULT_VALIDATIONS.IDS), _config);
+  const yupIds = array(config).of(id());
   return yupIds;
 };
 

@@ -4,7 +4,7 @@ const ERRORS = require('../constants/errors');
 const { STATUSES } = require('../constants/user');
 const { USER_PERMISSIONS } = require('../constants/userPermission');
 const db = require('../models');
-const courseRepositories = require('../repositories/course');
+const coursesRepositories = require('../repositories/courses');
 const organizationRepositories = require('../repositories/organization');
 const userRepositories = require('../repositories/user');
 const userPermissionRepositories = require('../repositories/userPermission');
@@ -82,15 +82,15 @@ const authServices = {
   validCourseAccess: async ({ token }) => {
     const decoded = encryptationServices.validToken(token)
     const tokenData = decoded.data
-    const courseId = tokenData.courseId
+    const courseId = tokenData.id
     const organizationId = tokenData.organizationId
-    const course = await courseRepositories.getOneById(courseId)
+    const course = await coursesRepositories.getOneById(courseId)
     if (!course) throw ERRORS.E403
     const courseContext = { id: courseId, organizationId }
     return courseContext
   },
   courseLogin: async ({ accessPin, shortId }) => {
-    const course = await courseRepositories.getOneByShortId(shortId)
+    const course = await coursesRepositories.getOneByShortId(shortId)
     if (!course) throw ERRORS.E404_2
     const decryptedAccessPin = encryptationServices.decrypt({ encryptedData: course.accessPin, iv: course.iv })
     if (decryptedAccessPin !== accessPin) throw ERRORS.E401_1

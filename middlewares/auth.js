@@ -10,6 +10,7 @@ const authMiddlewares = {
                 req.user = userContext
                 next()
             } catch (error) {
+                res.clearCookie(TOKENS.SESSION.name)
                 next(error)
             }
         }
@@ -21,6 +22,7 @@ const authMiddlewares = {
             req.course = courseContext
             next()
         } catch (error) {
+            res.clearCookie(TOKENS.COURSE_SESSION.name)
             next(error)
         }
     }

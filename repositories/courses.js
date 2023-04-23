@@ -1,7 +1,7 @@
 'use strict';
 const db = require('../models');
 const ABMRepository = require('./ABMRepository');
-class CourseRepository extends ABMRepository {
+class CoursesRepository extends ABMRepository {
     constructor() {
         super(db.Course);
     }
@@ -22,5 +22,5 @@ class CourseRepository extends ABMRepository {
 
 }
 
-const courseRepositories = new CourseRepository();
-module.exports = courseRepositories;
+const coursesRepositories = new CoursesRepository();
+module.exports = coursesRepositories;

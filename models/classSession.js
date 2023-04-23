@@ -1,6 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 const { TABLE_NAME, MODEL_NAME } = require('../constants/classSession');
+
 module.exports = (sequelize, DataTypes) => {
   class ClassSession extends Model {
     static associate(models) {
@@ -19,6 +20,15 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: false,
         },
         as: 'organization',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      });
+      ClassSession.belongsToMany(models.Student, {
+        through: {
+          model: models.ClassSessionStudent,
+        },
+        foreignKey: 'classSessionId',
+        as: 'students',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       });

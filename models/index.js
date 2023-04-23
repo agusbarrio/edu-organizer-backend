@@ -8,7 +8,12 @@ const basename = path.basename(__filename);
 
 const db = {};
 
-let sequelize = new Sequelize(envConfig.MYSQL_CONNECTION);
+let sequelize = new Sequelize(envConfig.MYSQL_CONNECTION, {
+  logging: envConfig.MYSQL_LOGGING
+    ? (query) =>
+      console.log(query, '\n-------------------------------\n')
+    : false,
+});
 
 fs.readdirSync(__dirname)
   .filter((file) => {

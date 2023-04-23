@@ -1,6 +1,6 @@
-const studentServices = require("../services/student");
+const studentsServices = require("../services/students");
 const validator = require('../services/validator')
-const studentControllers = {
+const studentsControllers = {
     create: async (req, res, next) => {
         try {
             const schema = validator.createSchema({
@@ -9,7 +9,7 @@ const studentControllers = {
                 courseId: validator.id({ required: { value: false } })
             })
             const { firstName, lastName, courseId } = await validator.validate(schema, req.body)
-            await studentServices.create({ firstName, lastName, courseId, user: req.user })
+            await studentsServices.create({ firstName, lastName, courseId, organizationId: req.user.organizationId })
             res.send('Created')
         } catch (error) {
             next(error)
@@ -24,7 +24,7 @@ const studentControllers = {
                 courseId: validator.id({ required: { value: false } })
             })
             const { id, firstName, lastName, courseId } = await validator.validate(schema, { ...req.body, id: req.params.id })
-            await studentServices.editOne({ id, firstName, lastName, courseId, user: req.user })
+            await studentsServices.editOne({ id, firstName, lastName, courseId, user: req.user })
             res.send('Edited')
         } catch (error) {
             next(error)
@@ -32,7 +32,7 @@ const studentControllers = {
     },
     getAll: async (req, res, next) => {
         try {
-            const courses = await studentServices.getAll({ user: req.user })
+            const courses = await studentsServices.getAll({ user: req.user })
             res.json(courses)
         } catch (error) {
             next(error)
@@ -44,7 +44,7 @@ const studentControllers = {
                 id: validator.id(),
             })
             const { id } = await validator.validate(schema, { id: req.params.id })
-            await studentServices.deleteOne({ id, user: req.user })
+            await studentsServices.deleteOne({ id, user: req.user })
             res.send('Deleted')
         } catch (error) {
             next(error)
@@ -52,4 +52,4 @@ const studentControllers = {
     }
 }
 
-module.exports = studentControllers;
+module.exports = studentsControllers;

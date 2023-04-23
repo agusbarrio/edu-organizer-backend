@@ -22,6 +22,9 @@ const DEFAULT_VALIDATIONS = {
     moreThan: { value: 0 },
     integer: { value: true },
   },
+  IDS: {
+    required: { value: true },
+  },
   URL: {
     required: { value: false },
     max: { value: 2083 },

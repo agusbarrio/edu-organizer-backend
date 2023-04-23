@@ -12,7 +12,20 @@ class StudentRepository extends ABMRepository {
             }
         })
     }
-
+    getAllByCourseId(courseId) {
+        return this.model.findAll({
+            where: {
+                courseId
+            }
+        })
+    }
+    getAllByIds(ids) {
+        return this.model.findAll({
+            where: {
+                id: ids
+            }
+        })
+    }
 }
 
 const studentRepositories = new StudentRepository();
