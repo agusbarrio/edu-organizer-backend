@@ -25,7 +25,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   ClassSessionStudent.init(
-    {},
+    {
+      metadata: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
+    },
     {
       sequelize,
       modelName: MODEL_NAME,

@@ -21,6 +21,7 @@ const ERRORS = {
   E422: { errorCode: 'E422', message: 'Unprocessable Entity', status: 422 },
   //500
   E500: { errorCode: 'E500', message: 'Internal server error.', status: 500 },
+  E500_1: { errorCode: 'E500_1', message: 'Error sending email.', status: 500 },
 };
 
 module.exports = ERRORS;
