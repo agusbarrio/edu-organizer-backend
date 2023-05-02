@@ -24,4 +24,5 @@ module.exports.envConfig = {
   COOKIE_SAME_SITE: _.get(pe, 'COOKIE_SAME_SITE', 'Strict'),
   COOKIE_SECURE: _.get(pe, 'COOKIE_SECURE', 'true') === 'true',
   COOKIE_DOMAIN: pe.COOKIE_DOMAIN,
+  CORS_ORIGIN: pe.CORS_ORIGIN,
 };

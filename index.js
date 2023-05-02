@@ -5,7 +5,7 @@ const morgan = require('morgan');
 const ERRORS = require('./constants/errors');
 const { envConfig } = require('./config/envConfig');
 const cookieParser = require('cookie-parser');
-
+const cors = require('cors')
 const app = express();
 
 app.set('port', envConfig.PORT);
@@ -14,6 +14,16 @@ app.use(helmet());
 app.use(cookieParser());
 app.use(express.json());
 if (envConfig.LOGGING) app.use(morgan('combined'));
+//cors
+var corsOptions = {
+  origin: envConfig.CORS_ORIGIN,
+  optionsSuccessStatus: 200,
+  credentials: true
+}
+if (!!corsOptions?.origin) {
+  app.options('*', cors(corsOptions))
+  app.use(cors(corsOptions))
+}
 
 //routes
 app.use('/api/v1', require('./routes'));
