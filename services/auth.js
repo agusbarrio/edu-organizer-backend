@@ -8,16 +8,22 @@ const coursesRepositories = require('../repositories/courses');
 const organizationRepositories = require('../repositories/organization');
 const userRepositories = require('../repositories/user');
 const userPermissionRepositories = require('../repositories/userPermission');
+const { USER_VARIANTS } = require('../repositories/variants/user');
 const encryptationServices = require('./encryptation');
 const userPermissionServices = require('./userPermission');
 const authServices = {
   login: async ({ email, password }) => {
-    const user = await userRepositories.getOneByEmail(email)
+    const user = await userRepositories.getOneByEmail(email, USER_VARIANTS.LOGIN)
     if (!user) throw ERRORS.E401_1;
     const isValidPassword = await encryptationServices.compareTextWithHash(password, user.password)
     if (!isValidPassword) throw ERRORS.E401_1;
-    const token = encryptationServices.createToken({ id: user.id, organizationId: user.organizationId }, TOKENS.SESSION.type)
-    return { token }
+    const token = encryptationServices.createToken({
+      id: user.id,
+      organizationId: user.organizationId,
+    }, TOKENS.SESSION)
+    const result = user.toJSON()
+    delete result.password
+    return { token, user: result }
   },
   /**
    * Servicio de registro de usuario. Crea un usuario y una organización.
@@ -30,7 +36,7 @@ const authServices = {
     organizationName,
   }) => {
     await db.sequelize.transaction(async (t) => {
-      const userExists = await userRepositories.getOneByEmail(email, t);
+      const userExists = await userRepositories.getOneByEmail(email, transaction);
       if (userExists) throw ERRORS.E409_1;
       const newOrganization = await organizationRepositories.create(
         { name: organizationName },
@@ -94,7 +100,7 @@ const authServices = {
     if (!course) throw ERRORS.E404_2
     const decryptedAccessPin = encryptationServices.decrypt({ encryptedData: course.accessPin, iv: course.iv })
     if (decryptedAccessPin !== accessPin) throw ERRORS.E401_1
-    const token = encryptationServices.createToken({ id: course.id, organizationId: course.organizationId }, TOKENS.COURSE_SESSION.type)
+    const token = encryptationServices.createToken({ id: course.id, organizationId: course.organizationId }, TOKENS.COURSE)
     return { token }
   }
 };

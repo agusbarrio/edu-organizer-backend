@@ -1,4 +1,4 @@
 module.exports.TOKENS = {
-    SESSION: { type: 'SESSION', name: 'SESSION_TOKEN' },
-    COURSE_SESSION: { type: 'COURSE_SESSION', name: 'COURSE_SESSION_TOKEN' }
+    SESSION: 'SESSION_TOKEN',
+    COURSE: 'COURSE_SESSION_TOKEN'
 }
