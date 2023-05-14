@@ -1,3 +1,4 @@
+const { envConfig } = require('../config/envConfig');
 const { TOKENS } = require('../constants/auth');
 const authServices = require('../services/auth');
 const validator = require('../services/validator');
@@ -10,7 +11,7 @@ const authControllers = {
       })
       const { email, password } = await validator.validate(schema, req.body)
       const { token, user } = await authServices.login({ email, password });
-      res.cookie(TOKENS.SESSION, token)
+      res.cookie(TOKENS.SESSION, token, { httpOnly: true });
       res.json(user)
     } catch (error) {
       next(error);
@@ -63,6 +64,24 @@ const authControllers = {
       next(error)
     }
   },
+  verifySession: async (req, res, next) => {
+    try {
+      const userSession = await authServices.validUserAccess({ token: req.cookies[TOKENS.SESSION] })
+      res.json(userSession)
+    } catch (error) {
+      res.clearCookie(TOKENS.SESSION)
+      next(error)
+    }
+  },
+  verifySessionCourse: async (req, res, next) => {
+    try {
+      const courseSession = await authServices.validCourseAccess({ token: req.cookies[TOKENS.COURSE] })
+      res.json(courseSession)
+    } catch (error) {
+      res.clearCookie(TOKENS.COURSE)
+      next(error)
+    }
+  }
 };
 
 module.exports = authControllers;

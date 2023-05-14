@@ -7,8 +7,8 @@ const db = require('../models');
 const coursesRepositories = require('../repositories/courses');
 const organizationRepositories = require('../repositories/organization');
 const userRepositories = require('../repositories/user');
-const userPermissionRepositories = require('../repositories/userPermission');
-const { USER_VARIANTS } = require('../repositories/variants/user');
+const { COURSE_VARIANTS } = require('../repositories/variants/courses');
+const { USER_VARIANTS, } = require('../repositories/variants/user');
 const encryptationServices = require('./encryptation');
 const userPermissionServices = require('./userPermission');
 const authServices = {
@@ -18,8 +18,8 @@ const authServices = {
     const isValidPassword = await encryptationServices.compareTextWithHash(password, user.password)
     if (!isValidPassword) throw ERRORS.E401_1;
     const token = encryptationServices.createToken({
-      id: user.id,
-      organizationId: user.organizationId,
+      user: { id: user.id, permissions: user.permissions.map((permission) => permission.permission) },
+      organization: { id: user.organization.id, shortId: user.organization.shortId },
     }, TOKENS.SESSION)
     const result = user.toJSON()
     delete result.password
@@ -36,10 +36,11 @@ const authServices = {
     organizationName,
   }) => {
     await db.sequelize.transaction(async (t) => {
-      const userExists = await userRepositories.getOneByEmail(email, transaction);
+      const userExists = await userRepositories.getOneByEmail(email, USER_VARIANTS.EXISTS, t);
       if (userExists) throw ERRORS.E409_1;
+      const shortId = encryptationServices.createShortId();
       const newOrganization = await organizationRepositories.create(
-        { name: organizationName },
+        { name: organizationName, shortId },
         t
       );
       const encryptedPassword = await encryptationServices.convertTextToHash(
@@ -77,32 +78,32 @@ const authServices = {
   validUserAccess: async ({ token, permissions: avaiblePermissions = [] }) => {
     const decoded = encryptationServices.validToken(token)
     const tokenData = decoded.data
-    const userId = tokenData.id
-    const organizationId = tokenData.organizationId
-    const userPermissions = await userPermissionRepositories.getByUserId(userId)
-    const currentPermissions = userPermissions.map((p) => p.permission)
+    const userId = tokenData.user.id
+    const organizationId = tokenData.organization.id
+    const currentPermissions = tokenData.user.permissions
     if (avaiblePermissions.some((avaiblePermissions) => !currentPermissions.includes(avaiblePermissions))) throw ERRORS.E403
-    const userContext = { id: userId, organizationId }
-    return userContext
+    const context = { user: { id: userId, permissions: currentPermissions, organizationId }, organization: { id: organizationId, shortId: tokenData.organization.shortId } }
+    return context
   },
   validCourseAccess: async ({ token }) => {
     const decoded = encryptationServices.validToken(token)
     const tokenData = decoded.data
-    const courseId = tokenData.id
-    const organizationId = tokenData.organizationId
-    const course = await coursesRepositories.getOneById(courseId)
-    if (!course) throw ERRORS.E403
-    const courseContext = { id: courseId, organizationId }
-    return courseContext
+    const courseId = tokenData.course.id
+    const organizationId = tokenData.organization.id
+    const context = { course: { id: courseId, organizationId }, organization: { id: organizationId } }
+    return context
   },
   courseLogin: async ({ accessPin, shortId }) => {
-    const course = await coursesRepositories.getOneByShortId(shortId)
+    const course = await coursesRepositories.getOneByShortId(shortId, COURSE_VARIANTS.LOGIN)
     if (!course) throw ERRORS.E404_2
     const decryptedAccessPin = encryptationServices.decrypt({ encryptedData: course.accessPin, iv: course.iv })
     if (decryptedAccessPin !== accessPin) throw ERRORS.E401_1
-    const token = encryptationServices.createToken({ id: course.id, organizationId: course.organizationId }, TOKENS.COURSE)
+    const token = encryptationServices.createToken({
+      course: { id: course.id, organizationId: course.organization.id },
+      organization: { id: course.organization.id }
+    }, TOKENS.COURSE)
     return { token }
-  }
+  },
 };
 
 module.exports = authServices;

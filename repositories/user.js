@@ -8,9 +8,8 @@ class UserRepository extends ABMRepository {
   constructor() {
     super(db.User);
   }
-  getOneByEmail(email, variant, transaction,) {
-    const variantOptions = USER_VARIANTS_OPTIONS[variant]
-    return this.model.findOne({ where: { email }, transaction, ...variantOptions });
+  getOneByEmail(email, variant, transaction) {
+    return this.model.findOne({ where: { email }, transaction, ...USER_VARIANTS_OPTIONS?.[variant] });
   }
   getOneActiveByEmailAndPassword({ email, password }, transaction) {
     return this.model.findOne({

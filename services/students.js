@@ -1,3 +1,4 @@
+const ERRORS = require("../constants/errors");
 const db = require("../models");
 const studentRepositories = require("../repositories/student");
 const { validTargetStudent, validTargetCourse } = require("./targetEntities");
@@ -30,8 +31,12 @@ const studentsServices = {
     getByCourse: async function ({ courseId }) {
         const students = await studentRepositories.getAllByCourseId({ courseId })
         return students
+    },
+    getOne: async function ({ id }) {
+        const course = await studentRepositories.getOneById(id);
+        if (!course) throw ERRORS.E404_3;
+        return course
     }
-
 }
 
 module.exports = studentsServices;

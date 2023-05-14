@@ -25,6 +25,7 @@ module.exports = {
       },
       courseId: {
         type: Sequelize.INTEGER,
+        allowNull: true,
         references: {
           model: COURSES_TABLE_NAME,
           key: 'id',

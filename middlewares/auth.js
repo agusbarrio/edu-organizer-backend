@@ -7,7 +7,7 @@ const authMiddlewares = {
             try {
                 const token = req.cookies[TOKENS.SESSION]
                 const userContext = await authServices.validUserAccess({ token, permissions })
-                req.user = userContext
+                req.user = userContext.user
                 next()
             } catch (error) {
                 res.clearCookie(TOKENS.SESSION)
@@ -19,7 +19,7 @@ const authMiddlewares = {
         try {
             const token = req.cookies[TOKENS.COURSE]
             const courseContext = await authServices.validCourseAccess({ token })
-            req.course = courseContext
+            req.course = courseContext.course
             next()
         } catch (error) {
             res.clearCookie(TOKENS.COURSE)

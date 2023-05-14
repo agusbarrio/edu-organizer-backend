@@ -6,7 +6,10 @@ module.exports = (sequelize, DataTypes) => {
   class Student extends Model {
     static associate(models) {
       Student.belongsTo(models.Course, {
-        foreignKey: 'courseId',
+        foreignKey: {
+          name: 'courseId',
+          allowNull: true,
+        },
         as: 'course',
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE',
@@ -21,9 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'CASCADE',
       });
       Student.belongsToMany(models.ClassSession, {
-        through: {
-          model: models.ClassSessionStudent,
-        },
+        through: models.ClassSessionStudent,
         foreignKey: 'studentId',
         as: 'classSessions',
         onDelete: 'CASCADE',

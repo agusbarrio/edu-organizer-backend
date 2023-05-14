@@ -36,6 +36,18 @@ const coursesControllers = {
             next(error)
         }
     },
+    getOne: async (req, res, next) => {
+        try {
+            const schema = validator.createSchema({
+                id: validator.id(),
+            })
+            const { id } = await validator.validate(schema, { id: req.params.id })
+            const course = await coursesServices.getOne({ id })
+            res.json(course)
+        } catch (error) {
+            next(error)
+        }
+    },
     deleteOne: async (req, res, next) => {
         try {
             const schema = validator.createSchema({

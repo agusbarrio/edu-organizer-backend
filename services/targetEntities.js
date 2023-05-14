@@ -4,7 +4,7 @@ const studentRepositories = require("../repositories/student");
 
 const targetEntitieServices = {
     validTargetCourse: async function ({ organizationId, id }, transaction) {
-        const course = await coursesRepositories.getOneById(id, transaction);
+        const course = await coursesRepositories.getOneById(id, null, transaction);
         if (!course) throw ERRORS.E404_2;
         if (course.organizationId !== organizationId) throw ERRORS.E403_1;
         return course;

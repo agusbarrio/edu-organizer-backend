@@ -12,6 +12,11 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
+      shortId: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
+      },
       name: {
         type: Sequelize.STRING,
         allowNull: false,

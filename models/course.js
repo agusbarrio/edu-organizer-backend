@@ -13,6 +13,20 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       });
+      Course.hasMany(models.Student, {
+        foreignKey: {
+          name: 'courseId',
+          allowNull: true,
+        },
+        as: 'students',
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
+      });
+      Course.belongsToMany(models.User, {
+        as: 'teachers',
+        foreignKey: 'courseId',
+        through: models.CourseTeacher,
+      });
     }
   }
   Course.init(

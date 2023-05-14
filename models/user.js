@@ -21,6 +21,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         as: 'permissions',
       });
+      User.belongsToMany(models.Course, {
+        as: 'courses',
+        foreignKey: 'teacherId',
+        through: models.CourseTeacher,
+      });
     }
   }
   User.init(

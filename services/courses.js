@@ -1,6 +1,7 @@
 const ERRORS = require("../constants/errors");
 const db = require("../models");
 const coursesRepositories = require("../repositories/courses");
+const { COURSE_VARIANTS } = require("../repositories/variants/courses");
 const encryptationServices = require("./encryptation");
 const { validTargetCourse } = require("./targetEntities");
 
@@ -30,7 +31,7 @@ const coursesServices = {
         })
     },
     getOne: async function ({ id }) {
-        const course = await coursesRepositories.getOneById(id);
+        const course = await coursesRepositories.getOneById(id, COURSE_VARIANTS.FULL);
         if (!course) throw ERRORS.E404_2;
         return course
     }
