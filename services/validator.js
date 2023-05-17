@@ -153,6 +153,16 @@ const object = (config = {}) => {
   return yupObject;
 };
 
+const boolean = (config = {}) => {
+  let yupBoolean = Yup.boolean();
+  if (config.required && config.required?.value) {
+    yupBoolean = yupBoolean.required();
+  } else {
+    yupBoolean = yupBoolean.nullable();
+  }
+  return yupBoolean;
+};
+
 const createSchema = (schema) => {
   return Yup.object().shape(schema);
 };
@@ -179,4 +189,5 @@ module.exports = {
   ids,
   array,
   object,
+  boolean,
 };

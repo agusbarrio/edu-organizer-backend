@@ -18,8 +18,8 @@ const studentsServices = {
             await studentRepositories.editEntity(student, { firstName, lastName, courseId }, t)
         })
     },
-    getAll: async function ({ user }) {
-        const students = await studentRepositories.getAllByOrganization(user.organizationId)
+    getAll: async function ({ user, withCourse }) {
+        const students = await studentRepositories.getAllByOrganization(user.organizationId, withCourse)
         return students
     },
     deleteOne: async function ({ id, user }) {
