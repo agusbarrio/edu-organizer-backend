@@ -24,6 +24,15 @@ const targetEntitieServices = {
         );
         return students;
     },
+    validTargetCourses: async function ({ organizationId, ids }, transaction) {
+        const courses = await coursesRepositories.getAllByIds(ids, transaction);
+        if (courses.length !== ids.length) throw ERRORS.E404_2;
+        courses.forEach(course => {
+            if (course.organizationId !== organizationId) throw ERRORS.E403_1;
+        }
+        );
+        return courses;
+    }
 }
 
 module.exports = targetEntitieServices

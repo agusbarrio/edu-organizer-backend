@@ -60,6 +60,20 @@ const coursesControllers = {
             next(error)
         }
     },
+    editMultiple: async (req, res, next) => {
+        try {
+            const schema = validator.createSchema({
+                ids: validator.ids(),
+                studentAttendanceFormData: validator.formFieldsDataList()
+            })
+            const { ids, studentAttendanceFormData } = await validator.validate(schema, req.body)
+            await coursesServices.editMultiple({ ids, studentAttendanceFormData, user: req.user })
+            res.send('Edited')
+        } catch (error) {
+            next(error)
+        }
+
+    }
 }
 
 module.exports = coursesControllers;

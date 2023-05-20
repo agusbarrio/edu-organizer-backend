@@ -17,12 +17,12 @@ const authServices = {
     if (!user) throw ERRORS.E401_1;
     const isValidPassword = await encryptationServices.compareTextWithHash(password, user.password)
     if (!isValidPassword) throw ERRORS.E401_1;
-    const token = encryptationServices.createToken({
-      user: { id: user.id, permissions: user.permissions.map((permission) => permission.permission) },
-      organization: { id: user.organization.id, shortId: user.organization.shortId },
-    }, TOKENS.SESSION)
+
     const result = user.toJSON()
     delete result.password
+    const token = encryptationServices.createToken({
+      user: { ...result, permissions: result.permissions.map((permission) => permission.permission) },
+    }, TOKENS.SESSION)
     return { token, user: result }
   },
   /**
@@ -78,19 +78,15 @@ const authServices = {
   validUserAccess: async ({ token, permissions: avaiblePermissions = [] }) => {
     const decoded = encryptationServices.validToken(token)
     const tokenData = decoded.data
-    const userId = tokenData.user.id
-    const organizationId = tokenData.organization.id
     const currentPermissions = tokenData.user.permissions
     if (avaiblePermissions.some((avaiblePermissions) => !currentPermissions.includes(avaiblePermissions))) throw ERRORS.E403
-    const context = { user: { id: userId, permissions: currentPermissions, organizationId }, organization: { id: organizationId, shortId: tokenData.organization.shortId } }
+    const context = { user: tokenData.user }
     return context
   },
   validCourseAccess: async ({ token }) => {
     const decoded = encryptationServices.validToken(token)
     const tokenData = decoded.data
-    const courseId = tokenData.course.id
-    const organizationId = tokenData.organization.id
-    const context = { course: { id: courseId, organizationId }, organization: { id: organizationId } }
+    const context = { course: tokenData.course }
     return context
   },
   courseLogin: async ({ accessPin, shortId }) => {
@@ -100,7 +96,6 @@ const authServices = {
     if (decryptedAccessPin !== accessPin) throw ERRORS.E401_1
     const token = encryptationServices.createToken({
       course: { id: course.id, organizationId: course.organization.id },
-      organization: { id: course.organization.id }
     }, TOKENS.COURSE)
     return { token }
   },

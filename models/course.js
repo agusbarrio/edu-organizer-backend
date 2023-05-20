@@ -46,6 +46,10 @@ module.exports = (sequelize, DataTypes) => {
       iv: {
         type: DataTypes.STRING,
       },
+      studentAttendanceFormData: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
     },
     {
       sequelize,

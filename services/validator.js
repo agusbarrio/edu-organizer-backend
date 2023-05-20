@@ -5,6 +5,7 @@ const Yup = require('yup');
 const YupPassword = require('yup-password');
 const ERRORS = require('../constants/errors');
 const DEFAULT_VALIDATIONS = require('../constants/defaultValidations');
+const { FORM_FIELDS_TYPES } = require('../constants/formFields');
 
 YupPassword(Yup);
 
@@ -143,12 +144,12 @@ const ids = (_config = {}) => {
   return yupIds;
 };
 
-const object = (config = {}) => {
-  let yupObject = Yup.object();
+const object = (config = {}, obj) => {
+  let yupObject = Yup.object(obj);
   if (config.required && config.required?.value) {
     yupObject = yupObject.required();
   } else {
-    yupObject = yupObject.nullable();
+    yupObject = yupObject.default(null).nullable();
   }
   return yupObject;
 };
@@ -162,6 +163,69 @@ const boolean = (config = {}) => {
   }
   return yupBoolean;
 };
+
+const formFieldData = (config = {}) => {
+  const yupFormFieldData = object(config).shape(
+    {
+      name: string({ required: { value: true } }),
+      placeholder: string({ required: { value: false } }),
+      type: oneOf(_.values(FORM_FIELDS_TYPES), { required: { value: true } }),
+      config: object({ required: { value: false } }).shape({
+        required: object({ required: { value: false } }).shape({
+          value: boolean({ required: { value: true } }),
+        }),
+        min: object({ required: { value: false } }).shape({
+          value: number({ required: { value: true } }),
+        }),
+        max: object({ required: { value: false } }).shape({
+          value: number({ required: { value: true } }),
+        }),
+        minUppercase: object({ required: { value: false } }).shape({
+          value: number({ required: { value: true } }),
+        }),
+        minLowercase: object({ required: { value: false } }).shape({
+          value: number({ required: { value: true } }),
+        }),
+        minNumbers: object({ required: { value: false } }).shape({
+          value: number({ required: { value: true } }),
+        }),
+        minSymbols: object({ required: { value: false } }).shape({
+          value: number({ required: { value: true } }),
+        }),
+        minRepeating: object({ required: { value: false } }).shape({
+          value: number({ required: { value: true } }),
+        }),
+        minWords: object({ required: { value: false } }).shape({
+          value: number({ required: { value: true } }),
+        }),
+        integer: object({ required: { value: false } }).shape({
+          value: boolean({ required: { value: true } }),
+        }),
+        moreThan: object({ required: { value: false } }).shape({
+          value: number({ required: { value: true } }),
+        }),
+        lessThan: object({ required: { value: false } }).shape({
+          value: number({ required: { value: true } }),
+        }),
+        oneOf: object({ required: { value: false } }).shape({
+          value: array({ required: { value: true } }),
+        }),
+        email: object({ required: { value: false } }).shape({
+          value: boolean({ required: { value: true } }),
+        }),
+        url: object({ required: { value: false } }).shape({
+          value: boolean({ required: { value: true } }),
+        }),
+      })
+    })
+  return yupFormFieldData;
+};
+
+const formFieldsDataList = (config = {}) => {
+  const yupFormFieldsDataList = array(config).of(formFieldData());
+  return yupFormFieldsDataList;
+};
+
 
 const createSchema = (schema) => {
   return Yup.object().shape(schema);
@@ -190,4 +254,6 @@ module.exports = {
   array,
   object,
   boolean,
+  formFieldData,
+  formFieldsDataList,
 };

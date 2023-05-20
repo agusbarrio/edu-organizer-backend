@@ -30,7 +30,22 @@ class CoursesRepository extends ABMRepository {
             ...COURSE_VARIANTS_OPTIONS?.[variant]
         })
     }
-
+    getAllByIds(ids, transaction) {
+        return this.model.findAll({
+            where: {
+                id: ids
+            },
+            transaction
+        })
+    }
+    updateByIds(ids, data, transaction) {
+        return this.model.update(data, {
+            where: {
+                id: ids
+            },
+            transaction
+        })
+    }
 }
 
 const coursesRepositories = new CoursesRepository();
