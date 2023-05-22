@@ -11,7 +11,7 @@ const authControllers = {
       })
       const { email, password } = await validator.validate(schema, req.body)
       const { token, user } = await authServices.login({ email, password });
-      res.cookie(TOKENS.SESSION, token, { httpOnly: true });
+      res.cookie(TOKENS.SESSION, token);
       res.json(user)
     } catch (error) {
       next(error);

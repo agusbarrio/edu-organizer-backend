@@ -14,10 +14,7 @@ module.exports.envConfig = {
   PORT: _.toInteger(_.get(pe, 'PORT', '8080')),
   MYSQL_LOGGING: _.get(pe, 'MYSQL_LOGGING', 'false') === 'true',
   DEFAULT_TOKEN_DURATION: _.toInteger(_.get(pe, 'DEFAULT_TOKEN_DURATION', 1000 * 60 * 60)),
-  //TODO Habilitar configuracion de cookies
-  COOKIE_EXPIRES_IN_SEG: _.toInteger(
-    _.get(pe, 'COOKIE_EXPIRES_IN_SEG', 1000 * 60 * 60)
-  ), // 1 hour
+  COOKIE_EXPIRES_IN_SEG: _.toInteger(_.get(pe, 'COOKIE_EXPIRES_IN_SEG', 1000 * 60 * 60)), // 1 hour
   COOKIE_HTTP_ONLY: _.get(pe, 'COOKIE_HTTP_ONLY', 'true') === 'true',
   COOKIE_SAME_SITE: _.get(pe, 'COOKIE_SAME_SITE', 'Strict'),
   COOKIE_SECURE: _.get(pe, 'COOKIE_SECURE', 'true') === 'true',
