@@ -22,7 +22,7 @@ class ABMRepository {
     await entity.save({ transaction })
     return entity
   }
-  async deleteOneById(id, transaction) {
+  async deleteById(id, transaction) {
     return await this.model.destroy({ where: { id }, transaction });
   }
   async getOneById(id, transaction) {

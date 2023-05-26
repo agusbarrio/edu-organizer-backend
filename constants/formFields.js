@@ -1,5 +1,7 @@
 module.exports.FORM_FIELDS_TYPES = {
-    STRING: 'STRING',
-    NUMBER: 'NUMBER',
-    BOOLEAN: 'BOOLEAN',
+    /*   TEXT: 'TEXT',
+      NUMBER: 'NUMBER', */
+    CHECKBOX: 'CHECKBOX',
+    /*     RADIO: 'RADIO',
+        SELECT: 'SELECT', */
 }

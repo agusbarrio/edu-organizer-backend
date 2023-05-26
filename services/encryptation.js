@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const { envConfig } = require('../config/envConfig');
 const { nanoid } = require('nanoid');
 const ERRORS = require('../constants/errors');
+const { v4: uuidv4 } = require('uuid');
 
 //Checking the crypto module
 const crypto = require('crypto');
@@ -57,9 +58,8 @@ const encryptationServices = {
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString();
-  }
-
-
+  },
+  uuidv4: uuidv4
 };
 
 module.exports = encryptationServices;

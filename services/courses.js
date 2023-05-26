@@ -3,14 +3,35 @@ const db = require("../models");
 const coursesRepositories = require("../repositories/courses");
 const { COURSE_VARIANTS } = require("../repositories/variants/courses");
 const encryptationServices = require("./encryptation");
-const { validTargetCourse, validTargetCourses } = require("./targetEntities");
+const { validTargetCourse, validTargetCourses, validTargetStudents } = require("./targetEntities");
+const studentRepositories = require("../repositories/student");
+const _ = require("lodash");
 
 const coursesServices = {
-    create: async function ({ user, name, accessPin }) {
-        const shortId = encryptationServices.createShortId();
-        let encrypted
-        if (accessPin) encrypted = encryptationServices.encrypt(accessPin);
-        await coursesRepositories.create({ organizationId: user.organizationId, name, shortId, accessPin: encrypted?.encryptedData, iv: encrypted?.iv });
+    create: async function ({ user, name, accessPin, students = [], studentAttendanceFormData = [] }) {
+        await db.sequelize.transaction(async (t) => {
+            const shortId = encryptationServices.createShortId();
+            let encrypted
+            if (accessPin) encrypted = encryptationServices.encrypt(accessPin);
+            const newCourse = await coursesRepositories.create({
+                organizationId: user.organizationId,
+                name,
+                shortId,
+                accessPin: encrypted?.encryptedData,
+                iv: encrypted?.iv,
+                studentAttendanceFormData: studentAttendanceFormData.map(input => ({ ...input, id: encryptationServices.uuidv4() }))
+            }, t);
+            //isNew = false and has id
+            const existentStudents = students.filter(student => !student.isNew && student.id)
+            if (!_.isEmpty(existentStudents)) {
+                await validTargetStudents({ organizationId: user.organizationId, ids: existentStudents.map(student => student.id) }, t)
+                await newCourse.setStudents(existentStudents.map(student => student.id), { transaction: t })
+            }
+            const studentsToCreate = students.filter(student => student.isNew)
+            if (!_.isEmpty(studentsToCreate)) {
+                await studentRepositories.bulkCreate(studentsToCreate.map(student => ({ ...student.studentData, organizationId: user.organizationId, courseId: newCourse.id })), t)
+            }
+        })
     },
     editOne: async function ({ id, name, accessPin, user }) {
         await db.sequelize.transaction(async (t) => {
@@ -27,7 +48,13 @@ const coursesServices = {
     deleteOne: async function ({ id, user }) {
         await db.sequelize.transaction(async (t) => {
             await validTargetCourse({ organizationId: user.organizationId, id }, t)
-            await coursesRepositories.deleteOneById(id, t)
+            await coursesRepositories.deleteById(id, t)
+        })
+    },
+    deleteMultiple: async function ({ ids, user }) {
+        await db.sequelize.transaction(async (t) => {
+            await validTargetCourses({ organizationId: user.organizationId, ids }, t)
+            await coursesRepositories.deleteById(ids, t)
         })
     },
     getOne: async function ({ id }) {
@@ -35,10 +62,10 @@ const coursesServices = {
         if (!course) throw ERRORS.E404_2;
         return course
     },
-    editMultiple: async function ({ ids, studentAttendanceFormData, user }) {
+    editMultiple: async function ({ ids, studentAttendanceFormDataData, user }) {
         await db.sequelize.transaction(async (t) => {
             await validTargetCourses({ organizationId: user.organizationId, ids }, t)
-            await coursesRepositories.updateByIds(ids, { studentAttendanceFormData }, t)
+            await coursesRepositories.updateByIds(ids, { studentAttendanceFormDataData }, t)
         })
     }
 }

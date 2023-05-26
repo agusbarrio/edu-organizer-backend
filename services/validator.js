@@ -232,7 +232,7 @@ const createSchema = (schema) => {
 };
 
 const validate = async (schema, obj) => {
-  const result = await schema.validate(obj).catch((err) => {
+  const result = await schema.validate(obj, { stripUnknown: true }).catch((err) => {
     throw { ...ERRORS.E422, data: { field: err.path, reason: err.errors[0] } };
   });
   return result;

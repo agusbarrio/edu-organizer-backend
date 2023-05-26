@@ -1,14 +1,34 @@
 const coursesServices = require("../services/courses");
 const validator = require('../services/validator')
+const Yup = require('yup')
+
 const coursesControllers = {
     create: async (req, res, next) => {
         try {
             const schema = validator.createSchema({
                 name: validator.text({ required: { value: true } }),
-                accessPin: validator.text({ required: { value: false } })
+                accessPin: validator.text({ required: { value: false } }),
+                students: validator.array().of(validator.object({ required: { value: false } }, {
+                    isNew: validator.boolean({ required: { value: true } }),
+                    id: validator.number().when('isNew', {
+                        is: false,
+                        then: () => validator.id({ required: { value: true } }),
+                        otherwise: () => validator.id({ required: { value: false } })
+                    }),
+                    studentData: Yup.object().when('isNew', {
+                        is: true,
+                        then: () => validator.object({ required: { value: true } },
+                            {
+                                firstName: validator.text({ required: { value: true } }),
+                                lastName: validator.text({ required: { value: true } }),
+                            }),
+                        otherwise: () => validator.object({ required: { value: false } })
+                    })
+                })),
+                studentAttendanceFormData: validator.formFieldsDataList()
             })
-            const { name, accessPin } = await validator.validate(schema, req.body)
-            await coursesServices.create({ name, accessPin, user: req.user })
+            const { name, accessPin, students, studentAttendanceFormData } = await validator.validate(schema, req.body)
+            await coursesServices.create({ name, accessPin, user: req.user, students, studentAttendanceFormData })
             res.send('Created')
         } catch (error) {
             next(error)

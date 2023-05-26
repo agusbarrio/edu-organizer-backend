@@ -20,4 +20,6 @@ module.exports.envConfig = {
   COOKIE_SECURE: _.get(pe, 'COOKIE_SECURE', 'true') === 'true',
   COOKIE_DOMAIN: pe.COOKIE_DOMAIN,
   CORS_ORIGIN: pe.CORS_ORIGIN,
+  CORS_CONFIG_ENABLED: _.get(pe, 'CORS_CONFIG_ENABLED', 'true') === 'true',
+  COOKIES_CONFIG_ENABLED: _.get(pe, 'COOKIES_CONFIG_ENABLED', 'true') === 'true',
 };

@@ -25,7 +25,7 @@ const studentsServices = {
     deleteOne: async function ({ id, user }) {
         await db.sequelize.transaction(async (t) => {
             await validTargetStudent({ organizationId: user.organizationId, id }, t)
-            await studentRepositories.deleteOneById(id, t)
+            await studentRepositories.deleteById(id, t)
         })
     },
     getByCourse: async function ({ courseId }) {

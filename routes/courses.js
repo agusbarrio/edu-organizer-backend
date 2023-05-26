@@ -10,6 +10,8 @@ router.put('/', authMiddlewares.userAccess([USER_PERMISSIONS.ADMIN]), coursesCon
 router.get('/', authMiddlewares.userAccess([USER_PERMISSIONS.ADMIN]), coursesControllers.getAll);
 router.get('/:id', authMiddlewares.userAccess([USER_PERMISSIONS.ADMIN]), coursesControllers.getOne);
 router.delete('/:id', authMiddlewares.userAccess([USER_PERMISSIONS.ADMIN]), coursesControllers.deleteOne);
+//TODO implement multiple delete
+//router.delete('/:ids', authMiddlewares.userAccess([USER_PERMISSIONS.ADMIN]), coursesControllers.deleteOne);
 
 
 module.exports = router;
