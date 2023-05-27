@@ -38,7 +38,7 @@ class CoursesRepository extends ABMRepository {
             transaction
         })
     }
-    updateByIds(ids, data, transaction) {
+    updateById(ids, data, transaction) {
         return this.model.update(data, {
             where: {
                 id: ids

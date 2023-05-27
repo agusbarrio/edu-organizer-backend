@@ -80,10 +80,22 @@ const coursesControllers = {
             next(error)
         }
     },
+    deleteMultiple: async (req, res, next) => {
+        try {
+            const schema = validator.createSchema({
+                ids: validator.ids().min(1),
+            })
+            const { ids } = await validator.validate(schema, req.body)
+            await coursesServices.deleteMultiple({ ids, user: req.user })
+            res.send('Deleted')
+        } catch (error) {
+            next(error)
+        }
+    },
     editMultiple: async (req, res, next) => {
         try {
             const schema = validator.createSchema({
-                ids: validator.ids(),
+                ids: validator.ids().min(1),
                 studentAttendanceFormData: validator.formFieldsDataList()
             })
             const { ids, studentAttendanceFormData } = await validator.validate(schema, req.body)

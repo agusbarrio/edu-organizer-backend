@@ -21,7 +21,7 @@ const coursesServices = {
                 iv: encrypted?.iv,
                 studentAttendanceFormData: studentAttendanceFormData.map(input => ({ ...input, id: encryptationServices.uuidv4() }))
             }, t);
-            //isNew = false and has id
+
             const existentStudents = students.filter(student => !student.isNew && student.id)
             if (!_.isEmpty(existentStudents)) {
                 await validTargetStudents({ organizationId: user.organizationId, ids: existentStudents.map(student => student.id) }, t)
@@ -48,12 +48,14 @@ const coursesServices = {
     deleteOne: async function ({ id, user }) {
         await db.sequelize.transaction(async (t) => {
             await validTargetCourse({ organizationId: user.organizationId, id }, t)
+            await studentRepositories.updateByCourseId(id, { courseId: null }, t)
             await coursesRepositories.deleteById(id, t)
         })
     },
     deleteMultiple: async function ({ ids, user }) {
         await db.sequelize.transaction(async (t) => {
             await validTargetCourses({ organizationId: user.organizationId, ids }, t)
+            await studentRepositories.updateByCourseId(ids, { courseId: null }, t)
             await coursesRepositories.deleteById(ids, t)
         })
     },
@@ -62,10 +64,10 @@ const coursesServices = {
         if (!course) throw ERRORS.E404_2;
         return course
     },
-    editMultiple: async function ({ ids, studentAttendanceFormDataData, user }) {
+    editMultiple: async function ({ ids, studentAttendanceFormData, user }) {
         await db.sequelize.transaction(async (t) => {
             await validTargetCourses({ organizationId: user.organizationId, ids }, t)
-            await coursesRepositories.updateByIds(ids, { studentAttendanceFormDataData }, t)
+            await coursesRepositories.updateById(ids, { studentAttendanceFormData }, t)
         })
     }
 }

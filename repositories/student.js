@@ -26,6 +26,14 @@ class StudentRepository extends ABMRepository {
             }
         })
     }
+    updateByCourseId(courseId, data, transaction) {
+        return this.model.update(data, {
+            where: {
+                courseId
+            },
+            transaction
+        })
+    }
 }
 
 const studentRepositories = new StudentRepository();
