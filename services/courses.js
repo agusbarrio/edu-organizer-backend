@@ -19,7 +19,7 @@ const coursesServices = {
                 shortId,
                 accessPin: encrypted?.encryptedData,
                 iv: encrypted?.iv,
-                studentAttendanceFormData: studentAttendanceFormData.map(input => ({ ...input, id: encryptationServices.uuidv4() }))
+                studentAttendanceFormData
             }, t);
 
             const existentStudents = students.filter(student => !student.isNew && student.id)
@@ -67,7 +67,9 @@ const coursesServices = {
     editMultiple: async function ({ ids, studentAttendanceFormData, user }) {
         await db.sequelize.transaction(async (t) => {
             await validTargetCourses({ organizationId: user.organizationId, ids }, t)
-            await coursesRepositories.updateById(ids, { studentAttendanceFormData }, t)
+            await coursesRepositories.updateById(ids, {
+                studentAttendanceFormData
+            }, t)
         })
     }
 }
