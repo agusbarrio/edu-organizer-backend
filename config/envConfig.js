@@ -13,7 +13,7 @@ module.exports.envConfig = {
   LOGGING: _.get(pe, 'LOGGING', 'false') === 'true',
   PORT: _.toInteger(_.get(pe, 'PORT', '8080')),
   MYSQL_LOGGING: _.get(pe, 'MYSQL_LOGGING', 'false') === 'true',
-  DEFAULT_TOKEN_DURATION: _.toInteger(_.get(pe, 'DEFAULT_TOKEN_DURATION', 1000 * 60 * 60)),
+  DEFAULT_TOKEN_DURATION: _.get(pe, 'DEFAULT_TOKEN_DURATION', '1h'),
   COOKIE_EXPIRES_IN_SEG: _.toInteger(_.get(pe, 'COOKIE_EXPIRES_IN_SEG', 1000 * 60 * 60)), // 1 hour
   COOKIE_HTTP_ONLY: _.get(pe, 'COOKIE_HTTP_ONLY', 'true') === 'true',
   COOKIE_SAME_SITE: _.get(pe, 'COOKIE_SAME_SITE', 'Strict'),

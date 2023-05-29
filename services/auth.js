@@ -76,7 +76,7 @@ const authServices = {
     //TODO invalidar token de curso
   },
   validUserAccess: async ({ token, permissions: avaiblePermissions = [] }) => {
-    const decoded = encryptationServices.validToken(token)
+    const decoded = encryptationServices.validToken(token, TOKENS.SESSION)
     const tokenData = decoded.data
     const currentPermissions = tokenData.user.permissions
     if (avaiblePermissions.some((avaiblePermissions) => !currentPermissions.includes(avaiblePermissions))) throw ERRORS.E403
@@ -84,7 +84,7 @@ const authServices = {
     return context
   },
   validCourseAccess: async ({ token }) => {
-    const decoded = encryptationServices.validToken(token)
+    const decoded = encryptationServices.validToken(token, TOKENS.COURSE)
     const tokenData = decoded.data
     const context = { course: tokenData.course }
     return context

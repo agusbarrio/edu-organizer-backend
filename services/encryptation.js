@@ -40,7 +40,7 @@ const encryptationServices = {
     let decodedToken;
     jwt.verify(token, envConfig.JWT_SECRET, function (err, decoded) {
       if (err) throw ERRORS.E401;
-      if (decoded.data.type !== type) throw ERRORS.E401
+      if (decoded.type !== type) throw ERRORS.E401
       decodedToken = decoded;
     });
     return decodedToken;
