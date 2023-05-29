@@ -62,7 +62,12 @@ const coursesServices = {
     getOne: async function ({ id }) {
         const course = await coursesRepositories.getOneById(id, COURSE_VARIANTS.FULL);
         if (!course) throw ERRORS.E404_2;
-        return course
+        const result = course.toJSON();
+        if (result.accessPin && result.iv) {
+            result.accessPin = encryptationServices.decrypt({ encryptedData: result.accessPin, iv: result.iv });
+        }
+        delete result.iv;
+        return result;
     },
     editMultiple: async function ({ ids, studentAttendanceFormData, user }) {
         await db.sequelize.transaction(async (t) => {

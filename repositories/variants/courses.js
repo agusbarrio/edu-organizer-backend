@@ -9,7 +9,7 @@ const COURSE_VARIANTS = {
 
 const COURSE_VARIANTS_OPTIONS = {
     [COURSE_VARIANTS.FULL]: {
-        attributes: ['id', 'name', 'organizationId', 'shortId'],
+        attributes: ['id', 'name', 'organizationId', 'shortId', 'accessPin', 'iv', 'studentAttendanceFormData'],
         include: [
             {
                 model: db.Organization,
