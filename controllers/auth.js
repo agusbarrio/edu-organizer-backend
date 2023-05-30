@@ -57,9 +57,9 @@ const authControllers = {
         shortId: validator.text({ required: { value: true } }),
       });
       const { accessPin, shortId } = await validator.validate(schema, { accessPin: req.body.accessPin, shortId: req.params.shortId });
-      const { token } = await authServices.courseLogin({ accessPin, shortId });
+      const { token, course } = await authServices.courseLogin({ accessPin, shortId });
       res.cookie(TOKENS.COURSE, token);
-      res.send('Course logged');
+      res.send(course);
     } catch (error) {
       next(error)
     }
