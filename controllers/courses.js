@@ -39,10 +39,28 @@ const coursesControllers = {
             const schema = validator.createSchema({
                 id: validator.id(),
                 name: validator.text({ required: { value: true } }),
-                accessPin: validator.text({ required: { value: false } })
+                accessPin: validator.text({ required: { value: false } }),
+                students: validator.array().of(validator.object({ required: { value: false } }, {
+                    isNew: validator.boolean({ required: { value: true } }),
+                    id: validator.number().when('isNew', {
+                        is: false,
+                        then: () => validator.id({ required: { value: true } }),
+                        otherwise: () => validator.id({ required: { value: false } })
+                    }),
+                    studentData: Yup.object().when('isNew', {
+                        is: true,
+                        then: () => validator.object({ required: { value: true } },
+                            {
+                                firstName: validator.text({ required: { value: true } }),
+                                lastName: validator.text({ required: { value: true } }),
+                            }),
+                        otherwise: () => validator.object({ required: { value: false } })
+                    })
+                })),
+                studentAttendanceFormData: validator.formFieldsDataList()
             })
-            const { id, name, accessPin } = await validator.validate(schema, { name: req.body.name, accessPin: req.body.accessPin, id: req.params.id })
-            await coursesServices.editOne({ id, name, accessPin, user: req.user })
+            const { id, name, accessPin, students, studentAttendanceFormData } = await validator.validate(schema, { name: req.body.name, accessPin: req.body.accessPin, id: req.params.id, students: req.body.students, studentAttendanceFormData: req.body.studentAttendanceFormData })
+            await coursesServices.editOne({ id, name, accessPin, user: req.user, students, studentAttendanceFormData })
             res.send('Edited')
         } catch (error) {
             next(error)

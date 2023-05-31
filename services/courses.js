@@ -17,8 +17,8 @@ const coursesServices = {
                 organizationId: user.organizationId,
                 name,
                 shortId,
-                accessPin: encrypted?.encryptedData,
-                iv: encrypted?.iv,
+                accessPin: encrypted?.encryptedData ?? null,
+                iv: encrypted?.iv ?? null,
                 studentAttendanceFormData
             }, t);
 
@@ -33,12 +33,27 @@ const coursesServices = {
             }
         })
     },
-    editOne: async function ({ id, name, accessPin, user }) {
+    editOne: async function ({ id, name, accessPin, user, students = [], studentAttendanceFormData = [] }) {
         await db.sequelize.transaction(async (t) => {
             let encrypted
             if (accessPin) encrypted = encryptationServices.encrypt(accessPin);
             const course = await validTargetCourse({ organizationId: user.organizationId, id }, t)
-            await coursesRepositories.editEntity(course, { name, accessPin: encrypted?.encryptedData, iv: encrypted?.iv }, t)
+            await coursesRepositories.editEntity(course, {
+                name,
+                accessPin: encrypted?.encryptedData ?? null,
+                iv: encrypted?.iv ?? null,
+                studentAttendanceFormData
+            }, t)
+
+            const existentStudents = students.filter(student => !student.isNew && student.id)
+            if (!_.isEmpty(existentStudents)) {
+                await validTargetStudents({ organizationId: user.organizationId, ids: existentStudents.map(student => student.id) }, t)
+                await course.setStudents(existentStudents.map(student => student.id), { transaction: t })
+            }
+            const studentsToCreate = students.filter(student => student.isNew)
+            if (!_.isEmpty(studentsToCreate)) {
+                await studentRepositories.bulkCreate(studentsToCreate.map(student => ({ ...student.studentData, organizationId: user.organizationId, courseId: course.id })), t)
+            }
         })
     },
     getAll: async function ({ user }) {
