@@ -92,6 +92,7 @@ const authServices = {
   courseLogin: async ({ accessPin, shortId }) => {
     const course = await coursesRepositories.getOneByShortId(shortId, COURSE_VARIANTS.LOGIN)
     if (!course) throw ERRORS.E404_2
+    if (!course?.accessPin || !course?.iv) throw ERRORS.E401_1
     const decryptedAccessPin = encryptationServices.decrypt({ encryptedData: course.accessPin, iv: course.iv })
     if (decryptedAccessPin !== accessPin) throw ERRORS.E401_1
     const token = encryptationServices.createToken({
