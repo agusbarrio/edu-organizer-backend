@@ -29,7 +29,7 @@ const studentsServices = {
         })
     },
     getByCourse: async function ({ courseId }) {
-        const students = await studentRepositories.getAllByCourseId({ courseId })
+        const students = await studentRepositories.getAllByCourseId(courseId)
         return students
     },
     getOne: async function ({ id }) {

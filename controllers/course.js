@@ -22,13 +22,13 @@ const courseControllers = {
             next(error)
         }
     },
-    startClassSession: async (req, res, next) => {
+    newClass: async (req, res, next) => {
         try {
             const schema = validator.createSchema({
-                presentStudentsIds: validator.ids({ required: { value: true } }),
+                presentStudentsData: validator.ids({ required: { value: true } }),
             })
-            const { presentStudentsIds, newStudents } = await validator.validate(schema, req.body)
-            await classSessionsServices.startClassSession({ course: req.course, presentStudentsIds, newStudents })
+            const { presentStudentsData } = await validator.validate(schema, req.body)
+            await classSessionsServices.newCourseClass({ course: req.course, presentStudentsData })
             res.send('Class session saved')
         } catch (error) {
             next(error)
