@@ -30,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.JSON,
         allowNull: true,
       },
+      isPresent: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
+      }
     },
     {
       sequelize,

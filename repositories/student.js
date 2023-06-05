@@ -12,11 +12,12 @@ class StudentRepository extends ABMRepository {
             where
         })
     }
-    getAllByCourseId(courseId) {
+    getAllByCourseId(courseId, transaction) {
         return this.model.findAll({
             where: {
                 courseId
-            }
+            },
+            transaction
         })
     }
     getAllByIds(ids) {

@@ -96,7 +96,7 @@ const authServices = {
     const decryptedAccessPin = encryptationServices.decrypt({ encryptedData: course.accessPin, iv: course.iv })
     if (decryptedAccessPin !== accessPin) throw ERRORS.E401_1
     const token = encryptationServices.createToken({
-      course: { id: course.id, organizationId: course.organization.id, name: course.name },
+      course: { id: course.id, organizationId: course.organization.id, name: course.name, shortId: course.shortId, studentAttendanceFormData: course.studentAttendanceFormData }
     }, TOKENS.COURSE)
     const result = course.toJSON()
     delete result.accessPin

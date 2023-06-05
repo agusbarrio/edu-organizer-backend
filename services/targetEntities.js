@@ -32,6 +32,14 @@ const targetEntitieServices = {
         }
         );
         return courses;
+    },
+    validTargetCourseStudents: async function ({ courseId, studentsIds }, transaction) {
+        const students = await studentRepositories.getAllByIds(studentsIds, transaction);
+        if (students.length !== studentsIds.length) throw ERRORS.E404_3;
+        students.forEach(student => {
+            if (student.courseId !== courseId) throw ERRORS.E403_1;
+        });
+        return students;
     }
 }
 

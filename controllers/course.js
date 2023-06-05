@@ -25,7 +25,12 @@ const courseControllers = {
     newClass: async (req, res, next) => {
         try {
             const schema = validator.createSchema({
-                presentStudentsData: validator.ids({ required: { value: true } }),
+                presentStudentsData: validator.array({ required: { value: true } }).of(
+                    validator.object({ required: { value: true } },
+                        {
+                            id: validator.id(),
+                            ...validator.getStudentAttendanceSchema(req.course.studentAttendanceFormData)
+                        }))
             })
             const { presentStudentsData } = await validator.validate(schema, req.body)
             await classSessionsServices.newCourseClass({ course: req.course, presentStudentsData })

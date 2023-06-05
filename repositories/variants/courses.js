@@ -38,7 +38,7 @@ const COURSE_VARIANTS_OPTIONS = {
         attributes: ['id', 'name', 'organizationId'],
     },
     [COURSE_VARIANTS.LOGIN]: {
-        attributes: ['id', 'accessPin', 'iv', 'name', 'shortId'],
+        attributes: ['id', 'accessPin', 'iv', 'name', 'shortId', 'studentAttendanceFormData'],
         include: [
             {
                 model: db.Organization,

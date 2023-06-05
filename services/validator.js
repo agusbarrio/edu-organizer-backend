@@ -164,59 +164,60 @@ const boolean = (config = {}) => {
   return yupBoolean;
 };
 
+//TODO cambiar esto para que la config sea dinamica segun el tipo de input
 const formFieldData = (config = {}) => {
   const yupFormFieldData = object(config).shape(
     {
       name: string({ required: { value: true } }),
-      placeholder: string({ required: { value: false } }),
+      // placeholder: string({ required: { value: false } }),
       type: oneOf(_.values(FORM_FIELDS_TYPES), { required: { value: true } }),
-      config: object({ required: { value: false } }).shape({
-        required: object({ required: { value: false } }).shape({
-          value: boolean({ required: { value: true } }),
-        }),
-        min: object({ required: { value: false } }).shape({
-          value: number({ required: { value: true } }),
-        }),
-        max: object({ required: { value: false } }).shape({
-          value: number({ required: { value: true } }),
-        }),
-        minUppercase: object({ required: { value: false } }).shape({
-          value: number({ required: { value: true } }),
-        }),
-        minLowercase: object({ required: { value: false } }).shape({
-          value: number({ required: { value: true } }),
-        }),
-        minNumbers: object({ required: { value: false } }).shape({
-          value: number({ required: { value: true } }),
-        }),
-        minSymbols: object({ required: { value: false } }).shape({
-          value: number({ required: { value: true } }),
-        }),
-        minRepeating: object({ required: { value: false } }).shape({
-          value: number({ required: { value: true } }),
-        }),
-        minWords: object({ required: { value: false } }).shape({
-          value: number({ required: { value: true } }),
-        }),
-        integer: object({ required: { value: false } }).shape({
-          value: boolean({ required: { value: true } }),
-        }),
-        moreThan: object({ required: { value: false } }).shape({
-          value: number({ required: { value: true } }),
-        }),
-        lessThan: object({ required: { value: false } }).shape({
-          value: number({ required: { value: true } }),
-        }),
-        oneOf: object({ required: { value: false } }).shape({
-          value: array({ required: { value: true } }),
-        }),
-        email: object({ required: { value: false } }).shape({
-          value: boolean({ required: { value: true } }),
-        }),
-        url: object({ required: { value: false } }).shape({
-          value: boolean({ required: { value: true } }),
-        }),
-      })
+      /*  config: object({ required: { value: false } }).shape({
+         required: object({ required: { value: false } }).shape({
+           value: boolean({ required: { value: true } }),
+         }),
+         min: object({ required: { value: false } }).shape({
+           value: number({ required: { value: true } }),
+         }),
+         max: object({ required: { value: false } }).shape({
+           value: number({ required: { value: true } }),
+         }),
+         minUppercase: object({ required: { value: false } }).shape({
+           value: number({ required: { value: true } }),
+         }),
+         minLowercase: object({ required: { value: false } }).shape({
+           value: number({ required: { value: true } }),
+         }),
+         minNumbers: object({ required: { value: false } }).shape({
+           value: number({ required: { value: true } }),
+         }),
+         minSymbols: object({ required: { value: false } }).shape({
+           value: number({ required: { value: true } }),
+         }),
+         minRepeating: object({ required: { value: false } }).shape({
+           value: number({ required: { value: true } }),
+         }),
+         minWords: object({ required: { value: false } }).shape({
+           value: number({ required: { value: true } }),
+         }),
+         integer: object({ required: { value: false } }).shape({
+           value: boolean({ required: { value: true } }),
+         }),
+         moreThan: object({ required: { value: false } }).shape({
+           value: number({ required: { value: true } }),
+         }),
+         lessThan: object({ required: { value: false } }).shape({
+           value: number({ required: { value: true } }),
+         }),
+         oneOf: object({ required: { value: false } }).shape({
+           value: array({ required: { value: true } }),
+         }),
+         email: object({ required: { value: false } }).shape({
+           value: boolean({ required: { value: true } }),
+         }),
+         url: object({ required: { value: false } }).shape({
+           value: boolean({ required: { value: true } }),
+         }),
+       }) */
     })
   return yupFormFieldData;
 };
@@ -225,7 +226,6 @@ const formFieldsDataList = (config = {}) => {
   const yupFormFieldsDataList = array(config).of(formFieldData());
   return yupFormFieldsDataList;
 };
-
 
 const createSchema = (schema) => {
   return Yup.object().shape(schema);
@@ -237,6 +237,22 @@ const validate = async (schema, obj) => {
   });
   return result;
 };
+
+const getStudentAttendanceSchema = (studentAttendanceFormData = []) => {
+  if (_.isEmpty(studentAttendanceFormData)) {
+    return {};
+  } else {
+    const schema = {};
+    _.forEach(studentAttendanceFormData, (formField) => {
+      if (formField.type === FORM_FIELDS_TYPES.CHECKBOX) {
+        schema[formField.name] = boolean({ required: { value: true } });
+      }
+    });
+    return { metadata: object({ required: { value: true } }, schema) };
+  }
+
+
+}
 
 module.exports = {
   email,
@@ -256,4 +272,5 @@ module.exports = {
   boolean,
   formFieldData,
   formFieldsDataList,
+  getStudentAttendanceSchema
 };
