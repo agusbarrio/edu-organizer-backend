@@ -1,6 +1,7 @@
 const ERRORS = require("../constants/errors");
 const db = require("../models");
 const studentRepositories = require("../repositories/student");
+const { STUDENT_VARIANTS } = require("../repositories/variants/student");
 const { validTargetStudent, validTargetCourse } = require("./targetEntities");
 
 const studentsServices = {
@@ -33,7 +34,7 @@ const studentsServices = {
         return students
     },
     getOne: async function ({ id }) {
-        const course = await studentRepositories.getOneById(id);
+        const course = await studentRepositories.getOneById(id, STUDENT_VARIANTS.FULL);
         if (!course) throw ERRORS.E404_3;
         return course
     }

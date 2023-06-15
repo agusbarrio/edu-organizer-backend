@@ -1,6 +1,7 @@
 'use strict';
 const db = require('../models');
 const ABMRepository = require('./ABMRepository');
+const { STUDENT_VARIANTS, STUDENT_VARIANTS_OPTIONS } = require('./variants/student');
 class StudentRepository extends ABMRepository {
     constructor() {
         super(db.Student);
@@ -33,6 +34,15 @@ class StudentRepository extends ABMRepository {
                 courseId
             },
             transaction
+        })
+    }
+    getOneById(id, variant = STUDENT_VARIANTS.SIMPLE, transaction) {
+        return this.model.findOne({
+            where: {
+                id
+            },
+            transaction,
+            ...STUDENT_VARIANTS_OPTIONS?.[variant]
         })
     }
 }
