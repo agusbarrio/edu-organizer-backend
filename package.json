@@ -6,10 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "migrate": "sequelize db:migrate",
+    "migrate": "sequelize-cli db:migrate",
     "install:migrate": "npm install && npm run migrate",
     "dev": "nodemon index.js",
-    "migrate:undo:all": "sequelize db:migrate:undo:all"
+    "migrate:undo:all": "sequelize-cli db:migrate:undo:all"
   },
   "repository": {
     "type": "git",
