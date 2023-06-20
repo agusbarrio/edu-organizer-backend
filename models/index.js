@@ -5,6 +5,7 @@ const path = require('path');
 const Sequelize = require('sequelize');
 const { envConfig } = require('../config/envConfig');
 const basename = path.basename(__filename);
+const mysql2 = require('mysql2');
 
 const db = {};
 
@@ -13,6 +14,7 @@ let sequelize = new Sequelize(envConfig.MYSQL_CONNECTION, {
     ? (query) =>
       console.log(query, '\n-------------------------------\n')
     : false,
+  dialectModule: mysql2,
 });
 
 fs.readdirSync(__dirname)
