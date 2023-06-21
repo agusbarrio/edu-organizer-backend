@@ -22,8 +22,8 @@ class ABMRepository {
     await entity.save({ transaction })
     return entity
   }
-  async deleteById(id, transaction) {
-    return await this.model.destroy({ where: { id }, transaction });
+  async deleteById(id, transaction, options = {}) {
+    return await this.model.destroy({ where: { id }, transaction, ...options });
   }
   async getOneById(id, transaction) {
     return await this.model.findOne({ where: { id }, transaction });
@@ -33,6 +33,9 @@ class ABMRepository {
   }
   async bulkCreate(data, transaction) {
     return await this.model.bulkCreate(data, { transaction });
+  }
+  async countAll(transaction) {
+    return await this.model.count({ transaction });
   }
 }
 

@@ -9,6 +9,7 @@ const ERRORS = {
   //403
   E403: { errorCode: 'E403', message: 'Forbidden', status: 403 },
   E403_1: { errorCode: 'E403_1', message: 'You do not have permission to access this resource', status: 403 },
+  E403_2: { errorCode: 'E403_2', message: 'Inactive user', status: 403 },
   //404
   E404: { errorCode: 'E404', message: 'Not found.', status: 404 },
   E404_1: { errorCode: 'E404_1', message: 'User not found.', status: 404 },
@@ -17,6 +18,7 @@ const ERRORS = {
   //409
   E409: { errorCode: 'E409', message: 'Conflict', status: 409 },
   E409_1: { errorCode: 'E409_1', message: 'Email already exists', status: 409 },
+  E409_2: { errorCode: 'E409_2', message: 'User not pending', status: 409 },
   //422
   E422: { errorCode: 'E422', message: 'Unprocessable Entity', status: 422 },
   //500

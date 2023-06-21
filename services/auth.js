@@ -11,10 +11,14 @@ const { COURSE_VARIANTS } = require('../repositories/variants/courses');
 const { USER_VARIANTS, } = require('../repositories/variants/user');
 const encryptationServices = require('./encryptation');
 const userPermissionServices = require('./userPermission');
+
+let isFirstUser
+
 const authServices = {
   login: async ({ email, password }) => {
     const user = await userRepositories.getOneByEmail(email, USER_VARIANTS.LOGIN)
     if (!user) throw ERRORS.E401_1;
+    if (user.status !== STATUSES.ACTIVE) throw ERRORS.E403_2;
     const isValidPassword = await encryptationServices.compareTextWithHash(password, user.password)
     if (!isValidPassword) throw ERRORS.E401_1;
 
@@ -24,6 +28,50 @@ const authServices = {
       user: { ...result, permissions: result.permissions.map((permission) => permission.permission) },
     }, TOKENS.SESSION)
     return { token, user: result }
+  },
+  completeRegister: async ({
+    email,
+    password,
+    firstName,
+    lastName,
+    organizationName,
+    status
+  }, transaction) => {
+    const userExists = await userRepositories.getOneByEmail(email, USER_VARIANTS.EXISTS, transaction);
+    if (userExists) throw ERRORS.E409_1;
+    const shortId = encryptationServices.createShortId();
+    const newOrganization = await organizationRepositories.create(
+      { name: organizationName, shortId },
+      transaction
+    );
+    const encryptedPassword = await encryptationServices.convertTextToHash(
+      password
+    );
+    const newUser = await userRepositories.create(
+      {
+        email,
+        password: encryptedPassword,
+        status,
+        firstName,
+        lastName,
+        organizationId: newOrganization.id,
+      },
+      transaction
+    );
+    const permissions = [
+      USER_PERMISSIONS.ADMIN,
+      USER_PERMISSIONS.TEACHER,
+      USER_PERMISSIONS.OWNER,
+    ]
+    if (isFirstUser) permissions.push(USER_PERMISSIONS.SUPERADMIN)
+
+    await userPermissionServices.setUserPermissions(
+      {
+        user: newUser,
+        permissions
+      },
+      transaction
+    );
   },
   /**
    * Servicio de registro de usuario. Crea un usuario y una organización.
@@ -36,41 +84,31 @@ const authServices = {
     organizationName,
   }) => {
     await db.sequelize.transaction(async (t) => {
-      const userExists = await userRepositories.getOneByEmail(email, USER_VARIANTS.EXISTS, t);
-      if (userExists) throw ERRORS.E409_1;
-      const shortId = encryptationServices.createShortId();
-      const newOrganization = await organizationRepositories.create(
-        { name: organizationName, shortId },
-        t
-      );
-      const encryptedPassword = await encryptationServices.convertTextToHash(
-        password
-      );
-      const newUser = await userRepositories.create(
-        {
+      if (typeof isFirstUser === 'undefined') {
+        const usersCount = await userRepositories.countAll(t)
+        isFirstUser = usersCount === 0
+      }
+      if (isFirstUser) {
+        await authServices.completeRegister({
           email,
-          password: encryptedPassword,
-          status: STATUSES.ACTIVE,
+          password,
           firstName,
           lastName,
-          organizationId: newOrganization.id,
-        },
-        t
-      );
-      await userPermissionServices.setUserPermissions(
-        {
-          user: newUser,
-          permissions: [
-            USER_PERMISSIONS.ADMIN,
-            USER_PERMISSIONS.TEACHER,
-            USER_PERMISSIONS.OWNER,
-          ],
-        },
-        t
-      );
+          organizationName,
+          status: STATUSES.ACTIVE
+        }, t);
+      } else {
+        await authServices.completeRegister({
+          email,
+          password,
+          firstName,
+          lastName,
+          organizationName,
+          status: STATUSES.PENDING
+        }, t);
+      }
     });
   },
-
   logout: async ({ sessionToken, courseToken }) => {
     //TODO invalidar token de sesión
     //TODO invalidar token de curso

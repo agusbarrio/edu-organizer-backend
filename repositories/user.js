@@ -17,6 +17,12 @@ class UserRepository extends ABMRepository {
       transaction,
     });
   }
+  getAll(variant, transaction) {
+    return this.model.findAll({
+      transaction,
+      ...USER_VARIANTS_OPTIONS?.[variant],
+    });
+  }
 }
 
 const userRepositories = new UserRepository();
