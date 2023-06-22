@@ -26,8 +26,7 @@ const authControllers = {
         lastName: validator.text({ required: { value: true } }),
         organizationName: validator.text({ required: { value: true } }),
       });
-      const { email, password, firstName, lastName, organizationName } =
-        await validator.validate(schema, req.body);
+      const { email, password, firstName, lastName, organizationName } = await validator.validate(schema, req.body);
       await authServices.register({
         email,
         password,
@@ -80,6 +79,18 @@ const authControllers = {
     } catch (error) {
       res.clearCookie(TOKENS.COURSE)
       next(error)
+    }
+  },
+  verifyAccount: async (req, res, next) => {
+    try {
+      const schema = validator.createSchema({
+        token: validator.text({ required: { value: true } }),
+      });
+      const { token } = await validator.validate(schema, req.body);
+      await authServices.verifyAccount({ token });
+      res.send('Account verified');
+    } catch (error) {
+      next(error);
     }
   }
 };

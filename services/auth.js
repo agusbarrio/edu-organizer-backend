@@ -1,5 +1,6 @@
 
 const { TOKENS } = require('../constants/auth');
+const EMAIL_TEMPLATES = require('../constants/emailTemplates');
 const ERRORS = require('../constants/errors');
 const { STATUSES } = require('../constants/user');
 const { USER_PERMISSIONS } = require('../constants/userPermission');
@@ -9,6 +10,7 @@ const organizationRepositories = require('../repositories/organization');
 const userRepositories = require('../repositories/user');
 const { COURSE_VARIANTS } = require('../repositories/variants/courses');
 const { USER_VARIANTS, } = require('../repositories/variants/user');
+const { sendMail, getTemplate } = require('./emailNotifications');
 const encryptationServices = require('./encryptation');
 const userPermissionServices = require('./userPermission');
 
@@ -29,7 +31,7 @@ const authServices = {
     }, TOKENS.SESSION)
     return { token, user: result }
   },
-  completeRegister: async ({
+  registerOrganization: async ({
     email,
     password,
     firstName,
@@ -72,6 +74,8 @@ const authServices = {
       },
       transaction
     );
+
+    return newUser;
   },
   /**
    * Servicio de registro de usuario. Crea un usuario y una organización.
@@ -88,15 +92,24 @@ const authServices = {
         const usersCount = await userRepositories.countAll(t)
         isFirstUser = usersCount === 0
       }
-      await authServices.completeRegister({
+      const newUser = await authServices.registerOrganization({
         email,
         password,
         firstName,
         lastName,
         organizationName,
-        status: STATUSES.ACTIVE
+        status: STATUSES.PENDING
       }, t);
+      const token = encryptationServices.createToken({ id: newUser.id }, TOKENS.VERIFY_ACCOUNT)
+      const url = `${process.env.CORS_ORIGIN}/auth/verify-account?token=${token}`
+      const mailContent = getTemplate(EMAIL_TEMPLATES.VERIFY_ACCOUNT.key, { url })
+      await sendMail(mailContent, newUser.email)
     });
+  },
+  verifyAccount: async ({ token }) => {
+    const decoded = encryptationServices.validToken(token, TOKENS.VERIFY_ACCOUNT)
+    const tokenData = decoded.data
+    await userRepositories.editOneById(tokenData.id, { status: STATUSES.ACTIVE })
   },
   logout: async ({ sessionToken, courseToken }) => {
     //TODO invalidar token de sesión
