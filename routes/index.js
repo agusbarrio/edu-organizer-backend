@@ -8,5 +8,7 @@ router.use('/courses', require('./courses'));
 router.use('/course', require('./course'));
 router.use('/students', require('./students'));
 router.use('/users', require('./users'));
+router.use('/organizations', require('./organizations'));
+router.use('/organization', require('./organization'));
 
 module.exports = router;

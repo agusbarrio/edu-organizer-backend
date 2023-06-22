@@ -88,25 +88,14 @@ const authServices = {
         const usersCount = await userRepositories.countAll(t)
         isFirstUser = usersCount === 0
       }
-      if (isFirstUser) {
-        await authServices.completeRegister({
-          email,
-          password,
-          firstName,
-          lastName,
-          organizationName,
-          status: STATUSES.ACTIVE
-        }, t);
-      } else {
-        await authServices.completeRegister({
-          email,
-          password,
-          firstName,
-          lastName,
-          organizationName,
-          status: STATUSES.PENDING
-        }, t);
-      }
+      await authServices.completeRegister({
+        email,
+        password,
+        firstName,
+        lastName,
+        organizationName,
+        status: STATUSES.ACTIVE
+      }, t);
     });
   },
   logout: async ({ sessionToken, courseToken }) => {
