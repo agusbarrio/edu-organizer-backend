@@ -144,6 +144,20 @@ const authServices = {
 
     return { token, course: result }
   },
+  recoverPassword: async ({ email }) => {
+    const user = await userRepositories.getOneByEmail(email, USER_VARIANTS.EXISTS)
+    if (!user) throw ERRORS.E404_1
+    const token = encryptationServices.createToken({ id: user.id }, TOKENS.RECOVER_PASSWORD)
+    const url = `${process.env.CORS_ORIGIN}/auth/reset-password?token=${token}`
+    const mailContent = getTemplate(EMAIL_TEMPLATES.RECOVER_PASSWORD.key, { url })
+    await sendMail(mailContent, email)
+  },
+  resetPassword: async ({ token, password }) => {
+    const decoded = encryptationServices.validToken(token, TOKENS.RECOVER_PASSWORD)
+    const tokenData = decoded.data
+    const encryptedPassword = await encryptationServices.convertTextToHash(password)
+    await userRepositories.editOneById(tokenData.id, { password: encryptedPassword })
+  },
 };
 
 module.exports = authServices;

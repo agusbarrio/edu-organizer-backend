@@ -9,7 +9,7 @@ router.post('/course/:shortId/login', authControllers.courseLogin);
 router.get('/verifySession', authControllers.verifySession);
 router.get('/verifySessionCourse', authControllers.verifySessionCourse);
 router.put('/verifyAccount', authControllers.verifyAccount);
-
-//router.post('/recoverPassword', authControllers.recoverPassword);
+router.post('/recoverPassword', authControllers.recoverPassword);
+router.put('/resetPassword', authControllers.resetPassword);
 
 module.exports = router;

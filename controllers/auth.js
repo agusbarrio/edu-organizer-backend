@@ -92,6 +92,31 @@ const authControllers = {
     } catch (error) {
       next(error);
     }
+  },
+  recoverPassword: async (req, res, next) => {
+    try {
+      const schema = validator.createSchema({
+        email: validator.email(),
+      });
+      const { email } = await validator.validate(schema, req.body);
+      await authServices.recoverPassword({ email });
+      res.send('Password recovery email sent');
+    } catch (error) {
+      next(error);
+    }
+  },
+  resetPassword: async (req, res, next) => {
+    try {
+      const schema = validator.createSchema({
+        token: validator.text({ required: { value: true } }),
+        password: validator.password(),
+      });
+      const { token, password } = await validator.validate(schema, req.body);
+      await authServices.resetPassword({ token, password });
+      res.send('Password reset');
+    } catch (error) {
+      next(error);
+    }
   }
 };
 
