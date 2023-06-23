@@ -7,6 +7,13 @@ const usersServices = {
         const users = await userRepositories.getAll(USER_VARIANTS.FULL)
         return users
     },
+    getMyUser: async function ({ user }) {
+        const myUser = await userRepositories.getOneById(user.id)
+        return myUser
+    },
+    editMyUser: async function ({ firstName, lastName, user }) {
+        await userRepositories.editOneById(user.id, { firstName, lastName })
+    }
 }
 
 module.exports = usersServices;
