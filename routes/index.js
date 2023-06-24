@@ -11,5 +11,6 @@ router.use('/users', require('./users'));
 router.use('/organizations', require('./organizations'));
 router.use('/organization', require('./organization'));
 router.use('/user', require('./user'));
+router.use('/classSessions', require('./classSessions'));
 
 module.exports = router;
