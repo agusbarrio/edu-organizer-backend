@@ -23,6 +23,18 @@ const userControllers = {
             next(error)
         }
     },
+    changePassword: async (req, res, next) => {
+        try {
+            const schema = validator.createSchema({
+                newPassword: validator.password({ required: { value: true } }),
+            })
+            const { newPassword } = await validator.validate(schema, { ...req.body })
+            await usersServices.changePassword({ newPassword, user: req.user })
+            res.send('Password changed')
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 module.exports = userControllers;
