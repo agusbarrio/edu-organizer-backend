@@ -1,19 +1,23 @@
 const ERRORS = require("../constants/errors");
+const classSessionsRepositories = require("../repositories/classSessions");
 const coursesRepositories = require("../repositories/courses");
 const studentRepositories = require("../repositories/student");
 
 const targetEntitieServices = {
     validTargetCourse: async function ({ organizationId, id }, transaction) {
-        const course = await coursesRepositories.getOneById(id, null, transaction);
+        const course = await coursesRepositories.getByIdAndOrganizationId({ id, organizationId }, null, transaction);
         if (!course) throw ERRORS.E404_2;
-        if (course.organizationId !== organizationId) throw ERRORS.E403_1;
         return course;
     },
     validTargetStudent: async function ({ organizationId, id }, transaction) {
-        const student = await studentRepositories.getOneById(id, transaction);
+        const student = await studentRepositories.getByIdAndOrganizationId({ id, organizationId }, null, transaction);
         if (!student) throw ERRORS.E404_3;
-        if (student.organizationId !== organizationId) throw ERRORS.E403_1;
         return student;
+    },
+    validTargetClassSession: async function ({ organizationId, id }, transaction) {
+        const classSession = await classSessionsRepositories.getByIdAndOrganizationId({ id, organizationId }, null, transaction);
+        if (!classSession) throw ERRORS.E404_4;
+        return classSession;
     },
     validTargetStudents: async function ({ organizationId, ids }, transaction) {
         const students = await studentRepositories.getAllByIds(ids, transaction);

@@ -8,7 +8,7 @@ const router = Router();
 // router.put('/:id', authMiddlewares.userAccess([USER_PERMISSIONS.ADMIN]), classSessionsControllers.edit);
 router.get('/', authMiddlewares.userAccess([USER_PERMISSIONS.ADMIN]), classSessionsControllers.getAll);
 router.get('/:id', authMiddlewares.userAccess([USER_PERMISSIONS.ADMIN]), classSessionsControllers.getOne);
-// router.delete('/:id', authMiddlewares.userAccess([USER_PERMISSIONS.ADMIN]), classSessionsControllers.deleteOne);
+router.delete('/:id', authMiddlewares.userAccess([USER_PERMISSIONS.ADMIN]), classSessionsControllers.deleteOne);
 
 
 

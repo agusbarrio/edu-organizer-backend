@@ -21,6 +21,18 @@ const classSessionsControllers = {
             next(error)
         }
     },
+    deleteOne: async (req, res, next) => {
+        try {
+            const schema = validator.createSchema({
+                id: validator.id(),
+            })
+            const { id } = await validator.validate(schema, { id: req.params.id })
+            await classSessionsServices.deleteOne({ id, user: req.user })
+            res.send('Deleted')
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 module.exports = classSessionsControllers;
