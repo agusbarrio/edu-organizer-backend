@@ -18,8 +18,15 @@ const CLASS_SESSION_VARIANTS_OPTIONS = {
             },
             {
                 model: db.ClassSessionStudent,
-                as: 'classSessionsStudent',
+                as: 'classSessionStudents',
                 attributes: ['id', 'classSessionId', 'studentId', 'metadata', 'isPresent', 'createdAt', 'updatedAt', 'deletedAt'],
+                include: [
+                    {
+                        model: db.Student,
+                        as: 'student',
+                        attributes: ['id', 'firstName', 'lastName'],
+                    }
+                ]
             },
         ],
     },

@@ -5,6 +5,7 @@ const _ = require("lodash");
 const { validTargetCourseStudents } = require("./targetEntities");
 const classSessionStudentsRepositories = require("../repositories/classSessionStudents");
 const { CLASS_SESSION_VARIANTS } = require("../repositories/variants/classSession");
+const ERRORS = require("../constants/errors");
 
 const classSessionsServices = {
     newCourseClass: async ({ course, presentStudentsData = [] }) => {
@@ -28,6 +29,11 @@ const classSessionsServices = {
         const organizationId = user.organizationId
         const classSessions = await classSessionsRepositories.getAllByOrganization(organizationId, CLASS_SESSION_VARIANTS.LIST)
         return classSessions
+    },
+    getOne: async ({ id, organizationId }) => {
+        const classSession = await classSessionsRepositories.getByIdAndOrganizationId({ id, organizationId }, CLASS_SESSION_VARIANTS.FULL);
+        if (!classSession) throw ERRORS.E404_4;
+        return classSession
     }
 }
 

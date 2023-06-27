@@ -32,6 +32,10 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       });
+      ClassSession.hasMany(models.ClassSessionStudent, {
+        foreignKey: 'classSessionId',
+        as: 'classSessionStudents',
+      });
     }
   }
   ClassSession.init(

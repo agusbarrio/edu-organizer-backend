@@ -30,6 +30,16 @@ class CoursesRepository extends ABMRepository {
             ...COURSE_VARIANTS_OPTIONS?.[variant]
         })
     }
+    getByIdAndOrganizationId({ id, organizationId }, variant, transaction) {
+        return this.model.findOne({
+            where: {
+                id,
+                organizationId
+            },
+            transaction,
+            ...COURSE_VARIANTS_OPTIONS?.[variant]
+        })
+    }
     getAllByIds(ids, transaction) {
         return this.model.findAll({
             where: {

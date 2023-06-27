@@ -45,6 +45,16 @@ class StudentRepository extends ABMRepository {
             ...STUDENT_VARIANTS_OPTIONS?.[variant]
         })
     }
+    getByIdAndOrganizationId({ id, organizationId }, variant = STUDENT_VARIANTS.SIMPLE, transaction) {
+        return this.model.findOne({
+            where: {
+                id,
+                organizationId
+            },
+            transaction,
+            ...STUDENT_VARIANTS_OPTIONS?.[variant]
+        })
+    }
 }
 
 const studentRepositories = new StudentRepository();

@@ -33,10 +33,10 @@ const studentsServices = {
         const students = await studentRepositories.getAllByCourseId(courseId)
         return students
     },
-    getOne: async function ({ id }) {
-        const course = await studentRepositories.getOneById(id, STUDENT_VARIANTS.FULL);
-        if (!course) throw ERRORS.E404_3;
-        return course
+    getOne: async function ({ id, user }) {
+        const student = await studentRepositories.getByIdAndOrganizationId({ id, organizationId: user.organizationId }, STUDENT_VARIANTS.FULL);
+        if (!student) throw ERRORS.E404_3;
+        return student
     }
 }
 

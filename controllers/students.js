@@ -48,7 +48,7 @@ const studentsControllers = {
                 id: validator.id(),
             })
             const { id } = await validator.validate(schema, { id: req.params.id })
-            const student = await studentsServices.getOne({ id })
+            const student = await studentsServices.getOne({ id, user: req.user })
             res.json(student)
         } catch (error) {
             next(error)

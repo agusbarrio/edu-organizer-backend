@@ -6,8 +6,8 @@ const courseControllers = {
     //req.course disponible
     get: async (req, res, next) => {
         try {
-            const { id } = req.course
-            const course = await coursesServices.getOne({ id })
+            const { id, organizationId } = req.course
+            const course = await coursesServices.getOne({ id, organizationId })
             res.json(course)
         } catch (error) {
             next(error)
@@ -15,8 +15,8 @@ const courseControllers = {
     },
     getStudents: async (req, res, next) => {
         try {
-            const { id, organizationId } = req.course
-            const students = await studentsServices.getByCourse({ courseId: id, organizationId })
+            const { id } = req.course
+            const students = await studentsServices.getByCourse({ courseId: id })
             res.json(students)
         } catch (error) {
             next(error)

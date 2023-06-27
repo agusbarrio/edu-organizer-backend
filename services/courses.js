@@ -74,8 +74,8 @@ const coursesServices = {
             await coursesRepositories.deleteById(ids, t)
         })
     },
-    getOne: async function ({ id }) {
-        const course = await coursesRepositories.getOneById(id, COURSE_VARIANTS.FULL);
+    getOne: async function ({ id, organizationId }) {
+        const course = await coursesRepositories.getByIdAndOrganizationId({ id, organizationId }, COURSE_VARIANTS.FULL);
         if (!course) throw ERRORS.E404_2;
         const result = course.toJSON();
         if (result.accessPin && result.iv) {
