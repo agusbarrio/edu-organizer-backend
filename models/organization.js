@@ -14,8 +14,8 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: MODEL_NAME,
       tableName: TABLE_NAME,
-      timestamps: true,
-      paranoid: true,
+      timestamps: false,
+      paranoid: false,
     }
   );
   return Organization;

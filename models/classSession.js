@@ -24,9 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'CASCADE',
       });
       ClassSession.belongsToMany(models.Student, {
-        through: {
-          model: models.ClassSessionStudent,
-        },
+        through: models.ClassSessionStudent,
         foreignKey: 'classSessionId',
         as: 'students',
         onDelete: 'CASCADE',
@@ -35,6 +33,8 @@ module.exports = (sequelize, DataTypes) => {
       ClassSession.hasMany(models.ClassSessionStudent, {
         foreignKey: 'classSessionId',
         as: 'classSessionStudents',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       });
     }
   }
@@ -46,8 +46,8 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: MODEL_NAME,
       tableName: TABLE_NAME,
-      timestamps: true,
-      paranoid: true,
+      timestamps: false,
+      paranoid: false,
     }
   );
   return ClassSession;

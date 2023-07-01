@@ -22,8 +22,8 @@ class ABMRepository {
     await entity.save({ transaction })
     return entity
   }
-  async deleteById(id, transaction, options = {}) {
-    return await this.model.destroy({ where: { id }, transaction, ...options });
+  async deleteById(id, transaction) {
+    return await this.model.destroy({ where: { id }, transaction });
   }
   async getOneById(id, transaction) {
     return await this.model.findOne({ where: { id }, transaction });

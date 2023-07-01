@@ -20,11 +20,15 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: false,
         },
         as: 'permissions',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       });
       User.belongsToMany(models.Course, {
         as: 'courses',
         foreignKey: 'teacherId',
         through: models.CourseTeacher,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       });
     }
   }
@@ -55,8 +59,8 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: MODEL_NAME,
       tableName: TABLE_NAME,
-      timestamps: true,
-      paranoid: true,
+      timestamps: false,
+      paranoid: false,
     }
   );
   return User;

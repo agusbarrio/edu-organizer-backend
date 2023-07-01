@@ -9,9 +9,9 @@ const organizationsServices = {
         const organizations = await organizationRepositories.getAll()
         return organizations
     },
-    deleteOne: async function ({ id, user }) {
+    deleteOne: async function ({ id }) {
         await db.sequelize.transaction(async (t) => {
-            await organizationRepositories.deleteById(id, t, { force: true })
+            await organizationRepositories.deleteById(id, t)
         })
     },
     getMyOrganization: async function ({ user }) {
