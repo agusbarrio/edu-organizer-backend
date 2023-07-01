@@ -14,7 +14,7 @@ const CLASS_SESSION_VARIANTS_OPTIONS = {
             {
                 model: db.Course,
                 as: 'course',
-                attributes: ['id', 'name'],
+                attributes: ['id', 'name', 'studentAttendanceFormData'],
             },
             {
                 model: db.ClassSessionStudent,

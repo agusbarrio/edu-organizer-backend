@@ -5,6 +5,14 @@ class ClassSessionStudentsRepository extends ABMRepository {
   constructor() {
     super(db.ClassSessionStudent);
   }
+  deleteByClassSessionId(classSessionId, transaction) {
+    return this.model.destroy({
+      where: {
+        classSessionId,
+      },
+      transaction,
+    });
+  }
 }
 
 const classSessionStudentsRepositories = new ClassSessionStudentsRepository();

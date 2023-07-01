@@ -33,10 +33,11 @@ const studentsControllers = {
     getAll: async (req, res, next) => {
         try {
             const schema = validator.createSchema({
-                withCourse: validator.boolean({ required: { value: false } })
+                withCourse: validator.boolean({ required: { value: false } }),
+                courseId: validator.id({ required: { value: false } })
             })
-            const { withCourse } = await validator.validate(schema, req.query)
-            const students = await studentsServices.getAll({ user: req.user, withCourse })
+            const { withCourse, courseId } = await validator.validate(schema, req.query)
+            const students = await studentsServices.getAll({ user: req.user, withCourse, courseId })
             res.json(students)
         } catch (error) {
             next(error)

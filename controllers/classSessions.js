@@ -1,5 +1,6 @@
+const moment = require("moment");
 const classSessionsServices = require("../services/classSessions");
-const validator = require('../services/validator')
+const validator = require('../services/validator');
 const classSessionsControllers = {
     getAll: async (req, res, next) => {
         try {
@@ -32,7 +33,20 @@ const classSessionsControllers = {
         } catch (error) {
             next(error)
         }
-    }
+    },
+    edit: async (req, res, next) => {
+        try {
+            const schema = validator.createSchema({
+                id: validator.id(),
+                date: validator.date({ required: { value: true }, max: { value: moment() } }),
+            })
+            const { date, id } = await validator.validate(schema, { ...req.body, id: req.params.id })
+            await classSessionsServices.editOne({ id, user: req.user, presentStudentsData: req.body.presentStudentsData, date })
+            res.send('Class session saved')
+        } catch (error) {
+            next(error)
+        }
+    },
 }
 
 module.exports = classSessionsControllers;

@@ -6,9 +6,10 @@ class StudentRepository extends ABMRepository {
     constructor() {
         super(db.Student);
     }
-    getAllByOrganization(organizationId, withCourse) {
+    getAllByOrganization({ organizationId, withCourse, courseId }) {
         const where = { organizationId }
         if (withCourse !== undefined) where.courseId = (withCourse) ? { [db.Sequelize.Op.ne]: null } : null
+        if (courseId !== undefined) where.courseId = courseId
         return this.model.findAll({
             where
         })

@@ -35,7 +35,7 @@ const COURSE_VARIANTS_OPTIONS = {
         ],
     },
     [COURSE_VARIANTS.SIMPLE]: {
-        attributes: ['id', 'name', 'organizationId'],
+        attributes: ['id', 'name', 'organizationId', 'studentAttendanceFormData'],
     },
     [COURSE_VARIANTS.LOGIN]: {
         attributes: ['id', 'accessPin', 'iv', 'name', 'shortId', 'studentAttendanceFormData'],
