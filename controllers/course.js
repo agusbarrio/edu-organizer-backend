@@ -1,7 +1,8 @@
 const coursesServices = require("../services/courses");
 const studentsServices = require("../services/students");
 const classSessionsServices = require("../services/classSessions");
-const validator = require('../services/validator')
+const validator = require('../services/validator');
+const moment = require("moment");
 const courseControllers = {
     //req.course disponible
     get: async (req, res, next) => {
@@ -25,6 +26,7 @@ const courseControllers = {
     newClass: async (req, res, next) => {
         try {
             const schema = validator.createSchema({
+                date: validator.date({ required: { value: true }, max: { value: moment() } }),
                 presentStudentsData: validator.array({ required: { value: true } }).of(
                     validator.object({ required: { value: true } },
                         {
@@ -32,8 +34,8 @@ const courseControllers = {
                             ...validator.getStudentAttendanceSchema(req.course.studentAttendanceFormData)
                         }))
             })
-            const { presentStudentsData } = await validator.validate(schema, req.body)
-            await classSessionsServices.newCourseClass({ course: req.course, presentStudentsData })
+            const { presentStudentsData, date } = await validator.validate(schema, req.body)
+            await classSessionsServices.newCourseClass({ course: req.course, presentStudentsData, date })
             res.send('Class session saved')
         } catch (error) {
             next(error)

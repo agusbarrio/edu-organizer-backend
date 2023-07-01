@@ -36,7 +36,7 @@ const date = (config = {}) => {
     yupDate = yupDate.min(config.min.value);
   }
   if (config.max && config.max?.value) {
-    yupDate = yupDate.min(config.max.value);
+    yupDate = yupDate.max(config.max.value);
   }
   return yupDate;
 };

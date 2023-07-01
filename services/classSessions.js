@@ -8,11 +8,11 @@ const { CLASS_SESSION_VARIANTS } = require("../repositories/variants/classSessio
 const ERRORS = require("../constants/errors");
 
 const classSessionsServices = {
-    newCourseClass: async ({ course, presentStudentsData = [] }) => {
+    newCourseClass: async ({ course, presentStudentsData = [], date = moment() }) => {
         await db.sequelize.transaction(async (t) => {
             const { id: courseId, organizationId } = course
             await validTargetCourseStudents({ courseId, studentsIds: presentStudentsData.map(student => student.id) }, t)
-            const classSession = await classSessionsRepositories.create({ courseId, organizationId, date: new Date() }, t)
+            const classSession = await classSessionsRepositories.create({ courseId, organizationId, date }, t)
             const courseStudents = await studentRepositories.getAllByCourseId(courseId, t)
             if (!_.isEmpty(courseStudents)) {
                 const classSessionStudentsToCreate = courseStudents.map(student => ({
