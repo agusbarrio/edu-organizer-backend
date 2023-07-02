@@ -9,7 +9,7 @@ const CLASS_SESSION_VARIANTS = {
 
 const CLASS_SESSION_VARIANTS_OPTIONS = {
     [CLASS_SESSION_VARIANTS.FULL]: {
-        attributes: ['id', 'date', 'courseId', 'organizationId', 'createdAt', 'updatedAt', 'deletedAt'],
+        attributes: ['id', 'date', 'courseId', 'organizationId',],
         include: [
             {
                 model: db.Course,
@@ -19,7 +19,7 @@ const CLASS_SESSION_VARIANTS_OPTIONS = {
             {
                 model: db.ClassSessionStudent,
                 as: 'classSessionStudents',
-                attributes: ['id', 'classSessionId', 'studentId', 'metadata', 'isPresent', 'createdAt', 'updatedAt', 'deletedAt'],
+                attributes: ['id', 'classSessionId', 'studentId', 'metadata', 'isPresent',],
                 include: [
                     {
                         model: db.Student,
@@ -31,7 +31,7 @@ const CLASS_SESSION_VARIANTS_OPTIONS = {
         ],
     },
     [CLASS_SESSION_VARIANTS.LIST]: {
-        attributes: ['id', 'date', 'courseId', 'organizationId', 'createdAt', 'updatedAt', 'deletedAt'],
+        attributes: ['id', 'date', 'courseId', 'organizationId',],
         include: [
             {
                 model: db.Course,
@@ -41,7 +41,7 @@ const CLASS_SESSION_VARIANTS_OPTIONS = {
         ],
     },
     [CLASS_SESSION_VARIANTS.SIMPLE]: {
-        attributes: ['id', 'date', 'courseId', 'organizationId', 'createdAt', 'updatedAt', 'deletedAt'],
+        attributes: ['id', 'date', 'courseId', 'organizationId',],
     },
 }
 

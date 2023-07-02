@@ -8,7 +8,7 @@ const STUDENT_VARIANTS = {
 
 const STUDENT_VARIANTS_OPTIONS = {
     [STUDENT_VARIANTS.FULL]: {
-        attributes: ['id', 'firstName', 'lastName', 'courseId', 'organizationId', 'createdAt', 'updatedAt', 'deletedAt'],
+        attributes: ['id', 'firstName', 'lastName', 'courseId', 'organizationId',],
         include: [
             {
                 model: db.Organization,
@@ -23,12 +23,12 @@ const STUDENT_VARIANTS_OPTIONS = {
             {
                 model: db.ClassSessionStudent,
                 as: 'classSessionsStudent',
-                attributes: ['id', 'classSessionId', 'studentId', 'metadata', 'isPresent', 'createdAt', 'updatedAt', 'deletedAt'],
+                attributes: ['id', 'classSessionId', 'studentId', 'metadata', 'isPresent',],
                 include: [
                     {
                         model: db.ClassSession,
                         as: 'classSession',
-                        attributes: ['id', 'date', 'courseId', 'organizationId', 'createdAt', 'updatedAt', 'deletedAt'],
+                        attributes: ['id', 'date', 'courseId', 'organizationId',],
                         include: [
                             {
                                 model: db.Course,
@@ -42,7 +42,7 @@ const STUDENT_VARIANTS_OPTIONS = {
         ],
     },
     [STUDENT_VARIANTS.SIMPLE]: {
-        attributes: ['id', 'firstName', 'lastName', 'courseId', 'organizationId', 'createdAt', 'updatedAt', 'deletedAt'],
+        attributes: ['id', 'firstName', 'lastName', 'courseId', 'organizationId',],
     },
 }
 
