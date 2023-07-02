@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm install && npm run migrate",
+  "installCommand": "npm install && npm run migrate",
   "builds": [
     {
       "src": "index.js",
