@@ -1,5 +1,7 @@
 {
   "installCommand": "npm run install:migrate",
+  "buildCommand": "npm run vercel-build",
+  "devCommand": "npm run dev",
   "builds": [
     {
       "src": "index.js",
