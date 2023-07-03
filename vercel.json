@@ -3,7 +3,7 @@
     {
       "src": "index.js",
       "use": "@vercel/node",
-      "installCommand": "npm run install:migrate"
+      "buildCommand": "npm run vercel-build && npm run migrate"
     }
   ],
   "routes": [
