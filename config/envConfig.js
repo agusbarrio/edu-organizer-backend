@@ -22,4 +22,5 @@ module.exports.envConfig = {
   CORS_ORIGIN: pe.CORS_ORIGIN,
   CORS_CONFIG_ENABLED: _.get(pe, 'CORS_CONFIG_ENABLED', 'true') === 'true',
   COOKIES_CONFIG_ENABLED: _.get(pe, 'COOKIES_CONFIG_ENABLED', 'true') === 'true',
+  MIGRATE_DB: _.get(pe, 'MIGRATE_DB', 'true') === 'true',
 };
