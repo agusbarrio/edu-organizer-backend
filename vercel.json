@@ -1,5 +1,4 @@
 {
-  "buildCommand": "npm run migrate && npm run vercel-build",
   "builds": [
     {
       "src": "index.js",
