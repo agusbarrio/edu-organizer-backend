@@ -1,8 +1,7 @@
 {
   "functions": {
     "./": {
-      "memory": 1024,
-      "runtime": "@vercel/node"
+      "memory": 1024
     }
   }
 }
