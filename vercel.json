@@ -1,5 +1,8 @@
 {
   "functions": {
-    "index.js": {}
+    "index.js": {
+      "runtime": "@vercel/node",
+      "memory": 3008
+    }
   }
 }
