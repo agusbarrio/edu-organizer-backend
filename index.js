@@ -10,7 +10,7 @@ const app = express();
 const _ = require('lodash');
 const { exec } = require('child_process');
 
-async function run() {
+async function startApp() {
   if (envConfig.MIGRATE_DB) {
     await new Promise((resolve, reject) => {
       const migrate = exec(
@@ -95,11 +95,10 @@ async function run() {
   app.listen(app.get('port'), () => {
     console.log(`Server running at port ${app.get('port')}`);
   });
-
+  return app
 }
 
-run()
-
-module.exports = app;
+module.exports = startApp()
+  ;
 
 
