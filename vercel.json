@@ -1,7 +1,8 @@
 {
   "functions": {
     "./": {
-      "memory": 1024
+      "memory": 1024,
+      "use": "@vercel/node"
     }
   }
 }
