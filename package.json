@@ -8,6 +8,7 @@
     "start": "node index.js",
     "migrate": "sequelize-cli db:migrate",
     "dev": "nodemon index.js",
+    "install:migrate": "npm install && npm run migrate",
     "migrate:undo:all": "sequelize-cli db:migrate:undo:all"
   },
   "repository": {
@@ -38,10 +39,10 @@
     "nanoid": "^3.3.6",
     "sequelize": "^6.31.0",
     "yup": "^1.1.1",
-    "yup-password": "^0.2.2"
+    "yup-password": "^0.2.2",
+    "sequelize-cli": "^6.6.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22",
-    "sequelize-cli": "^6.6.0"
+    "nodemon": "^2.0.22"
   }
 }
