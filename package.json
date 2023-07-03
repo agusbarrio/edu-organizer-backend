@@ -39,10 +39,10 @@
     "nanoid": "^3.3.6",
     "sequelize": "^6.31.0",
     "yup": "^1.1.1",
-    "yup-password": "^0.2.2",
-    "sequelize-cli": "^6.6.0"
+    "yup-password": "^0.2.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "sequelize-cli": "^6.6.0"
   }
 }

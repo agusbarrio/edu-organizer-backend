@@ -2,7 +2,8 @@
   "builds": [
     {
       "src": "index.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "installCommand": "npm run install:migrate"
     }
   ],
   "routes": [
