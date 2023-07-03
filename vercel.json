@@ -1,7 +1,7 @@
 {
   "functions": {
     "./": {
-      "runtime": "now-node@18.x"
+      "memory": 1024
     }
   }
 }
