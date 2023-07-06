@@ -9,6 +9,7 @@ module.exports.envConfig = {
   JWT_SECRET: pe.JWT_SECRET,
   SENDGRID_EMAIL: pe.SENDGRID_EMAIL,
   SENDGRID_APIKEY: pe.SENDGRID_APIKEY,
+  MONGO_DB_URI: pe.MONGO_DB_URI,
   //Optional
   LOGGING: _.get(pe, 'LOGGING', 'false') === 'true',
   PORT: _.toInteger(_.get(pe, 'PORT', '8080')),
