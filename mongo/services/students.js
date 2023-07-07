@@ -3,7 +3,7 @@ const db = require("../models");
 const studentRepositories = require("../repositories/student");
 const { STUDENT_VARIANTS } = require("../repositories/variants/student");
 const { validTargetStudent, validTargetCourse } = require("./targetEntities");
-
+//TODO continuar aqui
 const studentsServices = {
     create: async function ({ organizationId, firstName, lastName, courseId }) {
         await db.sequelize.transaction(async (t) => {

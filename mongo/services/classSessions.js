@@ -1,14 +1,7 @@
-const db = require("../models");
-const classSessionsRepositories = require("../repositories/classSessions");
-const studentRepositories = require("../repositories/student");
 const _ = require("lodash");
 const { validTargetCourseStudents, validTargetClassSession } = require("./targetEntities");
-const classSessionStudentsRepositories = require("../repositories/classSessionStudents");
-const { CLASS_SESSION_VARIANTS } = require("../repositories/variants/classSession");
-const ERRORS = require("../constants/errors");
+const ERRORS = require("../../constants/errors");
 const validator = require('../services/validator');
-const coursesRepositories = require("../repositories/courses");
-const { COURSE_VARIANTS } = require("../repositories/variants/courses");
 const moment = require('moment');
 const ClassSession = require("../models/classSession");
 const Student = require("../models/Student");

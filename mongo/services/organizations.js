@@ -1,25 +1,21 @@
-const ERRORS = require("../constants/errors");
 const db = require("../models");
 const organizationRepositories = require("../repositories/organization");
-
 const { validTargetStudent, validTargetCourse } = require("./targetEntities");
-
+const Organization = require('../models/organization')
 const organizationsServices = {
     getAll: async function () {
-        const organizations = await organizationRepositories.getAll()
+        const organizations = Organization.find({})
         return organizations
     },
     deleteOne: async function ({ _id }) {
-        await db.sequelize.transaction(async (t) => {
-            await organizationRepositories.deleteById(_id, t)
-        })
+        await Organization.deleteOne({ _id })
     },
     getMyOrganization: async function ({ user }) {
-        const organization = await organizationRepositories.getOneById(user.organizationId)
+        const organization = await Organization.findOne({ _id: user.organization._id })
         return organization
     },
     editMyOrganization: async function ({ name, user }) {
-        await organizationRepositories.editOneById(user.organizationId, { name })
+        await Organization.updateOne({ _id: user.organization._id }, { name })
     },
 }
 
