@@ -8,10 +8,10 @@ const { MODEL_NAME: CLASS_SESSION_STUDENT_MODEL_NAME } = require('../constants/c
 const studentSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    courseId: { type: mongoose.Schema.Types.ObjectId, ref: COURSE_MODEL_NAME },
-    organizationId: { type: mongoose.Schema.Types.ObjectId, ref: ORGANIZATION_MODEL_NAME, required: true },
-    classSessionsIds: [{ type: mongoose.Schema.Types.ObjectId, ref: CLASS_SESSION_MODEL_NAME }],
-    classSessionsStudentIds: [{ type: mongoose.Schema.Types.ObjectId, ref: CLASS_SESSION_STUDENT_MODEL_NAME }],
+    course: { type: mongoose.Schema.Types.ObjectId, ref: COURSE_MODEL_NAME },
+    organization: { type: mongoose.Schema.Types.ObjectId, ref: ORGANIZATION_MODEL_NAME, required: true },
+    classSessions: [{ type: mongoose.Schema.Types.ObjectId, ref: CLASS_SESSION_MODEL_NAME }],
+    classSessionsStudent: [{ type: mongoose.Schema.Types.ObjectId, ref: CLASS_SESSION_STUDENT_MODEL_NAME }],
 });
 
 const Student = mongoose.model(MODEL_NAME, studentSchema);

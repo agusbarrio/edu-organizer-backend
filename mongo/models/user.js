@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true },
     password: { type: String, required: true },
     status: { type: String, required: true, enum: Object.values(STATUSES) },
-    organizationId: { type: mongoose.Schema.Types.ObjectId, ref: ORGANIZATION_MODEL_NAME, required: true },
+    organization: { type: mongoose.Schema.Types.ObjectId, ref: ORGANIZATION_MODEL_NAME, required: true },
     permissions: [{ type: String, enum: Object.values(USER_PERMISSIONS) }],
     courses: [{ type: mongoose.Schema.Types.ObjectId, ref: COURSE_MODEL_NAME }],
 });

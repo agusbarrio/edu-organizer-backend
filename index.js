@@ -8,15 +8,16 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors')
 const app = express();
 const _ = require('lodash');
+const mongoose = require('mongoose');
 
-/* const mongoose = require('mongoose');
-
-mongoose.connect('mongodb://127.0.0.1/my_database').then(() => {
-  console.log('connected to mongodb database')
-}).catch((err) => {
-  console.log(err)
-  throw new Error('error connecting to mongodb database')
-}); */
+if (envConfig.MONGO_DB_URI) {
+  mongoose.connect(envConfig.MONGO_DB_URI).then(() => {
+    console.log('connected to mongodb database')
+  }).catch((err) => {
+    console.log(err)
+    throw new Error('error connecting to mongodb database')
+  });
+}
 
 app.set('port', envConfig.PORT);
 
