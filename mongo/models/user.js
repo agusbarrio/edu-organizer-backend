@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-const { MODEL_NAME, STATUSES } = require('../constants/user');
-const { MODEL_NAME: ORGANIZATION_MODEL_NAME } = require('../constants/organization');
-const { USER_PERMISSIONS } = require('../constants/userPermission');
-const { MODEL_NAME: COURSE_MODEL_NAME } = require('../constants/course');
+const { MODEL_NAME, STATUSES } = require('../../constants/user');
+const { MODEL_NAME: ORGANIZATION_MODEL_NAME } = require('../../constants/organization');
+const { USER_PERMISSIONS } = require('../../constants/userPermission');
+const { MODEL_NAME: COURSE_MODEL_NAME } = require('../../constants/course');
 
 
 const userSchema = new mongoose.Schema({

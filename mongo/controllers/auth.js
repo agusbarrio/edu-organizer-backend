@@ -1,5 +1,4 @@
-const { envConfig } = require('../config/envConfig');
-const { TOKENS } = require('../constants/auth');
+const { TOKENS } = require('../../constants/auth');
 const authServices = require('../services/auth');
 const validator = require('../services/validator');
 const authControllers = {
@@ -27,14 +26,14 @@ const authControllers = {
         organizationName: validator.text({ required: { value: true } }),
       });
       const { email, password, firstName, lastName, organizationName } = await validator.validate(schema, req.body);
-      await authServices.register({
+      const { token } = await authServices.register({
         email,
         password,
         firstName,
         lastName,
         organizationName,
       });
-      res.send('Registered');
+      res.json({ token });
     } catch (error) {
       next(error);
     }

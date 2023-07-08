@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const { MODEL_NAME } = require('../constants/organization');
-const { MODEL_NAME: USER_MODEL_NAME } = require('../constants/user');
+const { MODEL_NAME } = require('../../constants/organization');
+const { MODEL_NAME: USER_MODEL_NAME } = require('../../constants/user');
 
 const organizationSchema = new mongoose.Schema({
     name: { type: String, required: true },

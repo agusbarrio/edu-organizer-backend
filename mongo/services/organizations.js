@@ -1,7 +1,5 @@
-const db = require("../models");
-const organizationRepositories = require("../repositories/organization");
-const { validTargetStudent, validTargetCourse } = require("./targetEntities");
 const Organization = require('../models/organization')
+
 const organizationsServices = {
     getAll: async function () {
         const organizations = Organization.find({})
@@ -9,6 +7,9 @@ const organizationsServices = {
     },
     deleteOne: async function ({ _id }) {
         await Organization.deleteOne({ _id })
+        await Course.deleteMany({ organization: _id })
+        await Student.deleteMany({ organization: _id })
+
     },
     getMyOrganization: async function ({ user }) {
         const organization = await Organization.findOne({ _id: user.organization._id })

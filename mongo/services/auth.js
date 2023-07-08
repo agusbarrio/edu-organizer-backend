@@ -15,7 +15,8 @@ let isFirstUser
 
 const authServices = {
   login: async ({ email, password }) => {
-    const user = await User.findOne({ email }).populate('organization')
+    const user =
+      await User.findOne({ email }).select('_id firstName lastName email permissions status password').populate({ path: 'organization', select: '_id name' })
     if (!user) throw ERRORS.E401_1;
     if (user.status !== STATUSES.ACTIVE) throw ERRORS.E403_2;
     const isValidPassword = await encryptationServices.compareTextWithHash(password, user.password)
@@ -51,7 +52,7 @@ const authServices = {
         organization: newOrganization._id,
         permissions
       });
-
+    await Organization.updateOne({ _id: newOrganization._id }, { $push: { users: user._id } })
     return user;
   },
   register: async ({
@@ -72,14 +73,14 @@ const authServices = {
       lastName,
       organizationName,
       status: STATUSES.PENDING
-    }, t);
+    });
     const userObject = user.toJSON()
     delete userObject.password
     const token = encryptationServices.createToken({ user: userObject }, TOKENS.VERIFY_ACCOUNT)
     const url = `${process.env.CORS_ORIGIN}/auth/verify-account?token=${token}`
     const mailContent = getTemplate(EMAIL_TEMPLATES.VERIFY_ACCOUNT.key, { url })
     await sendMail(mailContent, user.email)
-
+    return { token }
   },
   verifyAccount: async ({ token }) => {
     const decoded = encryptationServices.validToken(token, TOKENS.VERIFY_ACCOUNT)

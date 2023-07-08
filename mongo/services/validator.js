@@ -3,9 +3,9 @@
 const _ = require('lodash');
 const Yup = require('yup');
 const YupPassword = require('yup-password');
-const ERRORS = require('../constants/errors');
-const DEFAULT_VALIDATIONS = require('../constants/defaultValidations');
-const { FORM_FIELDS_TYPES } = require('../constants/formFields');
+const ERRORS = require('../../constants/errors');
+const DEFAULT_VALIDATIONS = require('../../constants/defaultValidations');
+const { FORM_FIELDS_TYPES } = require('../../constants/formFields');
 
 YupPassword(Yup);
 
@@ -222,6 +222,11 @@ const formFieldData = (config = {}) => {
   return yupFormFieldData;
 };
 
+const token = () => {
+  const yupToken = string({ required: { value: true }, max: { value: 2048 } });
+  return yupToken;
+};
+
 const formFieldsDataList = (config = {}) => {
   const yupFormFieldsDataList = array(config).of(formFieldData());
   return yupFormFieldsDataList;
@@ -272,5 +277,6 @@ module.exports = {
   boolean,
   formFieldData,
   formFieldsDataList,
-  getStudentAttendanceSchema
+  getStudentAttendanceSchema,
+  token
 };

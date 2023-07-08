@@ -3,9 +3,9 @@
 const sgMail = require('@sendgrid/mail');
 const _ = require('lodash');
 const mustache = require('mustache');
-const EMAIL_TEMPLATES = require('../constants/emailTemplates');
-const { envConfig } = require('../config/envConfig');
-const ERRORS = require('../constants/errors');
+const EMAIL_TEMPLATES = require('../../constants/emailTemplates');
+const { envConfig } = require('../../config/envConfig');
+const ERRORS = require('../../constants/errors');
 
 if (envConfig.SENDGRID_APIKEY) sgMail.setApiKey(envConfig.SENDGRID_APIKEY);
 

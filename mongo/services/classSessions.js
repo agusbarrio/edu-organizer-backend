@@ -21,7 +21,8 @@ const classSessionsServices = {
                 classSession: classSession._id,
                 student: student._id,
                 isPresent: presentStudentsData.some(presentStudent => presentStudent._id === student._id),
-                metadata: presentStudentsData.find(presentStudent => presentStudent._id === student._id)?.metadata ?? null
+                metadata: presentStudentsData.find(presentStudent => presentStudent._id === student._id)?.metadata ?? null,
+                organization: organizationId
             }))
             await ClassSessionStudent.insertMany(classSessionStudentsToCreate)
         }
@@ -41,9 +42,8 @@ const classSessionsServices = {
         await ClassSession.deleteOne({ _id })
     },
     editOne: async function ({ _id, user, date, presentStudentsData: presentStudentsDataParam }) {
-
         const classSession = await validTargetClassSession({ organizationId: user.organization._id, _id })
-        const course = await Course.findOne({ _id: classSession.course._id }).populate('students')
+        const course = await Course.findOne({ _id: classSession.course._id }).populate('students').populate('organization')
         const schema = validator.createSchema({
             presentStudentsData: validator.array({ required: { value: true } }).of(
                 validator.object({ required: { value: true } },
@@ -62,7 +62,8 @@ const classSessionsServices = {
                 classSessionId: classSession._id,
                 studentId: student._id,
                 isPresent: presentStudentsData.some(presentStudent => presentStudent._id === student._id),
-                metadata: presentStudentsData.find(presentStudent => presentStudent._id === student._id)?.metadata ?? null
+                metadata: presentStudentsData.find(presentStudent => presentStudent._id === student._id)?.metadata ?? null,
+                organizationId: user.organization._id
             }))
             await ClassSessionStudent.insertMany(classSessionStudentsToCreate)
         }

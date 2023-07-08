@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
-const { MODEL_NAME } = require('../constants/student');
-const { MODEL_NAME: COURSE_MODEL_NAME } = require('../constants/course');
-const { MODEL_NAME: ORGANIZATION_MODEL_NAME } = require('../constants/organization');
-const { MODEL_NAME: CLASS_SESSION_MODEL_NAME } = require('../constants/classSession');
-const { MODEL_NAME: CLASS_SESSION_STUDENT_MODEL_NAME } = require('../constants/classSessionStudent');
+const { MODEL_NAME } = require('../../constants/student');
+const { MODEL_NAME: COURSE_MODEL_NAME } = require('../../constants/course');
+const { MODEL_NAME: ORGANIZATION_MODEL_NAME } = require('../../constants/organization');
+const { MODEL_NAME: CLASS_SESSION_MODEL_NAME } = require('../../constants/classSession');
+const { MODEL_NAME: CLASS_SESSION_STUDENT_MODEL_NAME } = require('../../constants/classSessionStudent');
 
 const studentSchema = new mongoose.Schema({
     firstName: { type: String, required: true },

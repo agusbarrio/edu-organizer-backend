@@ -59,7 +59,7 @@ if (envConfig.COOKIES_CONFIG_ENABLED) {
 }
 
 //routes
-app.use('/api/v1', require('./routes'));
+app.use('/api/v1', !!envConfig.MONGO_DB_URI ? require('./mongo/routes') : require('./routes'));
 
 //error 404
 app.use(function (req, res, next) {

@@ -1,11 +1,11 @@
 'use strict ';
-//const crypto = require('crypto');
+
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
-const { envConfig } = require('../config/envConfig');
+const { envConfig } = require('../../config/envConfig');
 const { nanoid } = require('nanoid');
-const ERRORS = require('../constants/errors');
+const ERRORS = require('../../constants/errors');
 const { v4: uuidv4 } = require('uuid');
 
 //Checking the crypto module

@@ -5,7 +5,6 @@ const _ = require("lodash");
 const Student = require("../models/Student");
 const Course = require("../models/course");
 
-//TODO Continue here
 const coursesServices = {
     create: async function ({ user, name, accessPin, students = [], studentAttendanceFormData = [] }) {
         let encrypted
@@ -32,12 +31,11 @@ const coursesServices = {
         await Student.updateMany({ _id: { $in: studentsToSet } }, { course: newCourse._id })
     },
     editOne: async function ({ _id, name, accessPin, user, students = [], studentAttendanceFormData = [] }) {
-
         let encrypted
         if (accessPin) encrypted = encryptationServices.encrypt(accessPin);
         const course = await validTargetCourse({ organizationId: user.organization._id, _id })
         let studentsToSet = []
-
+        let studentsToUnset = []
         const existentStudents = students.filter(student => !student.isNew && student._id)
         if (!_.isEmpty(existentStudents)) {
             await validTargetStudents({ organizationId: user.organization._id, ids: existentStudents.map(student => student._id) })
@@ -47,6 +45,12 @@ const coursesServices = {
         if (!_.isEmpty(studentsToCreate)) {
             const createdStudents = Student.insertMany(studentsToCreate.map(student => ({ ...student.studentData, organization: user.organization._id })))
             studentsToSet = [...studentsToSet, ...createdStudents.map(student => student._id)]
+        }
+        if (!_.isEmpty(course.students)) {
+            studentsToUnset = course.students.filter(studentId => !studentsToSet.includes(studentId))
+        }
+        if (!_.isEmpty(studentsToUnset)) {
+            await Student.updateMany({ _id: { $in: studentsToUnset } }, { course: null })
         }
         await Course.updateOne({ _id: course._id }, {
             name,

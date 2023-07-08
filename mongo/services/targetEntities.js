@@ -1,48 +1,39 @@
-const ERRORS = require("../constants/errors");
-const classSessionsRepositories = require("../repositories/classSessions");
-const coursesRepositories = require("../repositories/courses");
-const studentRepositories = require("../repositories/student");
+
+const ERRORS = require("../../constants/errors");
+const Course = require("../models/course");
+const Student = require("../models/Student");
+const ClassSession = require("../models/classSession");
+const ClassSessionStudent = require("../models/classSessionStudent");
 
 const targetEntitieServices = {
-    validTargetCourse: async function ({ organizationId, _id }, transaction) {
-        const course = await coursesRepositories.getByIdAndOrganizationId({ _id, organizationId }, null, transaction);
+    validTargetCourse: async function ({ organizationId, _id }) {
+        const course = await Course.exists({ organization: organizationId, _id });
         if (!course) throw ERRORS.E404_2;
         return course;
     },
-    validTargetStudent: async function ({ organizationId, _id }, transaction) {
-        const student = await studentRepositories.getByIdAndOrganizationId({ _id, organizationId }, null, transaction);
+    validTargetStudent: async function ({ organizationId, _id }) {
+        const student = await Student.exists({ organization: organizationId, _id });
         if (!student) throw ERRORS.E404_3;
         return student;
     },
-    validTargetClassSession: async function ({ organizationId, _id }, transaction) {
-        const classSession = await classSessionsRepositories.getByIdAndOrganizationId({ _id, organizationId }, null, transaction);
+    validTargetClassSession: async function ({ organizationId, _id }) {
+        const classSession = await ClassSession.exists({ organization: organizationId, _id });
         if (!classSession) throw ERRORS.E404_4;
         return classSession;
     },
-    validTargetStudents: async function ({ organizationId, ids }, transaction) {
-        const students = await studentRepositories.getAllByIds(ids, transaction);
+    validTargetStudents: async function ({ organizationId, ids }) {
+        const students = await Student.find({ _id: { $in: ids }, organization: organizationId });
         if (students.length !== ids.length) throw ERRORS.E404_3;
-        students.forEach(student => {
-            if (student.organizationId !== organizationId) throw ERRORS.E403_1;
-        }
-        );
         return students;
     },
-    validTargetCourses: async function ({ organizationId, ids }, transaction) {
-        const courses = await coursesRepositories.getAllByIds(ids, transaction);
+    validTargetCourses: async function ({ organizationId, ids }) {
+        const courses = await Course.find({ _id: { $in: ids }, organization: organizationId });
         if (courses.length !== ids.length) throw ERRORS.E404_2;
-        courses.forEach(course => {
-            if (course.organizationId !== organizationId) throw ERRORS.E403_1;
-        }
-        );
         return courses;
     },
-    validTargetCourseStudents: async function ({ courseId, studentsIds }, transaction) {
-        const students = await studentRepositories.getAllByIds(studentsIds, transaction);
+    validTargetCourseStudents: async function ({ courseId, studentsIds }) {
+        const students = await Student.find({ _id: { $in: studentsIds }, course: courseId });
         if (students.length !== studentsIds.length) throw ERRORS.E404_3;
-        students.forEach(student => {
-            if (student.courseId !== courseId) throw ERRORS.E403_1;
-        });
         return students;
     }
 }
