@@ -4,11 +4,11 @@ const encryptationServices = require('./encryptation');
 
 const usersServices = {
     getAll: async function () {
-        const users = await User.find({})
+        const users = await User.find({}).select('_id firstName lastName email permissions status').populate({ path: 'organization', select: '_id name' })
         return users
     },
     getMyUser: async function ({ user }) {
-        const myUser = await User.findOne({ _id: user._id })
+        const myUser = await User.findOne({ _id: user._id }).select('_id firstName lastName email permissions status organization')
         return myUser
     },
     editMyUser: async function ({ firstName, lastName, user }) {

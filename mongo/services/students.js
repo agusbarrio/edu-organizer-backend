@@ -40,7 +40,7 @@ const studentsServices = {
         return students
     },
     getOne: async function ({ _id, user }) {
-        const student = await Student.findOne({ organization: user.organization._id, _id })
+        const student = await Student.findOne({ organization: user.organization._id, _id }).populate({ path: 'course', select: '_id name' }).populate({ path: 'classSessionsStudent', select: '_id name' })
         if (!student) throw ERRORS.E404_3;
         return student
     }

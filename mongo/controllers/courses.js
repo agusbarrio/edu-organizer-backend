@@ -10,10 +10,10 @@ const coursesControllers = {
                 accessPin: validator.text({ required: { value: false } }),
                 students: validator.array().of(validator.object({ required: { value: false } }, {
                     isNew: validator.boolean({ required: { value: true } }),
-                    id: validator.number().when('isNew', {
+                    _id: validator.number().when('isNew', {
                         is: false,
-                        then: () => validator.id({ required: { value: true } }),
-                        otherwise: () => validator.id({ required: { value: false } })
+                        then: () => validator._id({ required: { value: true } }),
+                        otherwise: () => validator._id({ required: { value: false } })
                     }),
                     studentData: Yup.object().when('isNew', {
                         is: true,
@@ -37,15 +37,15 @@ const coursesControllers = {
     edit: async (req, res, next) => {
         try {
             const schema = validator.createSchema({
-                id: validator.id(),
+                _id: validator._id(),
                 name: validator.text({ required: { value: true } }),
                 accessPin: validator.text({ required: { value: false } }),
                 students: validator.array().of(validator.object({ required: { value: false } }, {
                     isNew: validator.boolean({ required: { value: true } }),
-                    id: validator.number().when('isNew', {
+                    _id: validator.number().when('isNew', {
                         is: false,
-                        then: () => validator.id({ required: { value: true } }),
-                        otherwise: () => validator.id({ required: { value: false } })
+                        then: () => validator._id({ required: { value: true } }),
+                        otherwise: () => validator._id({ required: { value: false } })
                     }),
                     studentData: Yup.object().when('isNew', {
                         is: true,
@@ -59,8 +59,8 @@ const coursesControllers = {
                 })),
                 studentAttendanceFormData: validator.formFieldsDataList()
             })
-            const { id, name, accessPin, students, studentAttendanceFormData } = await validator.validate(schema, { name: req.body.name, accessPin: req.body.accessPin, id: req.params.id, students: req.body.students, studentAttendanceFormData: req.body.studentAttendanceFormData })
-            await coursesServices.editOne({ id, name, accessPin, user: req.user, students, studentAttendanceFormData })
+            const { _id, name, accessPin, students, studentAttendanceFormData } = await validator.validate(schema, { name: req.body.name, accessPin: req.body.accessPin, _id: req.params._id, students: req.body.students, studentAttendanceFormData: req.body.studentAttendanceFormData })
+            await coursesServices.editOne({ _id, name, accessPin, user: req.user, students, studentAttendanceFormData })
             res.send('Edited')
         } catch (error) {
             next(error)
@@ -77,10 +77,10 @@ const coursesControllers = {
     getOne: async (req, res, next) => {
         try {
             const schema = validator.createSchema({
-                id: validator.id(),
+                _id: validator._id(),
             })
-            const { id } = await validator.validate(schema, { id: req.params.id })
-            const course = await coursesServices.getOne({ id, organizationId: req.user.organizationId })
+            const { _id } = await validator.validate(schema, { _id: req.params._id })
+            const course = await coursesServices.getOne({ _id, organizationId: req.user.organization._id })
             res.json(course)
         } catch (error) {
             next(error)
@@ -89,10 +89,10 @@ const coursesControllers = {
     deleteOne: async (req, res, next) => {
         try {
             const schema = validator.createSchema({
-                id: validator.id(),
+                _id: validator._id(),
             })
-            const { id } = await validator.validate(schema, { id: req.params.id })
-            await coursesServices.deleteOne({ id, user: req.user })
+            const { _id } = await validator.validate(schema, { _id: req.params._id })
+            await coursesServices.deleteOne({ _id, user: req.user })
             res.send('Deleted')
         } catch (error) {
             next(error)

@@ -12,10 +12,10 @@ const organizationsControllers = {
     deleteOne: async (req, res, next) => {
         try {
             const schema = validator.createSchema({
-                id: validator.id(),
+                _id: validator._id(),
             })
-            const { id } = await validator.validate(schema, { id: req.params.id })
-            await organizationsServices.deleteOne({ id, user: req.user })
+            const { _id } = await validator.validate(schema, { _id: req.params._id })
+            await organizationsServices.deleteOne({ _id, user: req.user })
             res.send('Deleted')
         } catch (error) {
             next(error)

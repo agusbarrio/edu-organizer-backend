@@ -5,7 +5,7 @@ const { USER_PERMISSIONS } = require('../../constants/userPermission');
 const router = Router();
 
 router.get('/', authMiddlewares.userAccess([USER_PERMISSIONS.SUPERADMIN]), organizationsControllers.getAll);
-router.delete('/:id', authMiddlewares.userAccess([USER_PERMISSIONS.SUPERADMIN]), organizationsControllers.deleteOne);
+router.delete('/:_id', authMiddlewares.userAccess([USER_PERMISSIONS.SUPERADMIN]), organizationsControllers.deleteOne);
 
 
 

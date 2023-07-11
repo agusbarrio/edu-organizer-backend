@@ -118,7 +118,7 @@ const oneOf = (values, config = {}) => {
 
 const _id = (_config = {}) => {
   const config = _.merge(_.cloneDeep(DEFAULT_VALIDATIONS.ID), _config);
-  const yupId = number(config).integer();
+  const yupId = string(config)
   return yupId;
 };
 

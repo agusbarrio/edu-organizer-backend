@@ -52,10 +52,10 @@ const authControllers = {
     try {
       const schema = validator.createSchema({
         accessPin: validator.text({ required: { value: true } }),
-        shortId: validator.text({ required: { value: true } }),
+        _id: validator._id(),
       });
-      const { accessPin, shortId } = await validator.validate(schema, { accessPin: req.body.accessPin, shortId: req.params.shortId });
-      const { token, course } = await authServices.courseLogin({ accessPin, shortId });
+      const { accessPin, _id } = await validator.validate(schema, { accessPin: req.body.accessPin, _id: req.params._id });
+      const { token, course } = await authServices.courseLogin({ accessPin, _id });
       res.cookie(TOKENS.COURSE, token);
       res.send(course);
     } catch (error) {

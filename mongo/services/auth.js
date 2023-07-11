@@ -107,7 +107,7 @@ const authServices = {
     return context
   },
   courseLogin: async ({ accessPin, _id }) => {
-    const course = await Course.findById(_id).populate('organization')
+    const course = await Course.findById(_id).select('_id name accessPin iv').populate({ path: 'organization', select: '_id name' })
     if (!course) throw ERRORS.E404_2
     if (!course?.accessPin || !course?.iv) throw ERRORS.E401_1
     const decryptedAccessPin = encryptationServices.decrypt({ encryptedData: course.accessPin, iv: course.iv })
@@ -119,7 +119,7 @@ const authServices = {
     return { token, course: result }
   },
   recoverPassword: async ({ email }) => {
-    const user = await User.findOne({ email }).populate('organization')
+    const user = await User.findOne({ email }).populate({ path: 'organization', select: '_id name' })
     if (!user) throw ERRORS.E404_1
     const result = user.toJSON()
     delete result.password

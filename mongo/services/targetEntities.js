@@ -17,7 +17,7 @@ const targetEntitieServices = {
         return student;
     },
     validTargetClassSession: async function ({ organizationId, _id }) {
-        const classSession = await ClassSession.exists({ organization: organizationId, _id });
+        const classSession = await ClassSession.find({ organization: organizationId, _id }).populate({ path: 'course', select: '_id name' });
         if (!classSession) throw ERRORS.E404_4;
         return classSession;
     },

@@ -76,7 +76,7 @@ const coursesServices = {
         await Course.deleteMany({ _id: { $in: ids } })
     },
     getOne: async function ({ _id, organizationId }) {
-        const course = Course.find({ _id, organization: organizationId }).populate('students').populate('organization')
+        const course = Course.find({ _id, organization: organizationId }).populate({ path: 'students', select: '_id firstName lastName' }).populate({ path: 'organization', select: '_id name' })
         if (!course) throw ERRORS.E404_2;
         const result = course.toJSON();
         if (result.accessPin && result.iv) {

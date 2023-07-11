@@ -6,10 +6,10 @@ const studentsControllers = {
             const schema = validator.createSchema({
                 firstName: validator.text({ required: { value: true } }),
                 lastName: validator.text({ required: { value: true } }),
-                courseId: validator.id({ required: { value: false } })
+                courseId: validator._id({ required: { value: false } })
             })
             const { firstName, lastName, courseId } = await validator.validate(schema, req.body)
-            await studentsServices.create({ firstName, lastName, courseId, organizationId: req.user.organizationId })
+            await studentsServices.create({ firstName, lastName, courseId, organizationId: req.user.organization._id })
             res.send('Created')
         } catch (error) {
             next(error)
@@ -18,13 +18,13 @@ const studentsControllers = {
     edit: async (req, res, next) => {
         try {
             const schema = validator.createSchema({
-                id: validator.id(),
+                _id: validator._id(),
                 firstName: validator.text({ required: { value: true } }),
                 lastName: validator.text({ required: { value: true } }),
                 courseId: validator.id({ required: { value: false } })
             })
-            const { id, firstName, lastName, courseId } = await validator.validate(schema, { ...req.body, id: req.params.id })
-            await studentsServices.editOne({ id, firstName, lastName, courseId, user: req.user })
+            const { _id, firstName, lastName, courseId } = await validator.validate(schema, { ...req.body, _id: req.params._id })
+            await studentsServices.editOne({ _id, firstName, lastName, courseId, user: req.user })
             res.send('Edited')
         } catch (error) {
             next(error)
@@ -46,10 +46,10 @@ const studentsControllers = {
     getOne: async (req, res, next) => {
         try {
             const schema = validator.createSchema({
-                id: validator.id(),
+                _id: validator._id(),
             })
-            const { id } = await validator.validate(schema, { id: req.params.id })
-            const student = await studentsServices.getOne({ id, user: req.user })
+            const { _id } = await validator.validate(schema, { _id: req.params._id })
+            const student = await studentsServices.getOne({ _id, user: req.user })
             res.json(student)
         } catch (error) {
             next(error)
@@ -58,10 +58,10 @@ const studentsControllers = {
     deleteOne: async (req, res, next) => {
         try {
             const schema = validator.createSchema({
-                id: validator.id(),
+                _id: validator._id(),
             })
-            const { id } = await validator.validate(schema, { id: req.params.id })
-            await studentsServices.deleteOne({ id, user: req.user })
+            const { _id } = await validator.validate(schema, { _id: req.params._id })
+            await studentsServices.deleteOne({ _id, user: req.user })
             res.send('Deleted')
         } catch (error) {
             next(error)

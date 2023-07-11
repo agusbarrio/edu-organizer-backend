@@ -7,8 +7,8 @@ const courseControllers = {
     //req.course disponible
     get: async (req, res, next) => {
         try {
-            const { id, organizationId } = req.course
-            const course = await coursesServices.getOne({ id, organizationId })
+            const { _id, organization } = req.course
+            const course = await coursesServices.getOne({ _id, organizationId: organization._id })
             res.json(course)
         } catch (error) {
             next(error)
@@ -16,8 +16,8 @@ const courseControllers = {
     },
     getStudents: async (req, res, next) => {
         try {
-            const { id, organization } = req.course
-            const students = await studentsServices.getByCourse({ courseId: id, organizationId: organization._id })
+            const { _id, organization } = req.course
+            const students = await studentsServices.getByCourse({ courseId: _id, organizationId: organization._id })
             res.json(students)
         } catch (error) {
             next(error)
@@ -30,7 +30,7 @@ const courseControllers = {
                 presentStudentsData: validator.array({ required: { value: true } }).of(
                     validator.object({ required: { value: true } },
                         {
-                            id: validator.id(),
+                            _id: validator._id(),
                             ...validator.getStudentAttendanceSchema(req.course.studentAttendanceFormData)
                         }))
             })
@@ -48,9 +48,9 @@ const courseControllers = {
                 lastName: validator.text({ required: { value: true } }),
             })
             const { firstName, lastName } = await validator.validate(schema, req.body)
-            const { id: courseId, organizationId } = req.course
+            const { _id: courseId, organization } = req.course
 
-            await studentsServices.create({ organizationId, courseId, firstName, lastName })
+            await studentsServices.create({ organizationId: organization._id, courseId, firstName, lastName })
             res.send('Student created into current course')
         } catch (error) {
             next(error)

@@ -19,8 +19,6 @@ const DEFAULT_VALIDATIONS = {
   },
   ID: {
     required: { value: true },
-    moreThan: { value: 0 },
-    integer: { value: true },
   },
   IDS: {
     required: { value: true },
