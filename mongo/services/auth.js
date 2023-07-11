@@ -21,12 +21,11 @@ const authServices = {
     if (user.status !== STATUSES.ACTIVE) throw ERRORS.E403_2;
     const isValidPassword = await encryptationServices.compareTextWithHash(password, user.password)
     if (!isValidPassword) throw ERRORS.E401_1;
-    const result = user.toJSON()
-    delete result.password
+    delete user.password
     const token = encryptationServices.createToken({
-      user: result,
+      user,
     }, TOKENS.SESSION)
-    return { token, user: result }
+    return { token, user }
   },
   registerOrganization: async ({
     email,
@@ -74,9 +73,8 @@ const authServices = {
       organizationName,
       status: STATUSES.PENDING
     });
-    const userObject = user.toJSON()
-    delete userObject.password
-    const token = encryptationServices.createToken({ user: userObject }, TOKENS.VERIFY_ACCOUNT)
+    delete user.password
+    const token = encryptationServices.createToken({ user }, TOKENS.VERIFY_ACCOUNT)
     const url = `${process.env.CORS_ORIGIN}/auth/verify-account?token=${token}`
     const mailContent = getTemplate(EMAIL_TEMPLATES.VERIFY_ACCOUNT.key, { url })
     await sendMail(mailContent, user.email)
@@ -107,22 +105,20 @@ const authServices = {
     return context
   },
   courseLogin: async ({ accessPin, _id }) => {
-    const course = await Course.findById(_id).select('_id name accessPin iv').populate({ path: 'organization', select: '_id name' })
+    const course = await Course.findById(_id).select('_id name accessPin iv studentAttendanceFormData').populate({ path: 'organization', select: '_id name' })
     if (!course) throw ERRORS.E404_2
     if (!course?.accessPin || !course?.iv) throw ERRORS.E401_1
     const decryptedAccessPin = encryptationServices.decrypt({ encryptedData: course.accessPin, iv: course.iv })
     if (decryptedAccessPin !== accessPin) throw ERRORS.E401_1
-    const result = course.toJSON()
-    delete result.accessPin
-    delete result.iv
-    const token = encryptationServices.createToken({ course: result }, TOKENS.COURSE)
-    return { token, course: result }
+    delete course.accessPin
+    delete course.iv
+    const token = encryptationServices.createToken({ course }, TOKENS.COURSE)
+    return { token, course }
   },
   recoverPassword: async ({ email }) => {
     const user = await User.findOne({ email }).populate({ path: 'organization', select: '_id name' })
     if (!user) throw ERRORS.E404_1
-    const result = user.toJSON()
-    delete result.password
+    delete user.password
     const token = encryptationServices.createToken({ user }, TOKENS.RECOVER_PASSWORD)
     const url = `${process.env.CORS_ORIGIN}/auth/reset-password?token=${token}`
     const mailContent = getTemplate(EMAIL_TEMPLATES.RECOVER_PASSWORD.key, { url })

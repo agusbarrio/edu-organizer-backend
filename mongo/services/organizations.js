@@ -2,7 +2,7 @@ const Organization = require('../models/organization')
 
 const organizationsServices = {
     getAll: async function () {
-        const organizations = Organization.find({})
+        const organizations = Organization.find({}).select('_id name')
         return organizations
     },
     deleteOne: async function ({ _id }) {
@@ -12,7 +12,7 @@ const organizationsServices = {
 
     },
     getMyOrganization: async function ({ user }) {
-        const organization = await Organization.findOne({ _id: user.organization._id })
+        const organization = await Organization.findOne({ _id: user.organization._id }).select('_id name')
         return organization
     },
     editMyOrganization: async function ({ name, user }) {

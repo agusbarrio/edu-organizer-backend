@@ -11,12 +11,12 @@ const Course = require("../models/course");
 
 const classSessionsServices = {
     newCourseClass: async ({ course, presentStudentsData: presentStudentsDataParam = [], date = moment() }) => {
-        await validTargetCourseStudents({ courseId, studentsIds: presentStudentsDataParam.map(student => student._id) })
-
         const courseId = course._id
         const organizationId = course.organization._id
 
-        const fullCourse = await Course.findOne({ _id: classSession.course._id })
+        await validTargetCourseStudents({ courseId, studentsIds: presentStudentsDataParam.map(student => student._id) })
+
+        const fullCourse = await Course.findOne({ _id: courseId })
         const schema = validator.createSchema({
             presentStudentsData: validator.array({ required: { value: true } }).of(
                 validator.object({ required: { value: true } },
@@ -36,12 +36,15 @@ const classSessionsServices = {
                 metadata: presentStudentsData.find(presentStudent => presentStudent._id === student._id)?.metadata ?? null,
                 organization: organizationId
             }))
-            await ClassSessionStudent.insertMany(classSessionStudentsToCreate)
+            const newClassSessionStudents = await ClassSessionStudent.insertMany(classSessionStudentsToCreate)
+            await ClassSession.updateOne({ _id: classSession._id }, { classSessionStudents: newClassSessionStudents.map(newClassSessionStudent => newClassSessionStudent._id) })
         }
+        await Course.updateOne({ _id: courseId }, { $push: { classSessions: classSession._id } })
+
     },
     getAll: async ({ user }) => {
         const organizationId = user.organization._id
-        const classSessions = await ClassSession.find({ organization: organizationId }).select('_id', 'date').populate({ path: 'course', select: '_id name' })
+        const classSessions = await ClassSession.find({ organization: organizationId }).select('_id date').populate({ path: 'course', select: '_id name' })
         return classSessions
     },
     getOne: async ({ _id, organizationId }) => {
@@ -58,6 +61,9 @@ const classSessionsServices = {
     deleteOne: async function ({ _id, user }) {
         await validTargetClassSession({ organization: user.organization._id, _id })
         await ClassSession.deleteOne({ _id })
+        //delete from course, delete classSessionsStudents with this classSession
+        await Course.updateOne({ classSessions: _id }, { $pull: { classSessions: _id } })
+        await ClassSessionStudent.deleteMany({ classSession: _id })
     },
     editOne: async function ({ _id, user, date, presentStudentsData: presentStudentsDataParam }) {
         const classSession = await validTargetClassSession({ organizationId: user.organization._id, _id })
@@ -83,7 +89,8 @@ const classSessionsServices = {
                 metadata: presentStudentsData.find(presentStudent => presentStudent._id === student._id)?.metadata ?? null,
                 organizationId: user.organization._id
             }))
-            await ClassSessionStudent.insertMany(classSessionStudentsToCreate)
+            const classSessionStudents = await ClassSessionStudent.insertMany(classSessionStudentsToCreate)
+            await ClassSession.updateOne({ _id: classSession._id }, { classSessionStudents: classSessionStudents.map(classSessionStudent => classSessionStudent._id) })
         }
     },
 }

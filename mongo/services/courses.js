@@ -17,7 +17,8 @@ const coursesServices = {
         }
         const studentsToCreate = students.filter(student => student.isNew)
         if (!_.isEmpty(studentsToCreate)) {
-            const createdStudents = Student.insertMany(studentsToCreate.map(student => ({ ...student.studentData, organization: user.organization._id })))
+            const createdStudents = await Student.insertMany(studentsToCreate.map(student => ({ ...student.studentData, organization: user.organization._id })))
+
             studentsToSet = [...studentsToSet, ...createdStudents.map(student => student._id)]
         }
         const newCourse = await Course.create({
@@ -43,7 +44,7 @@ const coursesServices = {
         }
         const studentsToCreate = students.filter(student => student.isNew)
         if (!_.isEmpty(studentsToCreate)) {
-            const createdStudents = Student.insertMany(studentsToCreate.map(student => ({ ...student.studentData, organization: user.organization._id })))
+            const createdStudents = await Student.insertMany(studentsToCreate.map(student => ({ ...student.studentData, organization: user.organization._id })))
             studentsToSet = [...studentsToSet, ...createdStudents.map(student => student._id)]
         }
         if (!_.isEmpty(course.students)) {
@@ -76,14 +77,14 @@ const coursesServices = {
         await Course.deleteMany({ _id: { $in: ids } })
     },
     getOne: async function ({ _id, organizationId }) {
-        const course = Course.find({ _id, organization: organizationId }).populate({ path: 'students', select: '_id firstName lastName' }).populate({ path: 'organization', select: '_id name' })
+        const course = await Course.findOne({ _id, organization: organizationId }).populate({ path: 'students', select: '_id firstName lastName' }).populate({ path: 'organization', select: '_id name' })
         if (!course) throw ERRORS.E404_2;
-        const result = course.toJSON();
-        if (result.accessPin && result.iv) {
-            result.accessPin = encryptationServices.decrypt({ encryptedData: result.accessPin, iv: result.iv });
+
+        if (course.accessPin && course.iv) {
+            course.accessPin = encryptationServices.decrypt({ encryptedData: course.accessPin, iv: course.iv });
         }
-        delete result.iv;
-        return result;
+        delete course.iv;
+        return course;
     },
     editMultiple: async function ({ ids, studentAttendanceFormData, user }) {
         await validTargetCourses({ organizationId: user.organization._id, ids })

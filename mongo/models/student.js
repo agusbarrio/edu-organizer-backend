@@ -10,7 +10,6 @@ const studentSchema = new mongoose.Schema({
     lastName: { type: String, required: true },
     course: { type: mongoose.Schema.Types.ObjectId, ref: COURSE_MODEL_NAME },
     organization: { type: mongoose.Schema.Types.ObjectId, ref: ORGANIZATION_MODEL_NAME, required: true },
-    classSessions: [{ type: mongoose.Schema.Types.ObjectId, ref: CLASS_SESSION_MODEL_NAME }],
     classSessionsStudent: [{ type: mongoose.Schema.Types.ObjectId, ref: CLASS_SESSION_STUDENT_MODEL_NAME }],
 });
 

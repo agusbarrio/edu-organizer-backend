@@ -21,7 +21,7 @@ const studentsControllers = {
                 _id: validator._id(),
                 firstName: validator.text({ required: { value: true } }),
                 lastName: validator.text({ required: { value: true } }),
-                courseId: validator.id({ required: { value: false } })
+                courseId: validator._id({ required: { value: false } })
             })
             const { _id, firstName, lastName, courseId } = await validator.validate(schema, { ...req.body, _id: req.params._id })
             await studentsServices.editOne({ _id, firstName, lastName, courseId, user: req.user })
@@ -34,7 +34,7 @@ const studentsControllers = {
         try {
             const schema = validator.createSchema({
                 withCourse: validator.boolean({ required: { value: false } }),
-                courseId: validator.id({ required: { value: false } })
+                courseId: validator._id({ required: { value: false } })
             })
             const { withCourse, courseId } = await validator.validate(schema, req.query)
             const students = await studentsServices.getAll({ user: req.user, withCourse, courseId })

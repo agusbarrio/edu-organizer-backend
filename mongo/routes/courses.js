@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const authMiddlewares = require('../middlewares/auth');
 const { USER_PERMISSIONS } = require('../../constants/userPermission');
-const coursesControllers = require('../../controllers/courses');
+const coursesControllers = require('../controllers/courses');
 const router = Router();
 
 router.post('/', authMiddlewares.userAccess([USER_PERMISSIONS.ADMIN]), coursesControllers.create);
