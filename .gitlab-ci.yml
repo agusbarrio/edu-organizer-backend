@@ -9,9 +9,8 @@ deploy:
     - npm install
     - npm run migrate
     - npm start
-
-rules:
-  - if: '$CI_COMMIT_BRANCH == "main"'
-    exists:
-      - .gitlab-ci.yml
-  - when: never
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      exists:
+        - .gitlab-ci.yml
+    - when: never
