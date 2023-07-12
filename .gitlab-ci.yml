@@ -14,5 +14,3 @@ deploy:
       exists:
         - .gitlab-ci.yml
     - when: never
-  shell:
-    executor: shell
