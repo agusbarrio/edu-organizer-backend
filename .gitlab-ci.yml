@@ -3,6 +3,8 @@ stages:
 
 deploy:
   stage: deploy
+  tags:
+    - shell
   script:
     - nvm use 18
     - rm -rf node_modules/
