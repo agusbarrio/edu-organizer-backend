@@ -1,0 +1,10 @@
+services:
+  app:
+    container-name: edu-organizer-backend
+    build: .          
+     ports:                                                     
+      - 443:443
+    extra_hosts:
+      - "host.docker.internal:host-gateway"                     # Como la app accede a mysql en otro compose, y lo queremos mantener separado, accedemos con esto al puerto del host primero asumiendo
+                                              
+      
