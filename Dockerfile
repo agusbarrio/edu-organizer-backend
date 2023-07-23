@@ -16,7 +16,6 @@ COPY ./routes ./routes
 COPY ./services ./services
 COPY ./index.js ./index.js
 COPY ./Dockerfile ./Dockerfile
-COPY ./docker-compose.yml ./docker-compose.yml
 
 RUN npm run migrate
 
