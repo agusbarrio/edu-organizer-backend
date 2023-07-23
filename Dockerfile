@@ -15,7 +15,6 @@ COPY ./repositories ./repositories
 COPY ./routes ./routes
 COPY ./services ./services
 COPY ./index.js ./index.js
-COPY ./Dockerfile ./Dockerfile
 
 CMD ["npm", "run", "migrate"]
 CMD ["npm", "start"]
