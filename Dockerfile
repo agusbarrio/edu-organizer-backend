@@ -17,8 +17,7 @@ COPY ./services ./services
 COPY ./index.js ./index.js
 COPY ./Dockerfile ./Dockerfile
 
-RUN npm run migrate
-
+CMD ["npm", "run", "migrate"]
 CMD ["npm", "start"]
 
 EXPOSE 8080
