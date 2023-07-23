@@ -7,7 +7,7 @@ COPY ./package-lock.json ./package-lock.json
 RUN npm install
 COPY ./config ./config
 COPY ./constants ./constants
-COPY ./controllers ./controllrs
+COPY ./controllers ./controllers
 COPY ./middlewares ./middlewares
 COPY ./migrations ./migrations
 COPY ./models ./models
