@@ -21,3 +21,5 @@ COPY ./docker-compose.yml ./docker-compose.yml
 RUN npm run migrate
 
 CMD ["npm", "start"]
+
+EXPOSE 8080
