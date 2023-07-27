@@ -1,5 +1,4 @@
 {
-  "installCommand": "npm run install:migrate",
   "builds": [
     {
       "src": "index.js",
