@@ -1,5 +1,8 @@
 'use strict';
-require('dotenv').config();
+const path = !!process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env';
+console.log('path', path);
+require('dotenv').config({ path });
+
 const _ = require('lodash');
 const pe = process.env;
 module.exports.envConfig = {
