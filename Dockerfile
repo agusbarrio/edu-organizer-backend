@@ -18,3 +18,5 @@ COPY ./index.js ./index.js
 
 CMD ["npm", "run", "migrate"]
 CMD ["npm", "start"]
+
+EXPOSE 8080
