@@ -1,9 +1,6 @@
 {
   "name": "edu-organizer-backend",
   "version": "1.0.0",
-  "engines": {
-    "node": "18.17.0"
-  },
   "description": "Aplicacion para tomar asistencias",
   "main": "index.js",
   "scripts": {
