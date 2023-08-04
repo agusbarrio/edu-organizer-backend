@@ -18,6 +18,6 @@ COPY ./index.js ./index.js
 # Instala las dependencias
 RUN npm install
 
-CMD ["npm", "start:migrate"]
+CMD ["npm", "run", "start:migrate"]
 
 EXPOSE 8080
