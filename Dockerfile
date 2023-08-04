@@ -18,9 +18,6 @@ COPY ./index.js ./index.js
 # Instala las dependencias
 RUN npm install
 
-# Ejecuta las migraciones de la base de datos
-RUN npm run migrate
-
 CMD ["npm", "start:migrate"]
 
 EXPOSE 8080
