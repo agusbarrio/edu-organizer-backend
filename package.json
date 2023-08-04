@@ -9,7 +9,8 @@
     "migrate": "sequelize-cli db:migrate",
     "dev": "nodemon index.js",
     "install:migrate": "npm install && npm run migrate",
-    "migrate:undo:all": "sequelize-cli db:migrate:undo:all"
+    "migrate:undo:all": "sequelize-cli db:migrate:undo:all",
+    "start:migrate": "npm run migrate && npm start"
   },
   "repository": {
     "type": "git",
