@@ -14,8 +14,13 @@ COPY ./repositories ./repositories
 COPY ./routes ./routes
 COPY ./services ./services
 COPY ./index.js ./index.js
-CMD ["npm", "install"]
-CMD ["npm", "run", "migrate"]
+
+# Instala las dependencias
+RUN npm install
+
+# Ejecuta las migraciones de la base de datos
+RUN npm run migrate
+
 CMD ["npm", "start"]
 
 EXPOSE 8080
