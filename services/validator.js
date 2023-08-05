@@ -164,6 +164,11 @@ const boolean = (config = {}) => {
   return yupBoolean;
 };
 
+const token = () => {
+  const yupToken = string({ required: { value: true }, max: { value: 2048 } });
+  return yupToken;
+};
+
 //TODO cambiar esto para que la config sea dinamica segun el tipo de input
 const formFieldData = (config = {}) => {
   const yupFormFieldData = object(config).shape(
@@ -272,5 +277,6 @@ module.exports = {
   boolean,
   formFieldData,
   formFieldsDataList,
-  getStudentAttendanceSchema
+  getStudentAttendanceSchema,
+  token,
 };

@@ -84,7 +84,7 @@ const authControllers = {
   verifyAccount: async (req, res, next) => {
     try {
       const schema = validator.createSchema({
-        token: validator.text({ required: { value: true } }),
+        token: validator.token({ required: { value: true } }),
       });
       const { token } = await validator.validate(schema, req.body);
       await authServices.verifyAccount({ token });
@@ -108,7 +108,7 @@ const authControllers = {
   resetPassword: async (req, res, next) => {
     try {
       const schema = validator.createSchema({
-        token: validator.text({ required: { value: true } }),
+        token: validator.token({ required: { value: true } }),
         password: validator.password(),
       });
       const { token, password } = await validator.validate(schema, req.body);
