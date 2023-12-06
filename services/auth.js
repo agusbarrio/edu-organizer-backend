@@ -74,7 +74,6 @@ const authServices = {
       },
       transaction
     );
-
     return newUser;
   },
   /**
@@ -88,10 +87,12 @@ const authServices = {
     organizationName,
   }) => {
     await db.sequelize.transaction(async (t) => {
+
       if (typeof isFirstUser === 'undefined') {
         const usersCount = await userRepositories.countAll(t)
         isFirstUser = usersCount === 0
       }
+
       const newUser = await authServices.registerOrganization({
         email,
         password,
@@ -104,6 +105,10 @@ const authServices = {
       const url = `${process.env.CORS_ORIGIN}/auth/verify-account?token=${token}`
       const mailContent = getTemplate(EMAIL_TEMPLATES.VERIFY_ACCOUNT.key, { url })
       await sendMail(mailContent, newUser.email)
+      if (newUser && isFirstUser) {
+        isFirstUser = false
+      }
+
     });
   },
   verifyAccount: async ({ token }) => {
