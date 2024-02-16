@@ -25,6 +25,8 @@ const ERRORS = {
   //500
   E500: { errorCode: 'E500', message: 'Internal server error.', status: 500 },
   E500_1: { errorCode: 'E500_1', message: 'Error sending email.', status: 500 },
+  E500_2: { errorCode: 'E500_2', message: 'Error deleting file.', status: 500 },
+  E500_3: { errorCode: 'E500_3', message: 'Error writing file.', status: 500 },
 };
 
 module.exports = ERRORS;

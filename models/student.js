@@ -36,6 +36,15 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       });
+      Student.belongsTo(models.File, {
+        foreignKey: {
+          name: 'avatarFileId',
+          allowNull: true,
+        },
+        as: 'avatar',
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
+      });
     }
   }
   Student.init(
