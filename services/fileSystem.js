@@ -25,6 +25,11 @@ const fileSystemServices = {
                 resolve(data);
             });
         });
+    },
+    getBase64: async function (fileEntity) {
+        const base64Url = `data:${fileEntity.mimetype};base64,`;
+        const data = await fileSystemServices.readFile(fileEntity.path);
+        return base64Url + data.toString('base64');
     }
 }
 

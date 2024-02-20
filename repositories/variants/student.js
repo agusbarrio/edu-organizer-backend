@@ -4,6 +4,7 @@ const db = require('../../models');
 const STUDENT_VARIANTS = {
     FULL: 'FULL',
     SIMPLE: 'SIMPLE',
+    AVATAR: 'AVATAR',
 }
 
 const STUDENT_VARIANTS_OPTIONS = {
@@ -49,6 +50,16 @@ const STUDENT_VARIANTS_OPTIONS = {
     [STUDENT_VARIANTS.SIMPLE]: {
         attributes: ['id', 'firstName', 'lastName', 'courseId', 'organizationId', 'avatarFileId'],
     },
+    [STUDENT_VARIANTS.AVATAR]: {
+        attributes: ['id', 'firstName', 'lastName', 'courseId', 'organizationId', 'avatarFileId'],
+        include: [
+            {
+                model: db.File,
+                as: 'avatar',
+                attributes: ['id', 'path', 'organizationId', 'mimetype', 'name'],
+            }
+        ],
+    }
 }
 
 module.exports.STUDENT_VARIANTS = STUDENT_VARIANTS;

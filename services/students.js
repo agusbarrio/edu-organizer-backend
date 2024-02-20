@@ -34,18 +34,28 @@ const studentsServices = {
         })
     },
     getByCourse: async function ({ courseId }) {
-        const students = await studentRepositories.getAllByCourseId(courseId)
-        return students
+        const students = await studentRepositories.getAllByCourseId(courseId, STUDENT_VARIANTS.AVATAR);
+        const result = await Promise.all(students.map(async (student) => {
+            if (!student.avatar) return student
+            const base64 = await fileSystemServices.getBase64(student.avatar);
+            return {
+                ...student.toJSON(),
+                avatar: {
+                    id: student.avatar.id,
+                    file: base64,
+                    name: student.avatar.name,
+                    mimetype: student.avatar.mimetype
+                }
+            }
+        }))
+        return result
     },
     getOne: async function ({ id, user }) {
         const student = await studentRepositories.getByIdAndOrganizationId({ id, organizationId: user.organizationId }, STUDENT_VARIANTS.FULL);
         if (!student) throw ERRORS.E404_3;
         if (!student?.avatar) return student
 
-        const base64 = await fileSystemServices.readFile(student.avatar.path).then((data) => {
-            const base64Url = `data:${student.avatar.mimetype};base64,`;
-            return base64Url + data.toString('base64');
-        });
+        const base64 = await fileSystemServices.getBase64(student.avatar);
 
         const avatarResult = {
             id: student.avatar.id,
