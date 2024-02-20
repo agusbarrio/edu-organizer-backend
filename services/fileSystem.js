@@ -1,6 +1,5 @@
 const ERRORS = require("../constants/errors");
 const fs = require('fs');
-const encryptationServices = require("./encryptation");
 
 
 const fileSystemServices = {
@@ -24,19 +23,6 @@ const fileSystemServices = {
                 data
             ) => {
                 resolve(data);
-            });
-        });
-    },
-    saveFile: async function (file) {
-        //return file
-        return new Promise((resolve, reject) => {
-            const path = `uploads/${encryptationServices.uuidv4()}`;
-
-            fs.rename(file.path, path, (err) => {
-                if (err) {
-                    reject(ERRORS.E500_3);
-                }
-                resolve(path);
             });
         });
     }
