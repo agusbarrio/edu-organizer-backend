@@ -6,10 +6,11 @@ const studentsControllers = {
             const schema = validator.createSchema({
                 firstName: validator.text({ required: { value: true } }),
                 lastName: validator.text({ required: { value: true } }),
-                courseId: validator.id({ required: { value: false } })
+                courseId: validator.id({ required: { value: false } }),
+                avatarFileId: validator.id({ required: { value: false } })
             })
-            const { firstName, lastName, courseId } = await validator.validate(schema, req.body)
-            await studentsServices.create({ firstName, lastName, courseId, organizationId: req.user.organizationId })
+            const { firstName, lastName, courseId, avatarFileId } = await validator.validate(schema, req.body)
+            await studentsServices.create({ firstName, lastName, courseId, organizationId: req.user.organizationId, avatarFileId })
             res.send('Created')
         } catch (error) {
             next(error)
@@ -21,10 +22,11 @@ const studentsControllers = {
                 id: validator.id(),
                 firstName: validator.text({ required: { value: true } }),
                 lastName: validator.text({ required: { value: true } }),
-                courseId: validator.id({ required: { value: false } })
+                courseId: validator.id({ required: { value: false } }),
+                avatarFileId: validator.id({ required: { value: false } })
             })
-            const { id, firstName, lastName, courseId } = await validator.validate(schema, { ...req.body, id: req.params.id })
-            await studentsServices.editOne({ id, firstName, lastName, courseId, user: req.user })
+            const { id, firstName, lastName, courseId, avatarFileId } = await validator.validate(schema, { ...req.body, id: req.params.id })
+            await studentsServices.editOne({ id, firstName, lastName, courseId, user: req.user, avatarFileId })
             res.send('Edited')
         } catch (error) {
             next(error)

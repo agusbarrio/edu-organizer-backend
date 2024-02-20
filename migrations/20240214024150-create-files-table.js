@@ -14,6 +14,14 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      mimetype: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       organizationId: {
         type: Sequelize.UUID,
         allowNull: false,

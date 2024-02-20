@@ -1,6 +1,7 @@
 const ERRORS = require("../constants/errors");
 const classSessionsRepositories = require("../repositories/classSessions");
 const coursesRepositories = require("../repositories/courses");
+const filesRepositories = require("../repositories/files");
 const studentRepositories = require("../repositories/student");
 
 const targetEntitieServices = {
@@ -44,6 +45,11 @@ const targetEntitieServices = {
             if (student.courseId !== courseId) throw ERRORS.E403_1;
         });
         return students;
+    },
+    validTargetFile: async function ({ organizationId, id }, transaction) {
+        const file = await filesRepositories.getByIdAndOrganizationId({ id, organizationId }, transaction);
+        if (!file) throw ERRORS.E404_5;
+        return file;
     }
 }
 

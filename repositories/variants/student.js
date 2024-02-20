@@ -39,10 +39,15 @@ const STUDENT_VARIANTS_OPTIONS = {
                     },
                 ],
             },
+            {
+                model: db.File,
+                as: 'avatar',
+                attributes: ['id', 'path', 'organizationId', 'mimetype', 'name'],
+            }
         ],
     },
     [STUDENT_VARIANTS.SIMPLE]: {
-        attributes: ['id', 'firstName', 'lastName', 'courseId', 'organizationId',],
+        attributes: ['id', 'firstName', 'lastName', 'courseId', 'organizationId', 'avatarFileId'],
     },
 }
 
