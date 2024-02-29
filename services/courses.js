@@ -3,7 +3,7 @@ const db = require("../models");
 const coursesRepositories = require("../repositories/courses");
 const { COURSE_VARIANTS } = require("../repositories/variants/courses");
 const encryptationServices = require("./encryptation");
-const { validTargetCourse, validTargetCourses, validTargetStudents } = require("./targetEntities");
+const { validTargetCourse, validTargetCourses, validTargetStudents, validTargetFiles } = require("./targetEntities");
 const studentRepositories = require("../repositories/student");
 const _ = require("lodash");
 
@@ -29,6 +29,7 @@ const coursesServices = {
             }
             const studentsToCreate = students.filter(student => student.isNew)
             if (!_.isEmpty(studentsToCreate)) {
+                await validTargetFiles({ organizationId: user.organizationId, ids: studentsToCreate.map(student => student.studentData.avatarFileId).filter(id => id) }, t)
                 await studentRepositories.bulkCreate(studentsToCreate.map(student => ({ ...student.studentData, organizationId: user.organizationId, courseId: newCourse.id })), t)
             }
         })
@@ -52,6 +53,7 @@ const coursesServices = {
             }
             const studentsToCreate = students.filter(student => student.isNew)
             if (!_.isEmpty(studentsToCreate)) {
+                await validTargetFiles({ organizationId: user.organizationId, ids: studentsToCreate.map(student => student.studentData.avatarFileId).filter(id => id) }, t)
                 await studentRepositories.bulkCreate(studentsToCreate.map(student => ({ ...student.studentData, organizationId: user.organizationId, courseId: course.id })), t)
             }
         })

@@ -1,5 +1,7 @@
 'use strict';
-const { TABLE_NAME, MODEL_NAME } = require('../constants/file');
+const { TABLE_NAME } = require('../constants/file');
+const { TABLE_NAME: ORGANIZATIONS_TABLE_NAME } = require('../constants/organization');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -23,8 +25,14 @@ module.exports = {
         allowNull: false,
       },
       organizationId: {
-        type: Sequelize.UUID,
+        type: Sequelize.INTEGER,
         allowNull: false,
+        references: {
+          model: ORGANIZATIONS_TABLE_NAME,
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
     });
   },

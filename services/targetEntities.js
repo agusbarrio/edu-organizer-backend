@@ -50,6 +50,15 @@ const targetEntitieServices = {
         const file = await filesRepositories.getByIdAndOrganizationId({ id, organizationId }, transaction);
         if (!file) throw ERRORS.E404_5;
         return file;
+    },
+    validTargetFiles: async function ({ organizationId, ids }, transaction) {
+        const files = await filesRepositories.getAllByIds(ids, transaction);
+        if (files.length !== ids.length) throw ERRORS.E404_5;
+        files.forEach(file => {
+            if (file.organizationId !== organizationId) throw ERRORS.E403_1;
+        }
+        );
+        return files;
     }
 }
 

@@ -14,6 +14,14 @@ class FilesRepository extends ABMRepository {
             transaction
         })
     }
+    getAllByIds(ids, transaction) {
+        return this.model.findAll({
+            where: {
+                id: ids
+            },
+            transaction
+        })
+    }
 }
 
 const filesRepositories = new FilesRepository();

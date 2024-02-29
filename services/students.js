@@ -3,6 +3,8 @@ const db = require("../models");
 const studentRepositories = require("../repositories/student");
 const { STUDENT_VARIANTS } = require("../repositories/variants/student");
 const fileSystemServices = require("./fileSystem");
+const fileUploadServices = require("./files");
+
 const { validTargetStudent, validTargetCourse, validTargetFile } = require("./targetEntities");
 
 const studentsServices = {
@@ -37,7 +39,10 @@ const studentsServices = {
         const students = await studentRepositories.getAllByCourseId(courseId, STUDENT_VARIANTS.AVATAR);
         const result = await Promise.all(students.map(async (student) => {
             if (!student.avatar) return student
-            const base64 = await fileSystemServices.getBase64(student.avatar);
+            const base64 = await fileUploadServices.cleanGetBase64(student.avatar);
+            if (!base64) {
+
+            }
             return {
                 ...student.toJSON(),
                 avatar: {
@@ -55,7 +60,7 @@ const studentsServices = {
         if (!student) throw ERRORS.E404_3;
         if (!student?.avatar) return student
 
-        const base64 = await fileSystemServices.getBase64(student.avatar);
+        const base64 = await fileUploadServices.cleanGetBase64(student.avatar);
 
         const avatarResult = {
             id: student.avatar.id,

@@ -21,6 +21,7 @@ const coursesControllers = {
                             {
                                 firstName: validator.text({ required: { value: true } }),
                                 lastName: validator.text({ required: { value: true } }),
+                                avatarFileId: validator.id({ required: { value: false } })
                             }),
                         otherwise: () => validator.object({ required: { value: false } })
                     })
@@ -53,6 +54,7 @@ const coursesControllers = {
                             {
                                 firstName: validator.text({ required: { value: true } }),
                                 lastName: validator.text({ required: { value: true } }),
+                                avatarFileId: validator.id({ required: { value: false } })
                             }),
                         otherwise: () => validator.object({ required: { value: false } })
                     })
