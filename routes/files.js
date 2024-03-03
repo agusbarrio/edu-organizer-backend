@@ -5,6 +5,6 @@ const { USER_PERMISSIONS } = require('../constants/userPermission');
 const filesMiddlewares = require('../middlewares/files');
 const router = Router();
 
-router.post('/singleImage', authMiddlewares.userAccess([USER_PERMISSIONS.ADMIN]), filesMiddlewares.uploadSingle(filesMiddlewares.filterImage), filesControllers.createOne);
+router.post('/singleImage', authMiddlewares.courseOrUserAccess([USER_PERMISSIONS.ADMIN]), filesMiddlewares.uploadSingle(filesMiddlewares.filterImage), filesControllers.createOne);
 
 module.exports = router;

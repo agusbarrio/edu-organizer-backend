@@ -46,11 +46,12 @@ const courseControllers = {
             const schema = validator.createSchema({
                 firstName: validator.text({ required: { value: true } }),
                 lastName: validator.text({ required: { value: true } }),
+                avatarFileId: validator.id({ required: { value: false } })
             })
-            const { firstName, lastName } = await validator.validate(schema, req.body)
+            const { firstName, lastName, avatarFileId } = await validator.validate(schema, req.body)
             const { id: courseId, organizationId } = req.course
 
-            await studentsServices.create({ organizationId, courseId, firstName, lastName })
+            await studentsServices.create({ organizationId, courseId, firstName, lastName, avatarFileId })
             res.send('Student created into current course')
         } catch (error) {
             next(error)

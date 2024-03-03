@@ -40,18 +40,13 @@ const studentsServices = {
         const result = await Promise.all(students.map(async (student) => {
             if (!student.avatar) return student
             const base64 = await fileUploadServices.cleanGetBase64(student.avatar);
-            if (!base64) {
-
+            const avatarResult = {
+                id: student.avatar.id,
+                file: base64,
+                name: student.avatar.name,
+                mimetype: student.avatar.mimetype
             }
-            return {
-                ...student.toJSON(),
-                avatar: {
-                    id: student.avatar.id,
-                    file: base64,
-                    name: student.avatar.name,
-                    mimetype: student.avatar.mimetype
-                }
-            }
+            return { ...student.toJSON(), avatar: avatarResult }
         }))
         return result
     },
