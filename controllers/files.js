@@ -14,6 +14,14 @@ const filesControllers = {
             next(error)
         }
     },
+    clearUnusedFiles: async (req, res, next) => {
+        try {
+            await fileUploadServices.clearUnusedFiles()
+            res.json({ message: 'Files cleared' })
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 module.exports = filesControllers;

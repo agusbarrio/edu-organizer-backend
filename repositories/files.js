@@ -22,6 +22,14 @@ class FilesRepository extends ABMRepository {
             transaction
         })
     }
+    getUnusedFiles(transaction) {
+        return this.model.findAll({
+            where: {
+                inUse: false
+            },
+            transaction
+        })
+    }
 }
 
 const filesRepositories = new FilesRepository();

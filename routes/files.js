@@ -6,5 +6,6 @@ const filesMiddlewares = require('../middlewares/files');
 const router = Router();
 
 router.post('/singleImage', authMiddlewares.courseOrUserAccess([USER_PERMISSIONS.ADMIN]), filesMiddlewares.uploadSingle(filesMiddlewares.filterImage), filesControllers.createOne);
+router.delete('/clearUnused', authMiddlewares.userAccess([USER_PERMISSIONS.SUPERADMIN]), filesControllers.clearUnusedFiles);
 
 module.exports = router;

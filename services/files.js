@@ -11,7 +11,7 @@ const fileUploadServices = {
             if (!base64) {
                 throw ERRORS.E500_3
             }
-            return { id: result.id, file: base64, name: file.name, mimetype: file.mimetype };
+            return { id: result.id, file: base64, name: result.name, mimetype: result.mimetype };
         });
     },
     deleteOne: async ({ id }) => {
@@ -30,7 +30,22 @@ const fileUploadServices = {
             await filesRepositories.deleteById(fileEntity.id);
             return null;
         }
+    },
+    clearUnusedFiles: async () => {
+        const files = await filesRepositories.getUnusedFiles();
+        db.sequelize.transaction(async (t) => {
+            await Promise.all(files.map(async file => {
+                // Si existe el archivo lo borra
+                const exists = await fileSystemServices.fileExists(file.path);
+                if (exists) {
+                    await fileSystemServices.deleteFile(file.path);
+                }
+            }
+            ));
+            await filesRepositories.deleteById(files.map(file => file.id), t);
+        }
+        );
     }
-}
+};
 
 module.exports = fileUploadServices;

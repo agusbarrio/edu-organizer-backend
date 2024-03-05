@@ -1,17 +1,21 @@
 const ERRORS = require("../constants/errors");
 const db = require("../models");
 const studentRepositories = require("../repositories/student");
+const filesRepositories = require("../repositories/files");
 const { STUDENT_VARIANTS } = require("../repositories/variants/student");
-const fileSystemServices = require("./fileSystem");
 const fileUploadServices = require("./files");
 
 const { validTargetStudent, validTargetCourse, validTargetFile } = require("./targetEntities");
+const fileSystemServices = require("./fileSystem");
 
 const studentsServices = {
     create: async function ({ organizationId, firstName, lastName, courseId, avatarFileId }) {
         await db.sequelize.transaction(async (t) => {
             if (courseId) await validTargetCourse({ organizationId, id: courseId }, t)
-            if (avatarFileId) await validTargetFile({ organizationId, id: avatarFileId }, t)
+            if (avatarFileId) {
+                const file = await validTargetFile({ organizationId, id: avatarFileId }, t)
+                filesRepositories.editEntity(file, { inUse: true }, t)
+            }
             await studentRepositories.create({ organizationId, firstName, lastName, courseId, avatarFileId }, t);
         })
     },
@@ -19,8 +23,16 @@ const studentsServices = {
         await db.sequelize.transaction(async (t) => {
             const organizationId = user.organizationId
             if (courseId) await validTargetCourse({ organizationId, id: courseId }, t)
-            if (avatarFileId) await validTargetFile({ organizationId, id: avatarFileId }, t)
             const student = await validTargetStudent({ organizationId, id }, t)
+            if (avatarFileId) {
+                const file = await validTargetFile({ organizationId, id: avatarFileId }, t)
+                filesRepositories.editEntity(file, { inUse: true }, t)
+            }
+            if (student.avatarFileId) {
+                const oldFile = await filesRepositories.getOneById(student.avatarFileId, t)
+                await fileSystemServices.deleteFile(oldFile.path)
+                await filesRepositories.deleteById(student.avatarFileId, t)
+            }
             await studentRepositories.editEntity(student, { firstName, lastName, courseId, avatarFileId }, t)
         })
 
@@ -31,7 +43,12 @@ const studentsServices = {
     },
     deleteOne: async function ({ id, user }) {
         await db.sequelize.transaction(async (t) => {
-            await validTargetStudent({ organizationId: user.organizationId, id }, t)
+            const student = await validTargetStudent({ organizationId: user.organizationId, id }, t)
+            if (student.avatarFileId) {
+                const file = await filesRepositories.getOneById(student.avatarFileId, t)
+                await fileSystemServices.deleteFile(file.path)
+                await filesRepositories.deleteById(student.avatarFileId, t)
+            }
             await studentRepositories.deleteById(id, t)
         })
     },

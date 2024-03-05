@@ -37,6 +37,9 @@ class ABMRepository {
   async countAll(transaction) {
     return await this.model.count({ transaction });
   }
+  async updateById(id, data, transaction) {
+    return await this.model.update(data, { where: { id }, transaction });
+  }
 }
 
 module.exports = ABMRepository;

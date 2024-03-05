@@ -31,6 +31,16 @@ const fileSystemServices = {
         const data = await fileSystemServices.readFile(fileEntity.path);
         if (!data) return null;
         return base64Url + data.toString('base64');
+    },
+    fileExists: async function (path) {
+        return new Promise((resolve) => {
+            fs.access(path, fs.constants.F_OK, (err) => {
+                if (err) {
+                    resolve(false);
+                }
+                resolve(true);
+            });
+        });
     }
 }
 
