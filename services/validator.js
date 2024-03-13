@@ -22,6 +22,9 @@ const string = (config = {}) => {
   if (config.max && config.max?.value) {
     yupString = yupString.max(config.max.value);
   }
+  if (config?.matches?.value) {
+    yupString = yupString.matches(config.matches.value);
+  }
   return yupString;
 };
 
@@ -257,7 +260,24 @@ const getStudentAttendanceSchema = (studentAttendanceFormData = []) => {
   }
 
 
+};
+
+const name = (config = {}) => {
+  const configResult = _.merge(
+    _.cloneDeep(DEFAULT_VALIDATIONS.NAME),
+    config
+  );
+  const yupTitle = string(configResult).trim().transform((value) => {
+    if (value) {
+      return value.replace(/\s+/g, ' ');
+    }
+    return value;
+  }
+  );
+
+  return yupTitle;
 }
+
 
 module.exports = {
   email,
@@ -279,4 +299,5 @@ module.exports = {
   formFieldsDataList,
   getStudentAttendanceSchema,
   token,
+  name
 };

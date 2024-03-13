@@ -29,6 +29,13 @@ const DEFAULT_VALIDATIONS = {
     required: { value: false },
     max: { value: 2083 },
   },
+  NAME: {
+    required: { value: false },
+    max: { value: 255 },
+    matches: {
+      value: /^[a-zA-Z\s]*$/,
+    },
+  }
 };
 
 module.exports = DEFAULT_VALIDATIONS;

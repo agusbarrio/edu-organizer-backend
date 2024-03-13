@@ -4,8 +4,8 @@ const studentsControllers = {
     create: async (req, res, next) => {
         try {
             const schema = validator.createSchema({
-                firstName: validator.text({ required: { value: true } }),
-                lastName: validator.text({ required: { value: true } }),
+                firstName: validator.name({ required: { value: true } }),
+                lastName: validator.name({ required: { value: true } }),
                 courseId: validator.id({ required: { value: false } }),
                 avatarFileId: validator.id({ required: { value: false } })
             })
@@ -20,8 +20,8 @@ const studentsControllers = {
         try {
             const schema = validator.createSchema({
                 id: validator.id(),
-                firstName: validator.text({ required: { value: true } }),
-                lastName: validator.text({ required: { value: true } }),
+                firstName: validator.name({ required: { value: true } }),
+                lastName: validator.name({ required: { value: true } }),
                 courseId: validator.id({ required: { value: false } }),
                 avatarFileId: validator.id({ required: { value: false } })
             })
