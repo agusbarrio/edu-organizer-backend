@@ -28,10 +28,10 @@ const studentsServices = {
                 const file = await validTargetFile({ organizationId, id: avatarFileId }, t)
                 filesRepositories.editEntity(file, { inUse: true }, t)
             }
-            if (student.avatarFileId) {
+            if (student.avatarFileId && student.avatarFileId !== avatarFileId) {
                 const oldFile = await filesRepositories.getOneById(student.avatarFileId, t)
-                await fileSystemServices.deleteFile(oldFile.path)
                 await filesRepositories.deleteById(student.avatarFileId, t)
+                await fileSystemServices.deleteFile(oldFile.path)
             }
             await studentRepositories.editEntity(student, { firstName, lastName, courseId, avatarFileId }, t)
         })
