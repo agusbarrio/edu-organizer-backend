@@ -148,7 +148,7 @@ const ids = (_config = {}) => {
 };
 
 const object = (config = {}, obj) => {
-  let yupObject = Yup.object(obj);
+  let yupObject = Yup.object(obj)
   if (config.required && config.required?.value) {
     yupObject = yupObject.required();
   } else {
@@ -156,6 +156,28 @@ const object = (config = {}, obj) => {
   }
   return yupObject;
 };
+
+const anyObject = (config = {}) => {
+  let yupObject = Yup.lazy((value) => {
+
+    let yupResult = Yup.object()
+    if (config.required && config.required?.value) {
+      yupResult = yupResult.required();
+    } else if (!value) {
+      return yupResult.default(null).nullable();
+    }
+    yupResult = Yup.object().shape(
+      Object.keys(value).reduce(
+        (map, key) => ({ ...map, [key]: Yup.mixed().nullable() }),
+        {}
+      )
+    )
+
+    return yupResult
+  })
+  return yupObject;
+}
+
 
 const boolean = (config = {}) => {
   let yupBoolean = Yup.boolean();
@@ -179,6 +201,8 @@ const formFieldData = (config = {}) => {
       name: string({ required: { value: true } }),
       // placeholder: string({ required: { value: false } }),
       type: oneOf(_.values(FORM_FIELDS_TYPES), { required: { value: true } }),
+      inputConfig: anyObject({ required: { value: false } }),
+      metadata: anyObject({ required: { value: false } }),
       /*  config: object({ required: { value: false } }).shape({
          required: object({ required: { value: false } }).shape({
            value: boolean({ required: { value: true } }),
@@ -240,7 +264,7 @@ const createSchema = (schema) => {
 };
 
 const validate = async (schema, obj) => {
-  const result = await schema.validate(obj, { stripUnknown: true }).catch((err) => {
+  const result = await schema.validate(obj, { stripUnknown: true, }).catch((err) => {
     throw { ...ERRORS.E422, data: { field: err.path, reason: err.errors[0] } };
   });
   return result;
@@ -253,7 +277,19 @@ const getStudentAttendanceSchema = (studentAttendanceFormData = []) => {
     const schema = {};
     _.forEach(studentAttendanceFormData, (formField) => {
       if (formField.type === FORM_FIELDS_TYPES.CHECKBOX) {
-        schema[formField.name] = boolean({ required: { value: true } });
+        schema[formField.name] = boolean();
+      }
+      if (formField.type === FORM_FIELDS_TYPES.RADIO) {
+        schema[formField.name] = string();
+      }
+      if (formField.type === FORM_FIELDS_TYPES.SELECT) {
+        schema[formField.name] = string();
+      }
+      if (formField.type === FORM_FIELDS_TYPES.TEXT) {
+        schema[formField.name] = string();
+      }
+      if (formField.type === FORM_FIELDS_TYPES.NUMBER) {
+        schema[formField.name] = string();
       }
     });
     return { metadata: object({ required: { value: true } }, schema) };
@@ -299,5 +335,6 @@ module.exports = {
   formFieldsDataList,
   getStudentAttendanceSchema,
   token,
-  name
+  name,
+  anyObject
 };

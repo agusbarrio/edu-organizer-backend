@@ -9,7 +9,7 @@ const COURSE_VARIANTS = {
 
 const COURSE_VARIANTS_OPTIONS = {
     [COURSE_VARIANTS.FULL]: {
-        attributes: ['id', 'name', 'organizationId', 'shortId', 'accessPin', 'iv', 'studentAttendanceFormData'],
+        attributes: ['id', 'name', 'organizationId', 'shortId', 'accessPin', 'iv', 'studentAttendanceFormData', 'studentAdditionalInfoFormData', 'metadata'],
         include: [
             {
                 model: db.Organization,
@@ -35,10 +35,10 @@ const COURSE_VARIANTS_OPTIONS = {
         ],
     },
     [COURSE_VARIANTS.SIMPLE]: {
-        attributes: ['id', 'name', 'organizationId', 'studentAttendanceFormData'],
+        attributes: ['id', 'name', 'organizationId', 'studentAttendanceFormData', 'studentAdditionalInfoFormData', 'metadata'],
     },
     [COURSE_VARIANTS.LOGIN]: {
-        attributes: ['id', 'accessPin', 'iv', 'name', 'shortId', 'studentAttendanceFormData'],
+        attributes: ['id', 'accessPin', 'iv', 'name', 'shortId', 'studentAttendanceFormData', 'studentAdditionalInfoFormData', 'metadata'],
         include: [
             {
                 model: db.Organization,

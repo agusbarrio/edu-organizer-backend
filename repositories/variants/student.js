@@ -9,7 +9,7 @@ const STUDENT_VARIANTS = {
 
 const STUDENT_VARIANTS_OPTIONS = {
     [STUDENT_VARIANTS.FULL]: {
-        attributes: ['id', 'firstName', 'lastName', 'courseId', 'organizationId',],
+        attributes: ['id', 'firstName', 'lastName', 'courseId', 'organizationId', 'birthDate', 'additionalInfo'],
         include: [
             {
                 model: db.Organization,
@@ -19,7 +19,7 @@ const STUDENT_VARIANTS_OPTIONS = {
             {
                 model: db.Course,
                 as: 'course',
-                attributes: ['id', 'name'],
+                attributes: ['id', 'name', 'studentAdditionalInfoFormData', 'studentAttendanceFormData', 'metadata'],
             },
             {
                 model: db.ClassSessionStudent,
@@ -34,7 +34,7 @@ const STUDENT_VARIANTS_OPTIONS = {
                             {
                                 model: db.Course,
                                 as: 'course',
-                                attributes: ['id', 'name'],
+                                attributes: ['id', 'name', 'studentAttendanceFormData', 'metadata'],
                             }
                         ]
                     },
@@ -48,10 +48,10 @@ const STUDENT_VARIANTS_OPTIONS = {
         ],
     },
     [STUDENT_VARIANTS.SIMPLE]: {
-        attributes: ['id', 'firstName', 'lastName', 'courseId', 'organizationId', 'avatarFileId'],
+        attributes: ['id', 'firstName', 'lastName', 'courseId', 'organizationId', 'avatarFileId', 'birthDate', 'additionalInfo'],
     },
     [STUDENT_VARIANTS.AVATAR]: {
-        attributes: ['id', 'firstName', 'lastName', 'courseId', 'organizationId', 'avatarFileId'],
+        attributes: ['id', 'firstName', 'lastName', 'courseId', 'organizationId', 'avatarFileId', 'birthDate', 'additionalInfo'],
         include: [
             {
                 model: db.File,

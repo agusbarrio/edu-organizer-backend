@@ -50,6 +50,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.JSON,
         allowNull: true,
       },
+      studentAdditionalInfoFormData: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
+      metadata: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
     },
     {
       sequelize,

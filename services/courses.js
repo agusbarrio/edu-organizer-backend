@@ -9,7 +9,7 @@ const _ = require("lodash");
 const filesRepositories = require("../repositories/files");
 
 const coursesServices = {
-    create: async function ({ user, name, accessPin, students = [], studentAttendanceFormData = [] }) {
+    create: async function ({ user, name, accessPin, students = [], studentAttendanceFormData = [], studentAdditionalInfoFormData = [], metadata }) {
         await db.sequelize.transaction(async (t) => {
             const shortId = encryptationServices.createShortId();
             let encrypted
@@ -20,7 +20,9 @@ const coursesServices = {
                 shortId,
                 accessPin: encrypted?.encryptedData ?? null,
                 iv: encrypted?.iv ?? null,
-                studentAttendanceFormData
+                studentAttendanceFormData,
+                studentAdditionalInfoFormData,
+                metadata
             }, t);
 
             const existentStudents = students.filter(student => !student.isNew && student.id)
@@ -36,7 +38,7 @@ const coursesServices = {
             }
         })
     },
-    editOne: async function ({ id, name, accessPin, user, students = [], studentAttendanceFormData = [] }) {
+    editOne: async function ({ id, name, accessPin, user, students = [], studentAttendanceFormData = [], studentAdditionalInfoFormData = [], metadata }) {
         await db.sequelize.transaction(async (t) => {
             let encrypted
             if (accessPin) encrypted = encryptationServices.encrypt(accessPin);
@@ -45,7 +47,9 @@ const coursesServices = {
                 name,
                 accessPin: encrypted?.encryptedData ?? null,
                 iv: encrypted?.iv ?? null,
-                studentAttendanceFormData
+                studentAttendanceFormData,
+                studentAdditionalInfoFormData,
+                metadata
             }, t)
 
             const existentStudents = students.filter(student => !student.isNew && student.id)
