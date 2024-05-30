@@ -11,7 +11,8 @@ class StudentRepository extends ABMRepository {
         if (withCourse !== undefined) where.courseId = (withCourse) ? { [db.Sequelize.Op.ne]: null } : null
         if (courseId !== undefined) where.courseId = courseId
         return this.model.findAll({
-            where
+            where,
+            order: [['firstName', 'ASC'], ['lastName', 'ASC']]
         })
     }
     getAllByCourseId(courseId, variant = STUDENT_VARIANTS.SIMPLE, transaction) {

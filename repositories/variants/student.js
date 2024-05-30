@@ -46,9 +46,13 @@ const STUDENT_VARIANTS_OPTIONS = {
                 attributes: ['id', 'path', 'organizationId', 'mimetype', 'name'],
             }
         ],
+        order: [['firstName', 'ASC'], ['lastName', 'ASC']]
+
     },
     [STUDENT_VARIANTS.SIMPLE]: {
         attributes: ['id', 'firstName', 'lastName', 'courseId', 'organizationId', 'avatarFileId', 'birthDate', 'additionalInfo'],
+        order: [['firstName', 'ASC'], ['lastName', 'ASC']]
+
     },
     [STUDENT_VARIANTS.AVATAR]: {
         attributes: ['id', 'firstName', 'lastName', 'courseId', 'organizationId', 'avatarFileId', 'birthDate', 'additionalInfo'],
@@ -59,6 +63,8 @@ const STUDENT_VARIANTS_OPTIONS = {
                 attributes: ['id', 'path', 'organizationId', 'mimetype', 'name'],
             }
         ],
+        order: [['firstName', 'ASC'], ['lastName', 'ASC']]
+
     }
 }
 

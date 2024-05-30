@@ -33,6 +33,7 @@ const COURSE_VARIANTS_OPTIONS = {
                 attributes: ['id', 'firstName', 'lastName', 'email'],
             }
         ],
+        order: [[{ model: db.Student, as: 'students' }, 'firstName', 'ASC'], [{ model: db.Student, as: 'students' }, 'lastName', 'ASC']]
     },
     [COURSE_VARIANTS.SIMPLE]: {
         attributes: ['id', 'name', 'organizationId', 'studentAttendanceFormData', 'studentAdditionalInfoFormData', 'metadata'],
