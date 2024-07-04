@@ -5,6 +5,7 @@ const COURSE_VARIANTS = {
     LOGIN: 'LOGIN',
     FULL: 'FULL',
     SIMPLE: 'SIMPLE',
+    REPORT: 'REPORT',
 }
 
 const COURSE_VARIANTS_OPTIONS = {
@@ -48,7 +49,36 @@ const COURSE_VARIANTS_OPTIONS = {
             }
         ],
     },
+    [COURSE_VARIANTS.REPORT]: {
+        attributes: ['id', 'name', 'organizationId', 'shortId', 'accessPin', 'iv', 'studentAttendanceFormData', 'studentAdditionalInfoFormData', 'metadata'],
+        include: [
+            {
+                model: db.Organization,
+                as: 'organization',
+                attributes: ['id', 'shortId'],
+            },
+            {
+                model: db.Student,
+                as: 'students',
+                attributes: ['id', 'firstName', 'lastName'],
+                include: [
+                    {
+                        model: db.ClassSessionStudent,
+                        as: 'classSessionsStudent',
+                        attributes: ['id', 'classSessionId', 'isPresent'],
+                    }
+                ],
+            },
+            {
+                model: db.ClassSession,
+                as: 'classSessions',
+                attributes: ['id', 'date'],
+            }
+        ],
+        order: [[{ model: db.Student, as: 'students' }, 'firstName', 'ASC'], [{ model: db.Student, as: 'students' }, 'lastName', 'ASC']]
+    },
 }
+
 
 module.exports.COURSE_VARIANTS = COURSE_VARIANTS;
 module.exports.COURSE_VARIANTS_OPTIONS = COURSE_VARIANTS_OPTIONS;

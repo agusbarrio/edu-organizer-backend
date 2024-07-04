@@ -27,6 +27,15 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'courseId',
         through: models.CourseTeacher,
       });
+      Course.hasMany(models.ClassSession, {
+        foreignKey: {
+          name: 'courseId',
+          allowNull: false,
+        },
+        as: 'classSessions',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      });
     }
   }
   Course.init(

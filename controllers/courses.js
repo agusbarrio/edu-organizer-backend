@@ -86,7 +86,7 @@ const coursesControllers = {
                 id: validator.id(),
             })
             const { id } = await validator.validate(schema, { id: req.params.id })
-            const course = await coursesServices.getOne({ id, organizationId: req.user.organizationId })
+            const course = await coursesServices.getOne({ id, organizationId: req.user.organizationId, variant: req.query.variant })
             res.json(course)
         } catch (error) {
             next(error)
