@@ -7,6 +7,7 @@ const { validTargetCourse, validTargetCourses, validTargetStudents, validTargetF
 const studentRepositories = require("../repositories/student");
 const _ = require("lodash");
 const filesRepositories = require("../repositories/files");
+const moment = require("moment");
 
 const coursesServices = {
     create: async function ({ user, name, accessPin, students = [], studentAttendanceFormData = [], studentAdditionalInfoFormData = [], metadata }) {
@@ -101,6 +102,77 @@ const coursesServices = {
                 studentAttendanceFormData
             }, t)
         })
+    },
+    getXlsxCourse: async function ({ id, organizationId }) {
+        const course = await coursesRepositories.getByIdAndOrganizationId({ id, organizationId }, COURSE_VARIANTS.REPORT);
+        if (!course) throw ERRORS.E404_2;
+        const students = course.students;
+        const classSessions = course.classSessions;
+
+        const getRowStyles = (customStyles) => {
+            const defaultStyles = {
+                font: {
+                    bold: true,
+                    sz: 14,
+                    color: { rgb: 'FF000000' }
+                },
+                fill: {
+                    fgColor: { rgb: 'FFA0A0A0' }
+                },
+
+                alignment: {
+                    wrapText: true,
+                    vertical: 'center',
+                    horizontal: 'center'
+                },
+            }
+            return _.merge(defaultStyles, customStyles);
+        }
+        // name and dates of class sessions
+        const firstRow = [{
+            v: 'NOMBRE',
+            s: getRowStyles(),
+        }, ...classSessions.map(cs => ({
+            v: `${moment(cs.date).format('D-MMM')}`,
+            s: getRowStyles()
+        }))];
+        // attendance data
+        const nextRows = students.map(student => {
+            const result = [`${student.firstName} ${student.lastName}`.toUpperCase()];
+            const classSessionsStudent = student.classSessionsStudent;
+            classSessions.forEach(cs => {
+                const csStudent = classSessionsStudent.find(css => css.classSessionId === cs.id);
+                if (csStudent?.isPresent) {
+                    result.push('X');
+                } else {
+                    result.push('');
+                }
+            });
+            return result
+        });
+        // totals
+        const lastRow = [{
+            v: 'TOTAL',
+            s: getRowStyles(),
+        }, ...classSessions.map(cs => {
+            //return an excel formula for calculating the total of the column
+            const columnNumber = classSessions.indexOf(cs) + 1;
+            const letterColumn = xlsx.utils.encode_col(columnNumber);
+            const result = {
+                t: 'n',
+                f: `COUNTIF(${letterColumn}2:${letterColumn}${students.length + 1}, "X")`,
+                s: getRowStyles({ font: { bold: false } })
+            }
+            return result
+        })];
+
+        const ws = xlsx.utils.aoa_to_sheet([firstRow, ...nextRows, lastRow]);
+        const wb = xlsx.utils.book_new();
+
+        const fileName = course.name
+        xlsx.utils.book_append_sheet(wb, ws, fileName);
+        const buffer = xlsx.write(wb, { type: 'buffer', bookType: 'xlsx' });
+        return buffer;
     }
 }
 
