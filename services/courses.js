@@ -173,7 +173,7 @@ const coursesServices = {
         const fileName = course.name
         xlsx.utils.book_append_sheet(wb, ws, fileName);
         const buffer = xlsx.write(wb, { type: 'buffer', bookType: 'xlsx' });
-        return buffer;
+        return { buffer, fileName };
     }
 }
 

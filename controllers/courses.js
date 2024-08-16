@@ -136,9 +136,9 @@ const coursesControllers = {
                 id: validator.id(),
             })
             const { id } = await validator.validate(schema, { id: req.params.id })
-            const buffer = await coursesServices.getXlsxCourse({ id, organizationId: req.user.organizationId })
+            const { buffer, fileName } = await coursesServices.getXlsxCourse({ id, organizationId: req.user.organizationId })
 
-            res.setHeader('Content-Disposition', `attachment; filename=${data.name}.xlsx`);
+            res.setHeader('Content-Disposition', `attachment; filename=${fileName}.xlsx`);
             res.status(200)
             res.end(buffer);
         } catch (error) {
