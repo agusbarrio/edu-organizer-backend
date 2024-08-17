@@ -75,7 +75,12 @@ const COURSE_VARIANTS_OPTIONS = {
                 attributes: ['id', 'date'],
             }
         ],
-        order: [[{ model: db.Student, as: 'students' }, 'firstName', 'ASC'], [{ model: db.Student, as: 'students' }, 'lastName', 'ASC']]
+        order: [
+            [{ model: db.Student, as: 'students' }, 'firstName', 'ASC'],
+            [{ model: db.Student, as: 'students' }, 'lastName', 'ASC'],
+            [{ model: db.ClassSession, as: 'classSessions' }, 'date', 'ASC']
+        ],
+
     },
 }
 
