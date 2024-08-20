@@ -1,4 +1,3 @@
-const { envConfig } = require('../config/envConfig');
 const { TOKENS } = require('../constants/auth');
 const authServices = require('../services/auth');
 const validator = require('../services/validator');
@@ -11,8 +10,7 @@ const authControllers = {
       })
       const { email, password } = await validator.validate(schema, req.body)
       const { token, user } = await authServices.login({ email, password });
-      res.cookie(TOKENS.SESSION, token);
-      res.json(user)
+      res.json({ user, token })
     } catch (error) {
       next(error);
     }
@@ -41,9 +39,7 @@ const authControllers = {
   },
   logout: async (req, res, next) => {
     try {
-      await authServices.logout({ sessionToken: req.cookies[TOKENS.SESSION], courseToken: req.cookies[TOKENS.COURSE] })
-      res.clearCookie(TOKENS.SESSION)
-      res.clearCookie(TOKENS.COURSE)
+      await authServices.logout({ sessionToken: req.userToken, courseToken: req.courseToken })
       res.send('Logout')
     } catch (error) {
       next(error);
@@ -57,27 +53,8 @@ const authControllers = {
       });
       const { accessPin, shortId } = await validator.validate(schema, { accessPin: req.body.accessPin, shortId: req.params.shortId });
       const { token, course } = await authServices.courseLogin({ accessPin, shortId });
-      res.cookie(TOKENS.COURSE, token);
-      res.send(course);
+      res.json({ course, token });
     } catch (error) {
-      next(error)
-    }
-  },
-  verifySession: async (req, res, next) => {
-    try {
-      const userSession = await authServices.validUserAccess({ token: req.cookies[TOKENS.SESSION] })
-      res.json(userSession)
-    } catch (error) {
-      res.clearCookie(TOKENS.SESSION)
-      next(error)
-    }
-  },
-  verifySessionCourse: async (req, res, next) => {
-    try {
-      const courseSession = await authServices.validCourseAccess({ token: req.cookies[TOKENS.COURSE] })
-      res.json(courseSession)
-    } catch (error) {
-      res.clearCookie(TOKENS.COURSE)
       next(error)
     }
   },
