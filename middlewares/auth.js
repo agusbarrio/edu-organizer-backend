@@ -32,7 +32,7 @@ const authMiddlewares = {
     courseOrUserAccess: (userPermissions) => {
         return async (req, res, next) => {
             try {
-                const token = req.headers['User-Authorization']
+                const token = req.headers['user-authorization']
                 const tokenWithoutBearer = token ? token.split(' ')[1] : null
                 const userContext = await authServices.validUserAccess({ token: tokenWithoutBearer, permissions: userPermissions })
                 req.user = userContext.user
@@ -40,7 +40,7 @@ const authMiddlewares = {
                 next()
             } catch (error) {
                 try {
-                    const token = req.headers['Course-Authorization']
+                    const token = req.headers['course-authorization']
                     const tokenWithoutBearer = token ? token.split(' ')[1] : null
                     const courseContext = await authServices.validCourseAccess({ token: tokenWithoutBearer })
                     req.course = courseContext.course
