@@ -26,4 +26,10 @@ module.exports.envConfig = {
   CORS_CONFIG_ENABLED: _.get(pe, 'CORS_CONFIG_ENABLED', 'true') === 'true',
   COOKIES_CONFIG_ENABLED: _.get(pe, 'COOKIES_CONFIG_ENABLED', 'true') === 'true',
   MULTER_DESTINATION: _.get(pe, 'MULTER_DESTINATION', 'uploads/'),
+
+  //R2 config
+  R2_ACCESS_KEY_ID: pe.R2_ACCESS_KEY_ID,
+  R2_SECRET_ACCESS_KEY: pe.R2_SECRET_ACCESS_KEY,
+  R2_ENDPOINT: pe.R2_ENDPOINT,
+  R2_BUCKET_NAME: pe.R2_BUCKET_NAME,
 };
