@@ -31,6 +31,11 @@ const fileUploadServices = {
             return null;
         }
     },
+    cleanGetMultipleBase64: async (fileEntities) => {
+        return await Promise.all(fileEntities.map(async (fileEntity) => {
+            return await fileUploadServices.cleanGetBase64(fileEntity);
+        }));
+    },
     clearUnusedFiles: async () => {
         const files = await filesRepositories.getUnusedFiles();
         db.sequelize.transaction(async (t) => {

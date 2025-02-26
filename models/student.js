@@ -41,8 +41,18 @@ module.exports = (sequelize, DataTypes) => {
           name: 'avatarFileId',
           allowNull: true,
         },
+        otherKey: 'fileId',
         as: 'avatar',
         onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
+      });
+
+      Student.belongsToMany(models.File, {
+        through: models.StudentFile,
+        foreignKey: 'studentId',
+        as: 'files',
+        otherKey: 'fileId',
+        onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       });
     }

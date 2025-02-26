@@ -9,10 +9,11 @@ const studentsControllers = {
                 courseId: validator.id({ required: { value: false } }),
                 birthDate: validator.date({ required: { value: false } }),
                 additionalInfo: validator.anyObject(),
-                avatarFileId: validator.id({ required: { value: false } })
+                avatarFileId: validator.id({ required: { value: false } }),
+                filesIds: validator.ids({ required: { value: false } })
             })
-            const { firstName, lastName, courseId, avatarFileId, birthDate, additionalInfo } = await validator.validate(schema, req.body)
-            await studentsServices.create({ firstName, lastName, courseId, organizationId: req.user.organizationId, avatarFileId, birthDate, additionalInfo })
+            const { firstName, lastName, courseId, avatarFileId, birthDate, additionalInfo, filesIds } = await validator.validate(schema, req.body)
+            await studentsServices.create({ firstName, lastName, courseId, organizationId: req.user.organizationId, avatarFileId, birthDate, additionalInfo, filesIds })
             res.send('Created')
         } catch (error) {
             next(error)
@@ -27,10 +28,11 @@ const studentsControllers = {
                 courseId: validator.id({ required: { value: false } }),
                 birthDate: validator.date({ required: { value: false } }),
                 additionalInfo: validator.anyObject(),
-                avatarFileId: validator.id({ required: { value: false } })
+                avatarFileId: validator.id({ required: { value: false } }),
+                filesIds: validator.ids({ required: { value: false } })
             })
-            const { id, firstName, lastName, courseId, avatarFileId, birthDate, additionalInfo } = await validator.validate(schema, { ...req.body, id: req.params.id })
-            await studentsServices.editOne({ id, firstName, lastName, courseId, user: req.user, avatarFileId, birthDate, additionalInfo })
+            const { id, firstName, lastName, courseId, avatarFileId, birthDate, additionalInfo, filesIds } = await validator.validate(schema, { ...req.body, id: req.params.id })
+            await studentsServices.editOne({ id, firstName, lastName, courseId, user: req.user, avatarFileId, birthDate, additionalInfo, filesIds })
             res.send('Edited')
         } catch (error) {
             next(error)

@@ -44,6 +44,11 @@ const STUDENT_VARIANTS_OPTIONS = {
                 model: db.File,
                 as: 'avatar',
                 attributes: ['id', 'path', 'organizationId', 'mimetype', 'name'],
+            },
+            {
+                model: db.File,
+                as: 'files',
+                attributes: ['id', 'path', 'organizationId', 'mimetype', 'name'],
             }
         ],
         order: [['firstName', 'ASC'], ['lastName', 'ASC']]
