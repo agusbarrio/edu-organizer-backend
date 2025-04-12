@@ -12,7 +12,14 @@ class StudentRepository extends ABMRepository {
         if (courseId !== undefined) where.courseId = courseId
         return this.model.findAll({
             where,
-            order: [['firstName', 'ASC'], ['lastName', 'ASC']]
+            order: [['firstName', 'ASC'], ['lastName', 'ASC']],
+            include: [
+                {
+                    model: db.Course,
+                    as: 'course',
+                    attributes: ['id', 'name'],
+                }
+            ]
         })
     }
     getAllByCourseId(courseId, variant = STUDENT_VARIANTS.SIMPLE, transaction) {
