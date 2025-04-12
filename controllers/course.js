@@ -57,7 +57,51 @@ const courseControllers = {
         } catch (error) {
             next(error)
         }
-    }
+    },
+    getClassSessions: async (req, res, next) => {
+        try {
+            const { id } = req.course
+            const classSessions = await classSessionsServices.getByCourse({ courseId: id })
+            res.json(classSessions)
+        } catch (error) {
+            next(error)
+        }
+    },
+    deleteClassSession: async (req, res, next) => {
+        try {
+            const { id } = req.params
+            const { id: courseId } = req.course
+            await classSessionsServices.deleteByIdAndCourse({ id, courseId })
+            res.send('Class session deleted')
+        } catch (error) {
+            next(error)
+        }
+    },
+    getClassSession: async (req, res, next) => {
+        try {
+            const { id } = req.params
+            const { id: courseId } = req.course
+            const classSession = await classSessionsServices.getByIdAndCourse({ id, courseId })
+            res.json(classSession)
+        } catch (error) {
+            next(error)
+        }
+    },
+    editClassSession: async (req, res, next) => {
+        try {
+            const schema = validator.createSchema({
+                id: validator.id(),
+                date: validator.date({ required: { value: true }, max: { value: moment() } }),
+            })
+            const { date, id } = await validator.validate(schema, { ...req.body, id: req.params.id })
+            const { id: courseId } = req.course
+            await classSessionsServices.editOne({ id, courseId, presentStudentsData: req.body.presentStudentsData, date, })
+            res.send('Class session saved')
+        } catch (error) {
+            next(error)
+        }
+    },
+
 }
 
 module.exports = courseControllers;

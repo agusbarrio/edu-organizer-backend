@@ -41,7 +41,7 @@ const classSessionsControllers = {
                 date: validator.date({ required: { value: true }, max: { value: moment() } }),
             })
             const { date, id } = await validator.validate(schema, { ...req.body, id: req.params.id })
-            await classSessionsServices.editOne({ id, user: req.user, presentStudentsData: req.body.presentStudentsData, date })
+            await classSessionsServices.editOne({ id, organizationId: req.user.organizationId, presentStudentsData: req.body.presentStudentsData, date })
             res.send('Class session saved')
         } catch (error) {
             next(error)

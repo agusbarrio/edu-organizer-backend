@@ -19,6 +19,26 @@ class ClassSessionsRepository extends ABMRepository {
       ...CLASS_SESSION_VARIANTS_OPTIONS?.[variant]
     })
   }
+  getAllByCourseId(courseId, transaction) {
+    return this.model.findAll({
+      where: { courseId },
+      order: [['date', 'DESC']],
+      transaction
+    })
+  }
+  deleteByIdAndCourseId({ id, courseId }, transaction) {
+    return this.model.destroy({
+      where: { id, courseId },
+      transaction
+    })
+  }
+  getByIdAndCourseId({ id, courseId }, variant, transaction) {
+    return this.model.findOne({
+      where: { id, courseId },
+      transaction,
+      ...(variant ? CLASS_SESSION_VARIANTS_OPTIONS?.[variant] : {})
+    })
+  }
 }
 
 const classSessionsRepositories = new ClassSessionsRepository();

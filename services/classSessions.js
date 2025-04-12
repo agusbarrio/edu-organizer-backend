@@ -2,7 +2,7 @@ const db = require("../models");
 const classSessionsRepositories = require("../repositories/classSessions");
 const studentRepositories = require("../repositories/student");
 const _ = require("lodash");
-const { validTargetCourseStudents, validTargetClassSession } = require("./targetEntities");
+const { validTargetCourseStudents, validTargetClassSession, validTargetCourseClassSession } = require("./targetEntities");
 const classSessionStudentsRepositories = require("../repositories/classSessionStudents");
 const { CLASS_SESSION_VARIANTS } = require("../repositories/variants/classSession");
 const ERRORS = require("../constants/errors");
@@ -45,9 +45,14 @@ const classSessionsServices = {
             await classSessionsRepositories.deleteById(id, t)
         })
     },
-    editOne: async function ({ id, user, date, presentStudentsData: presentStudentsDataParam }) {
+    editOne: async function ({ id, organizationId, date, presentStudentsData: presentStudentsDataParam, courseId }) {
         await db.sequelize.transaction(async (t) => {
-            const classSession = await validTargetClassSession({ organizationId: user.organizationId, id })
+            let classSession
+            if (courseId) {
+                classSession = await validTargetCourseClassSession({ courseId, id })
+            } else {
+                classSession = await validTargetClassSession({ organizationId, id })
+            }
             const course = await coursesRepositories.getOneById(classSession.courseId, COURSE_VARIANTS.FULL, t)
             const schema = validator.createSchema({
                 presentStudentsData: validator.array({ required: { value: true } }).of(
@@ -73,6 +78,19 @@ const classSessionsServices = {
             }
         })
     },
+    getByCourse: async ({ courseId }) => {
+        const classSessions = await classSessionsRepositories.getAllByCourseId(courseId)
+        return classSessions
+    },
+    deleteByIdAndCourse: async ({ id, courseId }) => {
+        await validTargetCourseClassSession({ courseId, id })
+        await classSessionsRepositories.deleteByIdAndCourseId({ id, courseId })
+    },
+    getByIdAndCourse: async ({ id, courseId }) => {
+        await validTargetCourseClassSession({ courseId, id })
+        const classSession = await classSessionsRepositories.getByIdAndCourseId({ id, courseId }, CLASS_SESSION_VARIANTS.FULL)
+        return classSession
+    }
 }
 
 module.exports = classSessionsServices

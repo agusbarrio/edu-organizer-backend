@@ -46,6 +46,11 @@ const targetEntitieServices = {
         });
         return students;
     },
+    validTargetCourseClassSession: async function ({ courseId, id }, transaction) {
+        const classSession = await classSessionsRepositories.getByIdAndCourseId({ id, courseId }, transaction);
+        if (!classSession) throw ERRORS.E404_4;
+        return classSession;
+    },
     validTargetFile: async function ({ organizationId, id }, transaction) {
         const file = await filesRepositories.getByIdAndOrganizationId({ id, organizationId }, transaction);
         if (!file) throw ERRORS.E404_5;
