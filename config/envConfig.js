@@ -10,8 +10,8 @@ module.exports.envConfig = {
   MYSQL_CONNECTION: pe.MYSQL_CONNECTION,
   ENCRYPTION_KEY: pe.ENCRYPTION_KEY,
   JWT_SECRET: pe.JWT_SECRET,
-  SENDGRID_EMAIL: pe.SENDGRID_EMAIL,
-  SENDGRID_APIKEY: pe.SENDGRID_APIKEY,
+  RESEND_EMAIL: pe.RESEND_EMAIL_EMAIL,
+  RESEND_APIKEY: pe.RESEND_APIKEY,
   //Optional
   LOGGING: _.get(pe, 'LOGGING', 'false') === 'true',
   PORT: _.toInteger(_.get(pe, 'PORT', '8080')),
