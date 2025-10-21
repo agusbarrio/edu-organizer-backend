@@ -6,7 +6,7 @@ const EMAIL_TEMPLATES = require('../constants/emailTemplates');
 const { envConfig } = require('../config/envConfig');
 const ERRORS = require('../constants/errors');
 const { Resend } = require('resend');
-const resend = new Resend(envConfig.RESEND_API_KEY);
+const resend = new Resend(envConfig.RESEND_APIKEY);
 
 module.exports.sendMail = async (template, to, cc = '', bcc = '') => {
   const msg = {
