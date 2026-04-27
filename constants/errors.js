@@ -22,6 +22,8 @@ const ERRORS = {
   E409_2: { errorCode: 'E409_2', message: 'User not pending', status: 409 },
   //422
   E422: { errorCode: 'E422', message: 'Unprocessable Entity', status: 422 },
+  //503
+  E503_1: { errorCode: 'E503_1', message: 'OAuth provider is not configured on the server', status: 503 },
   //500
   E500: { errorCode: 'E500', message: 'Internal server error.', status: 500 },
   E500_1: { errorCode: 'E500_1', message: 'Error sending email.', status: 500 },

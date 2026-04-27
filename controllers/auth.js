@@ -1,4 +1,4 @@
-const { TOKENS } = require('../constants/auth');
+const ERRORS = require('../constants/errors');
 const authServices = require('../services/auth');
 const validator = require('../services/validator');
 const authControllers = {
@@ -9,30 +9,8 @@ const authControllers = {
         password: validator.text({ required: { value: true } })
       })
       const { email, password } = await validator.validate(schema, req.body)
-      const { token, user } = await authServices.login({ email, password });
+      const { token, user } = await authServices.login({ email, password })
       res.json({ user, token })
-    } catch (error) {
-      next(error);
-    }
-  },
-  register: async (req, res, next) => {
-    try {
-      const schema = validator.createSchema({
-        email: validator.email(),
-        password: validator.password(),
-        firstName: validator.text({ required: { value: true } }),
-        lastName: validator.text({ required: { value: true } }),
-        organizationName: validator.text({ required: { value: true } }),
-      });
-      const { email, password, firstName, lastName, organizationName } = await validator.validate(schema, req.body);
-      await authServices.register({
-        email,
-        password,
-        firstName,
-        lastName,
-        organizationName,
-      });
-      res.send('Registered');
     } catch (error) {
       next(error);
     }
@@ -94,7 +72,18 @@ const authControllers = {
     } catch (error) {
       next(error);
     }
-  }
+  },
+  oauthSession: async (req, res, next) => {
+    try {
+      const header = req.headers['user-authorization'];
+      const token = header?.split(' ')[1];
+      if (!token) throw ERRORS.E401;
+      const payload = await authServices.resolveSessionToken(token);
+      res.json(payload);
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 
 module.exports = authControllers;

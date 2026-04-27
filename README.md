@@ -19,7 +19,7 @@ docker volume create edu_organizer_qa_uploads --opt type=none --opt device=<UPLO
 #### Run container
 
 - QA
-  docker run -v edu_organizer_qa_uploads:/app/uploads -d -p 8081:8080 -e NODE_ENV=qa --env-file .env.qa --add-host host.docker.internal:host-gateway edu-organizer-backend-qa
+  docker run -v edu_organizer_qa_uploads_new:/app/uploads -d -p 8081:8080 -e NODE_ENV=qa --env-file .env.qa --add-host host.docker.internal:host-gateway edu-organizer-backend-qa
 
 - PRD
-  docker run -v edu_organizer_prd_uploads:/app/uploads -d -p 8080:8080 -e NODE_ENV=prd --env-file .env.prd --add-host host.docker.internal:host-gateway edu-organizer-backend-prd
+  docker run -v edu_organizer_prd_uploads_new:/app/uploads -d -p 8080:8080 -e NODE_ENV=prd --env-file .env.prd --add-host host.docker.internal:host-gateway edu-organizer-backend-prd

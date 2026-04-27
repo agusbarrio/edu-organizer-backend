@@ -5,8 +5,11 @@ const morgan = require('morgan');
 const ERRORS = require('./constants/errors');
 const { envConfig } = require('./config/envConfig');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const passport = require('passport');
 const cors = require('cors')
 const app = express();
+require('./config/passport');
 const _ = require('lodash');
 
 app.set('port', envConfig.PORT);
@@ -14,6 +17,21 @@ app.set('port', envConfig.PORT);
 app.use(helmet());
 app.use(cookieParser());
 app.use(express.json());
+app.use(
+  session({
+    name: 'edu_oauth.sid',
+    secret: envConfig.JWT_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 15 * 60 * 1000,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+    },
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 if (envConfig.LOGGING) app.use(morgan('combined'));
 
 //cors

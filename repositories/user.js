@@ -2,7 +2,7 @@
 const { STATUSES } = require('../constants/user');
 const db = require('../models');
 const ABMRepository = require('./ABMRepository');
-const { USER_VARIANTS_OPTIONS } = require('./variants/user');
+const { USER_VARIANTS, USER_VARIANTS_OPTIONS } = require('./variants/user');
 
 class UserRepository extends ABMRepository {
   constructor() {
@@ -10,6 +10,12 @@ class UserRepository extends ABMRepository {
   }
   getOneByEmail(email, variant, transaction) {
     return this.model.findOne({ where: { email }, transaction, ...USER_VARIANTS_OPTIONS?.[variant] });
+  }
+  getOneByIdWithLoginInclude(id, transaction) {
+    return this.model.findByPk(id, {
+      transaction,
+      ...USER_VARIANTS_OPTIONS[USER_VARIANTS.LOGIN],
+    });
   }
   getOneActiveByEmailAndPassword({ email, password }, transaction) {
     return this.model.findOne({
