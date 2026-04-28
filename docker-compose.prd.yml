@@ -1,0 +1,16 @@
+services:
+  backend:
+    image: edu-organizer-backend-prd
+    ports:
+      - "8080:8080"
+    environment:
+      NODE_ENV: prd
+    env_file:
+      - .env.prd
+    volumes:
+      - edu_organizer_prd_uploads_new:/app/uploads
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  edu_organizer_prd_uploads_new:
