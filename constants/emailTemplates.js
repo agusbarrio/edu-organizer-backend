@@ -1,15 +1,6 @@
 'use strict'
 
 const EMAIL_TEMPLATES = {
-    VERIFY_ACCOUNT: {
-        key: 'VERIFY_ACCOUNT',
-        subject: 'Verificación de cuenta - EduOrganizer',
-        html: `
-            <h1>Verificá tu cuenta</h1>
-            <p><a href="{{url}}">Verificar</a></p>
-            <p>Si no has solicitado este registro, por favor ignora este correo.</p>
-        `,
-    },
     RECOVER_PASSWORD: {
         key: 'RECOVER_PASSWORD',
         subject: 'Recuperar contraseña - EduOrganizer',
@@ -18,6 +9,17 @@ const EMAIL_TEMPLATES = {
             <p>Para recuperar tu contraseña hacé click en el siguiente enlace</p>
             <p><a href="{{url}}">Reiniciar contraseña</a></p>
             <p>Si no solicitaste recuperar tu contraseña, por favor ignora este correo</p>
+        `,
+    },
+    COMPLETE_ACCOUNT: {
+        key: 'COMPLETE_ACCOUNT',
+        subject: 'Completá tu cuenta - EduOrganizer',
+        html: `
+            <h1>Completá tu cuenta</h1>
+            <p>Un administrador te invitó a EduOrganizer.</p>
+            <p>Para completar tu cuenta y definir tu contraseña, hacé click en el siguiente enlace:</p>
+            <p><a href="{{url}}">Completar cuenta</a></p>
+            <p>Si no esperabas este correo, podés ignorarlo.</p>
         `,
     },
 }

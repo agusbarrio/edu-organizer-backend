@@ -46,11 +46,6 @@ const authServices = {
     if (user.status !== STATUSES.ACTIVE) throw ERRORS.E403_2;
     return buildLoginJwt(user);
   },
-  verifyAccount: async ({ token }) => {
-    const decoded = encryptationServices.validToken(token, TOKENS.VERIFY_ACCOUNT)
-    const tokenData = decoded.data
-    await userRepositories.editOneById(tokenData.id, { status: STATUSES.ACTIVE })
-  },
   logout: async ({ sessionToken, courseToken }) => {
     //TODO invalidar token de sesión
     //TODO invalidar token de curso
@@ -95,8 +90,20 @@ const authServices = {
   resetPassword: async ({ token, password }) => {
     const decoded = encryptationServices.validToken(token, TOKENS.RECOVER_PASSWORD)
     const tokenData = decoded.data
+    const user = await userRepositories.getOneById(tokenData.id)
+    if (!user) throw ERRORS.E404_1
+    if (user.status !== STATUSES.ACTIVE) throw ERRORS.E409_4
     const encryptedPassword = await encryptationServices.convertTextToHash(password)
     await userRepositories.editOneById(tokenData.id, { password: encryptedPassword })
+  },
+  completeAccount: async ({ token, firstName, lastName, password }) => {
+    const decoded = encryptationServices.validToken(token, TOKENS.COMPLETE_ACCOUNT)
+    const tokenData = decoded.data
+    const user = await userRepositories.getOneById(tokenData.id)
+    if (!user) throw ERRORS.E404_1
+    if (user.status !== STATUSES.PENDING) throw ERRORS.E409_2
+    const encryptedPassword = await encryptationServices.convertTextToHash(password)
+    await userRepositories.editOneById(tokenData.id, { firstName, lastName, password: encryptedPassword, status: STATUSES.ACTIVE })
   },
 };
 

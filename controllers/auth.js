@@ -36,18 +36,6 @@ const authControllers = {
       next(error)
     }
   },
-  verifyAccount: async (req, res, next) => {
-    try {
-      const schema = validator.createSchema({
-        token: validator.token({ required: { value: true } }),
-      });
-      const { token } = await validator.validate(schema, req.body);
-      await authServices.verifyAccount({ token });
-      res.send('Account verified');
-    } catch (error) {
-      next(error);
-    }
-  },
   recoverPassword: async (req, res, next) => {
     try {
       const schema = validator.createSchema({
@@ -69,6 +57,21 @@ const authControllers = {
       const { token, password } = await validator.validate(schema, req.body);
       await authServices.resetPassword({ token, password });
       res.send('Password reset');
+    } catch (error) {
+      next(error);
+    }
+  },
+  completeAccount: async (req, res, next) => {
+    try {
+      const schema = validator.createSchema({
+        token: validator.token({ required: { value: true } }),
+        firstName: validator.name({ required: { value: true } }),
+        lastName: validator.name({ required: { value: true } }),
+        password: validator.password(),
+      });
+      const { token, firstName, lastName, password } = await validator.validate(schema, req.body);
+      await authServices.completeAccount({ token, firstName, lastName, password });
+      res.send('Account completed');
     } catch (error) {
       next(error);
     }

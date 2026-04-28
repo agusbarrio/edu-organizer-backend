@@ -8,8 +8,8 @@ router.get('/oauth/session', authControllers.oauthSession);
 router.post('/login', authControllers.login);
 router.get('/logout', authControllers.logout);
 router.post('/course/:shortId/login', authControllers.courseLogin);
-router.put('/verifyAccount', authControllers.verifyAccount);
 router.post('/recoverPassword', authControllers.recoverPassword);
 router.put('/resetPassword', authControllers.resetPassword);
+router.put('/completeAccount', authControllers.completeAccount);
 
 module.exports = router;
