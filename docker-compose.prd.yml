@@ -1,5 +1,6 @@
 services:
   backend:
+    container_name: edu-organizer-backend-prd
     image: edu-organizer-backend-prd
     ports:
       - "8080:8080"

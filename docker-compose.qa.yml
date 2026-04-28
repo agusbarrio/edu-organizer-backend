@@ -1,5 +1,6 @@
 services:
   backend:
+    container_name: edu-organizer-backend-qa
     image: edu-organizer-backend-qa
     ports:
       - "8081:8080"
