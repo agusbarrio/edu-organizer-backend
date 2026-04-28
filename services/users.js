@@ -24,7 +24,7 @@ const usersServices = {
         return users
     },
     getMyUser: async function ({ user }) {
-        const myUser = await userRepositories.getOneById(user.id)
+        const myUser = await userRepositories.getOneByIdWithVariant(user.id, USER_VARIANTS.FULL)
         return myUser
     },
     editMyUser: async function ({ firstName, lastName, user }) {

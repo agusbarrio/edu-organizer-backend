@@ -17,6 +17,12 @@ class UserRepository extends ABMRepository {
       ...USER_VARIANTS_OPTIONS[USER_VARIANTS.LOGIN],
     });
   }
+  getOneByIdWithVariant(id, variant, transaction) {
+    return this.model.findByPk(id, {
+      transaction,
+      ...USER_VARIANTS_OPTIONS?.[variant],
+    });
+  }
   getOneActiveByEmailAndPassword({ email, password }, transaction) {
     return this.model.findOne({
       where: { email, password, status: STATUSES.ACTIVE },

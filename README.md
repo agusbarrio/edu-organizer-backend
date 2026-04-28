@@ -19,7 +19,20 @@ docker volume create edu_organizer_qa_uploads --opt type=none --opt device=<UPLO
 #### Run container
 
 - QA
-  docker compose -f docker-compose.qa.yml up -d
+  docker compose -p eduorg-qa -f docker-compose.qa.yml up -d
 
 - PRD
-  docker compose -f docker-compose.prd.yml up -d
+  docker compose -p eduorg-prd -f docker-compose.prd.yml up -d
+
+#### Stop container
+
+- QA
+  docker compose -p eduorg-qa -f docker-compose.qa.yml down
+
+- PRD
+  docker compose -p eduorg-prd -f docker-compose.prd.yml down
+
+#### Important
+
+- If you deploy QA and PRD from the same repository path, always pass `-p` with different project names.
+- Do not run `docker compose ...` without `-p` in this repository, or services from QA/PRD can be recreated unexpectedly.
