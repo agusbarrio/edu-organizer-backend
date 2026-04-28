@@ -14,3 +14,4 @@ services:
 
 volumes:
   edu_organizer_prd_uploads_new:
+    external: true
