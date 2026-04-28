@@ -57,6 +57,19 @@ const usersControllers = {
             next(error)
         }
     },
+    editPermissionsByOrganization: async (req, res, next) => {
+        try {
+            const schema = validator.createSchema({
+                id: validator.id({ required: { value: true } }),
+                permissions: validator.array({ required: { value: true } }).of(validator.oneOf(['ADMIN', 'TEACHER'], { required: { value: true } }))
+            })
+            const { id, permissions } = await validator.validate(schema, { id: req.params.id, permissions: req.body.permissions })
+            await usersServices.editPermissionsByOrganization({ id, permissions, user: req.user })
+            res.send('Permissions edited')
+        } catch (error) {
+            next(error)
+        }
+    },
 }
 
 module.exports = usersControllers;

@@ -11,6 +11,8 @@ const ERRORS = {
   E403_1: { errorCode: 'E403_1', message: 'You do not have permission to access this resource', status: 403 },
   E403_2: { errorCode: 'E403_2', message: 'Inactive user', status: 403 },
   E403_3: { errorCode: 'E403_3', message: 'Organization owner cannot be deleted', status: 403 },
+  E403_4: { errorCode: 'E403_4', message: 'Only the owner can edit its own permissions', status: 403 },
+  E403_5: { errorCode: 'E403_5', message: 'Owner permission is not editable', status: 403 },
   //404
   E404: { errorCode: 'E404', message: 'Not found.', status: 404 },
   E404_1: { errorCode: 'E404_1', message: 'User not found.', status: 404 },

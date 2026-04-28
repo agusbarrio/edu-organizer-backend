@@ -9,6 +9,7 @@ router.get('/organization', authMiddlewares.userAccess([USER_PERMISSIONS.ADMIN])
 router.post('/organization', authMiddlewares.userAccess([USER_PERMISSIONS.ADMIN]), usersControllers.createByOrganization);
 router.delete('/:id/organization', authMiddlewares.userAccess([USER_PERMISSIONS.ADMIN]), usersControllers.deleteByOrganization);
 router.post('/:id/organization/resendInvitation', authMiddlewares.userAccess([USER_PERMISSIONS.ADMIN]), usersControllers.resendInvitationByOrganization);
+router.put('/:id/organization/permissions', authMiddlewares.userAccess([USER_PERMISSIONS.ADMIN]), usersControllers.editPermissionsByOrganization);
 
 
 
