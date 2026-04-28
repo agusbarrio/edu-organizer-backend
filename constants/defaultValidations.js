@@ -33,7 +33,7 @@ const DEFAULT_VALIDATIONS = {
     required: { value: false },
     max: { value: 255 },
     matches: {
-      value: /^[a-zA-Z\s]*$/,
+      value: /^[\p{L}\s]*$/u,
     },
   }
 };
