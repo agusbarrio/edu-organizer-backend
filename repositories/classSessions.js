@@ -7,7 +7,11 @@ class ClassSessionsRepository extends ABMRepository {
     super(db.ClassSession);
   }
   getAllByOrganization(organizationId, variant) {
-    return this.model.findAll({ where: { organizationId }, ...CLASS_SESSION_VARIANTS_OPTIONS?.[variant] })
+    return this.model.findAll({
+      where: { organizationId },
+      order: [['date', 'DESC'], ['id', 'DESC']],
+      ...CLASS_SESSION_VARIANTS_OPTIONS?.[variant]
+    })
   }
   getByIdAndOrganizationId({ id, organizationId }, variant = CLASS_SESSION_VARIANTS.SIMPLE, transaction) {
     return this.model.findOne({
