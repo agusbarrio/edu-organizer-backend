@@ -78,10 +78,9 @@ const usersServices = {
         const targetUserWithPermissions = await userRepositories.getOneByIdWithLoginInclude(id)
         const targetPermissions = (targetUserWithPermissions?.permissions || []).map((permission) => permission.permission)
         const targetIsOwner = targetPermissions.includes(USER_PERMISSIONS.OWNER)
-        const requesterIsOwner = (user.permissions || []).includes(USER_PERMISSIONS.OWNER)
 
         if (permissions.includes(USER_PERMISSIONS.OWNER)) throw ERRORS.E403_5
-        if (targetIsOwner && (!requesterIsOwner || user.id !== targetUser.id)) throw ERRORS.E403_4
+        if (targetIsOwner && user.id !== targetUser.id) throw ERRORS.E403_4
 
         const nextPermissions = targetIsOwner
             ? _.uniq([...permissions, USER_PERMISSIONS.OWNER])

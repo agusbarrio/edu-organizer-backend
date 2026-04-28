@@ -5,7 +5,7 @@ const filesRepositories = require("../repositories/files");
 const { STUDENT_VARIANTS } = require("../repositories/variants/student");
 const fileUploadServices = require("./files");
 
-const { validTargetStudent, validTargetCourse, validTargetFile, validTargetFiles } = require("./targetEntities");
+const { validTargetStudent, validTargetCourse, validTargetFile, validTargetFiles, validTargetCourseStudents } = require("./targetEntities");
 const fileSystemServices = require("./fileSystem");
 const studentFilesRepositories = require("../repositories/studentFiles");
 const { isEmpty } = require("lodash");
@@ -65,6 +65,23 @@ const studentsServices = {
         })
 
     },
+    editOneByCourse: async function ({ id, course, firstName, lastName, avatarFileId, birthDate, additionalInfo }) {
+        await db.sequelize.transaction(async (t) => {
+            const organizationId = course.organizationId
+            await validTargetCourseStudents({ courseId: course.id, studentsIds: [id] }, t)
+            const student = await validTargetStudent({ organizationId, id }, t)
+            if (avatarFileId) {
+                const file = await validTargetFile({ organizationId, id: avatarFileId }, t)
+                filesRepositories.editEntity(file, { inUse: true }, t)
+            }
+            if (student.avatarFileId && student.avatarFileId !== avatarFileId) {
+                const oldFile = await filesRepositories.getOneById(student.avatarFileId, t)
+                await filesRepositories.deleteById(student.avatarFileId, t)
+                await fileSystemServices.deleteFile(oldFile.path)
+            }
+            await studentRepositories.editEntity(student, { firstName, lastName, avatarFileId, birthDate, additionalInfo }, t)
+        })
+    },
     getAll: async function ({ user, withCourse, courseId }) {
         const students = await studentRepositories.getAllByOrganization({ organizationId: user.organizationId, withCourse, courseId })
         return students
@@ -99,6 +116,20 @@ const studentsServices = {
             return { ...student.toJSON(), avatar: avatarResult }
         }))
         return result
+    },
+    getOneByCourse: async function ({ id, course }) {
+        await validTargetCourseStudents({ courseId: course.id, studentsIds: [id] })
+        const student = await studentRepositories.getByIdAndOrganizationId({ id, organizationId: course.organizationId }, STUDENT_VARIANTS.AVATAR)
+        if (!student) throw ERRORS.E404_3;
+        if (!student.avatar) return student
+        const base64 = await fileUploadServices.cleanGetBase64(student.avatar);
+        const avatarResult = {
+            id: student.avatar.id,
+            file: base64,
+            name: student.avatar.name,
+            mimetype: student.avatar.mimetype
+        }
+        return { ...student.toJSON(), avatar: avatarResult }
     },
     getOne: async function ({ id, user }) {
         const student = await studentRepositories.getByIdAndOrganizationId({ id, organizationId: user.organizationId }, STUDENT_VARIANTS.FULL);

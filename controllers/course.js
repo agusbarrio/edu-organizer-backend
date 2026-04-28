@@ -23,6 +23,18 @@ const courseControllers = {
             next(error)
         }
     },
+    getStudent: async (req, res, next) => {
+        try {
+            const schema = validator.createSchema({
+                id: validator.id(),
+            })
+            const { id } = await validator.validate(schema, { id: req.params.id })
+            const student = await studentsServices.getOneByCourse({ id, course: req.course })
+            res.json(student)
+        } catch (error) {
+            next(error)
+        }
+    },
     newClass: async (req, res, next) => {
         try {
             const schema = validator.createSchema({
@@ -54,6 +66,31 @@ const courseControllers = {
 
             await studentsServices.create({ organizationId, courseId, firstName, lastName, avatarFileId, additionalInfo })
             res.send('Student created into current course')
+        } catch (error) {
+            next(error)
+        }
+    },
+    editStudent: async (req, res, next) => {
+        try {
+            const schema = validator.createSchema({
+                id: validator.id(),
+                firstName: validator.text({ required: { value: true } }),
+                lastName: validator.text({ required: { value: true } }),
+                avatarFileId: validator.id({ required: { value: false } }),
+                birthDate: validator.date({ required: { value: false } }),
+                additionalInfo: validator.anyObject()
+            })
+            const { id, firstName, lastName, avatarFileId, birthDate, additionalInfo } = await validator.validate(schema, { ...req.body, id: req.params.id })
+            await studentsServices.editOneByCourse({
+                id,
+                course: req.course,
+                firstName,
+                lastName,
+                avatarFileId,
+                birthDate,
+                additionalInfo
+            })
+            res.send('Student edited into current course')
         } catch (error) {
             next(error)
         }
