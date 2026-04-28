@@ -58,7 +58,7 @@ router.get('/google/callback', (req, res, next) => {
 
 router.get('/microsoft', (req, res, next) => {
   if (!microsoftConfigured()) return next(ERRORS.E503_1);
-  passportConfigured.authenticate('microsoft')(req, res, next);
+  passport.authenticate('microsoft')(req, res, next);
 });
 
 router.get('/microsoft/callback', (req, res, next) => {
