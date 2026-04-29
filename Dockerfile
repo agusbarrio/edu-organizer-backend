@@ -13,6 +13,7 @@ COPY ./models ./models
 COPY ./repositories ./repositories
 COPY ./routes ./routes
 COPY ./services ./services
+COPY ./utils ./utils
 COPY ./index.js ./index.js
 
 # Instala las dependencias
