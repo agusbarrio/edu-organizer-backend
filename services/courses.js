@@ -11,6 +11,9 @@ const moment = require("moment");
 const xlsx = require("xlsx-js-style");
 const { normalizeOptionalDateOnlyInput } = require("../utils/dateOnly");
 
+/** Excel worksheet tab names are limited to 31 characters (see book_append_sheet). */
+const EXCEL_SHEET_NAME_MAX_LEN = 31;
+
 const coursesServices = {
     create: async function ({ user, name, accessPin, students = [], teacherIds = [], studentAttendanceFormData = [], studentAdditionalInfoFormData = [], metadata }) {
         await db.sequelize.transaction(async (t) => {
@@ -195,8 +198,9 @@ const coursesServices = {
         const ws = xlsx.utils.aoa_to_sheet([firstRow, ...nextRows, lastRow]);
         const wb = xlsx.utils.book_new();
 
-        const fileName = course.name
-        xlsx.utils.book_append_sheet(wb, ws, fileName);
+        const fileName = course.name || "course";
+        const sheetName = String(fileName).slice(0, EXCEL_SHEET_NAME_MAX_LEN);
+        xlsx.utils.book_append_sheet(wb, ws, sheetName);
         const buffer = xlsx.write(wb, { type: 'buffer', bookType: 'xlsx' });
         return { buffer, fileName };
     }
