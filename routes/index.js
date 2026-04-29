@@ -12,6 +12,7 @@ router.use('/organizations', require('./organizations'));
 router.use('/organization', require('./organization'));
 router.use('/user', require('./user'));
 router.use('/classSessions', require('./classSessions'));
+router.use('/teacher/courses', require('./teacherCourses'));
 router.use('/files', require('./files'));
 
 module.exports = router;

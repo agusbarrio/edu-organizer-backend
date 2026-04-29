@@ -6,6 +6,7 @@ const COURSE_VARIANTS = {
     FULL: 'FULL',
     SIMPLE: 'SIMPLE',
     REPORT: 'REPORT',
+    TEACHER_ACCESS: 'TEACHER_ACCESS',
 }
 
 const COURSE_VARIANTS_OPTIONS = {
@@ -48,6 +49,9 @@ const COURSE_VARIANTS_OPTIONS = {
                 attributes: ['id'],
             }
         ],
+    },
+    [COURSE_VARIANTS.TEACHER_ACCESS]: {
+        attributes: ['id', 'name', 'organizationId', 'shortId', 'studentAttendanceFormData', 'studentAdditionalInfoFormData', 'metadata'],
     },
     [COURSE_VARIANTS.REPORT]: {
         attributes: ['id', 'name', 'organizationId', 'shortId', 'accessPin', 'iv', 'studentAttendanceFormData', 'studentAdditionalInfoFormData', 'metadata'],

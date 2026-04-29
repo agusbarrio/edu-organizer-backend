@@ -3,7 +3,7 @@ const db = require("../models");
 const coursesRepositories = require("../repositories/courses");
 const { COURSE_VARIANTS } = require("../repositories/variants/courses");
 const encryptationServices = require("./encryptation");
-const { validTargetCourse, validTargetCourses, validTargetStudents, validTargetFiles } = require("./targetEntities");
+const { validTargetCourse, validTargetCourses, validTargetStudents, validTargetFiles, validTargetTeachersForCourse } = require("./targetEntities");
 const studentRepositories = require("../repositories/student");
 const _ = require("lodash");
 const filesRepositories = require("../repositories/files");
@@ -11,7 +11,7 @@ const moment = require("moment");
 const xlsx = require("xlsx-js-style");
 
 const coursesServices = {
-    create: async function ({ user, name, accessPin, students = [], studentAttendanceFormData = [], studentAdditionalInfoFormData = [], metadata }) {
+    create: async function ({ user, name, accessPin, students = [], teacherIds = [], studentAttendanceFormData = [], studentAdditionalInfoFormData = [], metadata }) {
         await db.sequelize.transaction(async (t) => {
             const shortId = encryptationServices.createShortId();
             let encrypted
@@ -27,6 +27,12 @@ const coursesServices = {
                 metadata
             }, t);
 
+            const uniqueTeacherIds = _.uniq(teacherIds || []);
+            if (!_.isEmpty(uniqueTeacherIds)) {
+                await validTargetTeachersForCourse({ organizationId: user.organizationId, ids: uniqueTeacherIds }, t);
+                await newCourse.setTeachers(uniqueTeacherIds, { transaction: t });
+            }
+
             const existentStudents = students.filter(student => !student.isNew && student.id)
             if (!_.isEmpty(existentStudents)) {
                 await validTargetStudents({ organizationId: user.organizationId, ids: existentStudents.map(student => student.id) }, t)
@@ -40,7 +46,7 @@ const coursesServices = {
             }
         })
     },
-    editOne: async function ({ id, name, accessPin, user, students = [], studentAttendanceFormData = [], studentAdditionalInfoFormData = [], metadata }) {
+    editOne: async function ({ id, name, accessPin, user, students = [], teacherIds, studentAttendanceFormData = [], studentAdditionalInfoFormData = [], metadata }) {
         await db.sequelize.transaction(async (t) => {
             let encrypted
             if (accessPin) encrypted = encryptationServices.encrypt(accessPin);
@@ -53,6 +59,14 @@ const coursesServices = {
                 studentAdditionalInfoFormData,
                 metadata
             }, t)
+
+            if (teacherIds !== undefined) {
+                const uniqueTeacherIds = _.uniq(teacherIds || []);
+                if (!_.isEmpty(uniqueTeacherIds)) {
+                    await validTargetTeachersForCourse({ organizationId: user.organizationId, ids: uniqueTeacherIds }, t);
+                }
+                await course.setTeachers(uniqueTeacherIds, { transaction: t });
+            }
 
             const existentStudents = students.filter(student => !student.isNew && student.id)
             if (!_.isEmpty(existentStudents)) {

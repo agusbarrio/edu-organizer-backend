@@ -1,4 +1,6 @@
 const ERRORS = require("../constants/errors");
+const { USER_PERMISSIONS } = require("../constants/userPermission");
+const db = require("../models");
 const classSessionsRepositories = require("../repositories/classSessions");
 const coursesRepositories = require("../repositories/courses");
 const filesRepositories = require("../repositories/files");
@@ -64,7 +66,28 @@ const targetEntitieServices = {
         }
         );
         return files;
-    }
+    },
+    validTargetTeachersForCourse: async function ({ organizationId, ids }, transaction) {
+        if (!ids || ids.length === 0) {
+            return [];
+        }
+        const users = await db.User.findAll({
+            where: { id: ids, organizationId },
+            transaction,
+            include: [{
+                model: db.UserPermission,
+                as: 'permissions',
+                where: { permission: USER_PERMISSIONS.TEACHER },
+                required: true,
+                attributes: ['permission'],
+            }],
+            attributes: ['id', 'organizationId'],
+        });
+        if (users.length !== ids.length) {
+            throw ERRORS.E404_1;
+        }
+        return users;
+    },
 }
 
 module.exports = targetEntitieServices

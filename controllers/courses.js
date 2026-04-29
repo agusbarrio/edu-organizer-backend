@@ -28,10 +28,11 @@ const coursesControllers = {
                 })),
                 studentAttendanceFormData: validator.formFieldsDataList(),
                 studentAdditionalInfoFormData: validator.formFieldsDataList(),
-                metadata: validator.anyObject()
+                metadata: validator.anyObject(),
+                teacherIds: Yup.array().of(validator.id()).default([]),
             })
-            const { name, accessPin, students, studentAttendanceFormData, studentAdditionalInfoFormData, metadata } = await validator.validate(schema, req.body)
-            await coursesServices.create({ name, accessPin, user: req.user, students, studentAttendanceFormData, studentAdditionalInfoFormData, metadata })
+            const { name, accessPin, students, studentAttendanceFormData, studentAdditionalInfoFormData, metadata, teacherIds } = await validator.validate(schema, req.body)
+            await coursesServices.create({ name, accessPin, user: req.user, students, teacherIds, studentAttendanceFormData, studentAdditionalInfoFormData, metadata })
             res.send('Created')
         } catch (error) {
             next(error)
@@ -63,10 +64,11 @@ const coursesControllers = {
                 })),
                 studentAttendanceFormData: validator.formFieldsDataList(),
                 studentAdditionalInfoFormData: validator.formFieldsDataList(),
-                metadata: validator.anyObject()
+                metadata: validator.anyObject(),
+                teacherIds: Yup.array().of(validator.id()).optional(),
             })
-            const { id, name, accessPin, students, studentAttendanceFormData, studentAdditionalInfoFormData, metadata } = await validator.validate(schema, { name: req.body.name, accessPin: req.body.accessPin, id: req.params.id, students: req.body.students, studentAttendanceFormData: req.body.studentAttendanceFormData, studentAdditionalInfoFormData: req.body.studentAdditionalInfoFormData, metadata: req.body.metadata })
-            await coursesServices.editOne({ id, name, accessPin, user: req.user, students, studentAttendanceFormData, studentAdditionalInfoFormData, metadata })
+            const { id, name, accessPin, students, teacherIds, studentAttendanceFormData, studentAdditionalInfoFormData, metadata } = await validator.validate(schema, { name: req.body.name, accessPin: req.body.accessPin, id: req.params.id, students: req.body.students, teacherIds: req.body.teacherIds, studentAttendanceFormData: req.body.studentAttendanceFormData, studentAdditionalInfoFormData: req.body.studentAdditionalInfoFormData, metadata: req.body.metadata })
+            await coursesServices.editOne({ id, name, accessPin, user: req.user, students, teacherIds, studentAttendanceFormData, studentAdditionalInfoFormData, metadata })
             res.send('Edited')
         } catch (error) {
             next(error)

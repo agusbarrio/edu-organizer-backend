@@ -56,6 +56,36 @@ class CoursesRepository extends ABMRepository {
             transaction
         })
     }
+    getAllByTeacherId(teacherId, organizationId) {
+        return this.model.findAll({
+            where: { organizationId },
+            attributes: ['id', 'name', 'shortId'],
+            include: [{
+                model: db.User,
+                as: 'teachers',
+                where: { id: teacherId },
+                required: true,
+                attributes: [],
+                through: { attributes: [] },
+            }],
+            order: [['name', 'ASC']],
+        })
+    }
+    getByIdAssignedToTeacher({ id, teacherId, organizationId }, variant, transaction) {
+        return this.model.findOne({
+            where: { id, organizationId },
+            transaction,
+            include: [{
+                model: db.User,
+                as: 'teachers',
+                where: { id: teacherId },
+                required: true,
+                attributes: [],
+                through: { attributes: [] },
+            }],
+            ...COURSE_VARIANTS_OPTIONS?.[variant],
+        })
+    }
 }
 
 const coursesRepositories = new CoursesRepository();
