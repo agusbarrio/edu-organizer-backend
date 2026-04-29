@@ -9,6 +9,7 @@ const { validTargetStudent, validTargetCourse, validTargetFile, validTargetFiles
 const fileSystemServices = require("./fileSystem");
 const studentFilesRepositories = require("../repositories/studentFiles");
 const { isEmpty } = require("lodash");
+const { normalizeOptionalDateOnlyInput } = require("../utils/dateOnly");
 
 const studentsServices = {
     create: async function ({ organizationId, firstName, lastName, courseId, avatarFileId, birthDate, additionalInfo, filesIds }) {
@@ -20,7 +21,7 @@ const studentsServices = {
             }
 
 
-            const student = await studentRepositories.create({ organizationId, firstName, lastName, courseId, avatarFileId, birthDate, additionalInfo }, t)
+            const student = await studentRepositories.create({ organizationId, firstName, lastName, courseId, avatarFileId, birthDate: normalizeOptionalDateOnlyInput(birthDate), additionalInfo }, t)
 
             if (!isEmpty(filesIds)) {
                 const filesEntities = await validTargetFiles({ organizationId, ids: filesIds }, t)
@@ -61,7 +62,7 @@ const studentsServices = {
                     await filesRepositories.updateById(filesToUse, { inUse: true }, t)
                 }
             }
-            await studentRepositories.editEntity(student, { firstName, lastName, courseId, avatarFileId, birthDate, additionalInfo }, t)
+            await studentRepositories.editEntity(student, { firstName, lastName, courseId, avatarFileId, birthDate: normalizeOptionalDateOnlyInput(birthDate), additionalInfo }, t)
         })
 
     },
@@ -79,7 +80,7 @@ const studentsServices = {
                 await filesRepositories.deleteById(student.avatarFileId, t)
                 await fileSystemServices.deleteFile(oldFile.path)
             }
-            await studentRepositories.editEntity(student, { firstName, lastName, avatarFileId, birthDate, additionalInfo }, t)
+            await studentRepositories.editEntity(student, { firstName, lastName, avatarFileId, birthDate: normalizeOptionalDateOnlyInput(birthDate), additionalInfo }, t)
         })
     },
     getAll: async function ({ user, withCourse, courseId }) {

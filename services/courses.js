@@ -9,6 +9,7 @@ const _ = require("lodash");
 const filesRepositories = require("../repositories/files");
 const moment = require("moment");
 const xlsx = require("xlsx-js-style");
+const { normalizeOptionalDateOnlyInput } = require("../utils/dateOnly");
 
 const coursesServices = {
     create: async function ({ user, name, accessPin, students = [], teacherIds = [], studentAttendanceFormData = [], studentAdditionalInfoFormData = [], metadata }) {
@@ -42,7 +43,12 @@ const coursesServices = {
             if (!_.isEmpty(studentsToCreate)) {
                 const files = await validTargetFiles({ organizationId: user.organizationId, ids: studentsToCreate.map(student => student.studentData.avatarFileId).filter(id => id) }, t)
                 await filesRepositories.updateById(files.map(file => file.id), { inUse: true }, t)
-                await studentRepositories.bulkCreate(studentsToCreate.map(student => ({ ...student.studentData, organizationId: user.organizationId, courseId: newCourse.id })), t)
+                await studentRepositories.bulkCreate(studentsToCreate.map(student => ({
+                    ...student.studentData,
+                    birthDate: normalizeOptionalDateOnlyInput(student.studentData?.birthDate),
+                    organizationId: user.organizationId,
+                    courseId: newCourse.id
+                })), t)
             }
         })
     },
@@ -77,7 +83,12 @@ const coursesServices = {
             if (!_.isEmpty(studentsToCreate)) {
                 const files = await validTargetFiles({ organizationId: user.organizationId, ids: studentsToCreate.map(student => student.studentData.avatarFileId).filter(id => id) }, t)
                 await filesRepositories.updateById(files.map(file => file.id), { inUse: true }, t)
-                await studentRepositories.bulkCreate(studentsToCreate.map(student => ({ ...student.studentData, organizationId: user.organizationId, courseId: course.id })), t)
+                await studentRepositories.bulkCreate(studentsToCreate.map(student => ({
+                    ...student.studentData,
+                    birthDate: normalizeOptionalDateOnlyInput(student.studentData?.birthDate),
+                    organizationId: user.organizationId,
+                    courseId: course.id
+                })), t)
             }
         })
     },

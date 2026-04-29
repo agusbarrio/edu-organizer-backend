@@ -10,13 +10,15 @@ const validator = require('../services/validator');
 const coursesRepositories = require("../repositories/courses");
 const { COURSE_VARIANTS } = require("../repositories/variants/courses");
 const moment = require('moment')
+const { normalizeDateOnlyInput } = require('../utils/dateOnly')
 
 const classSessionsServices = {
     newCourseClass: async ({ course, presentStudentsData = [], date = moment() }) => {
         await db.sequelize.transaction(async (t) => {
             const { id: courseId, organizationId } = course
             await validTargetCourseStudents({ courseId, studentsIds: presentStudentsData.map(student => student.id) }, t)
-            const classSession = await classSessionsRepositories.create({ courseId, organizationId, date }, t)
+            const dateOnly = normalizeDateOnlyInput(date)
+            const classSession = await classSessionsRepositories.create({ courseId, organizationId, date: dateOnly }, t)
             const courseStudents = await studentRepositories.getAllByCourseId(courseId, t)
             if (!_.isEmpty(courseStudents)) {
                 const classSessionStudentsToCreate = courseStudents.map(student => ({
@@ -64,7 +66,7 @@ const classSessionsServices = {
             })
             const { presentStudentsData } = await validator.validate(schema, { presentStudentsData: presentStudentsDataParam })
             await validTargetCourseStudents({ courseId: course.id, studentsIds: presentStudentsData.map(student => student.id) }, t)
-            await classSessionsRepositories.editEntity(classSession, { date: moment(date) }, t)
+            await classSessionsRepositories.editEntity(classSession, { date: normalizeDateOnlyInput(date) }, t)
             await classSessionStudentsRepositories.deleteByClassSessionId(classSession.id, t)
             const courseStudents = course?.students ?? []
             if (!_.isEmpty(courseStudents)) {
