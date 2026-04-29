@@ -84,9 +84,10 @@ const teacherCourseControllers = {
         firstName: validator.text({ required: { value: true } }),
         lastName: validator.text({ required: { value: true } }),
         avatarFileId: validator.id({ required: { value: false } }),
+        birthDate: validator.date({ required: { value: false } }),
         additionalInfo: validator.anyObject(),
       });
-      const { firstName, lastName, avatarFileId, additionalInfo } = await validator.validate(
+      const { firstName, lastName, avatarFileId, birthDate, additionalInfo } = await validator.validate(
         schema,
         req.body
       );
@@ -97,6 +98,7 @@ const teacherCourseControllers = {
         firstName,
         lastName,
         avatarFileId,
+        birthDate,
         additionalInfo,
       });
       res.send('Student created into current course');
