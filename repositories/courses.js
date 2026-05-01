@@ -10,7 +10,8 @@ class CoursesRepository extends ABMRepository {
         return this.model.findAll({
             where: {
                 organizationId
-            }
+            },
+            order: [['name', 'ASC']],
         })
     }
     getOneByShortId(shortId, variant) {
