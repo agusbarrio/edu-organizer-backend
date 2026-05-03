@@ -120,7 +120,7 @@ const studentsServices = {
     },
     getOneByCourse: async function ({ id, course }) {
         await validTargetCourseStudents({ courseId: course.id, studentsIds: [id] })
-        const student = await studentRepositories.getByIdAndOrganizationId({ id, organizationId: course.organizationId }, STUDENT_VARIANTS.AVATAR)
+        const student = await studentRepositories.getByIdAndOrganizationId({ id, organizationId: course.organizationId }, STUDENT_VARIANTS.FULL)
         if (!student) throw ERRORS.E404_3;
         if (!student.avatar) return student
         const base64 = await fileUploadServices.cleanGetBase64(student.avatar);
