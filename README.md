@@ -16,14 +16,6 @@ docker volume create edu_organizer_qa_uploads --opt type=none --opt device=<UPLO
 - PRD
   docker build -t edu-organizer-backend-prd .
 
-#### Run container
-
-- QA
-  docker compose -p eduorg-qa -f docker-compose.qa.yml up -d
-
-- PRD
-  docker compose -p eduorg-prd -f docker-compose.prd.yml up -d
-
 #### Stop container
 
 - QA
@@ -31,6 +23,14 @@ docker volume create edu_organizer_qa_uploads --opt type=none --opt device=<UPLO
 
 - PRD
   docker compose -p eduorg-prd -f docker-compose.prd.yml down
+
+#### Run container
+
+- QA
+  docker compose -p eduorg-qa -f docker-compose.qa.yml up -d
+
+- PRD
+  docker compose -p eduorg-prd -f docker-compose.prd.yml up -d
 
 #### Important
 
