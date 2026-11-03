@@ -1,18 +1,65 @@
 const filesRepositories = require("../repositories/files");
 const fileSystemServices = require("./fileSystem");
 const db = require("../models");
-const ERRORS = require("../constants/errors");
+const mime = require("mime-types");
+const { v4: uuidv4 } = require("uuid");
+
+const pendingPromotions = new Map();
+
+function extensionFor(mimetype) {
+    return mime.extension(mimetype) || "bin";
+}
+
+async function resolveObjectKey(key) {
+    const exists = await fileSystemServices.fileExists(key);
+    return exists ? key : null;
+}
+
+async function promoteLocalFile(fileEntity) {
+    const data = await fileSystemServices.readLocalFile(fileEntity.path);
+    if (!data) {
+        const current = await filesRepositories.getOneById(fileEntity.id);
+        if (current && fileSystemServices.isObjectKey(current.path)) {
+            return resolveObjectKey(current.path);
+        }
+        return null;
+    }
+    const key = `${fileEntity.organizationId}/${fileEntity.id}.${extensionFor(fileEntity.mimetype)}`;
+    await fileSystemServices.putFile({ key, body: data, contentType: fileEntity.mimetype });
+    await filesRepositories.editOneById(fileEntity.id, { path: key });
+    await fileSystemServices.deleteFile(fileEntity.path).catch(() => { });
+    return key;
+}
+
+function resolveKey(fileEntity) {
+    if (fileSystemServices.isObjectKey(fileEntity.path)) {
+        return resolveObjectKey(fileEntity.path);
+    }
+    const inFlight = pendingPromotions.get(fileEntity.id);
+    if (inFlight) return inFlight;
+    const pending = promoteLocalFile(fileEntity).finally(() => {
+        if (pendingPromotions.get(fileEntity.id) === pending) {
+            pendingPromotions.delete(fileEntity.id);
+        }
+    });
+    pendingPromotions.set(fileEntity.id, pending);
+    return pending;
+}
 
 const fileUploadServices = {
     createOne: async ({ file, organizationId }) => {
-        return await db.sequelize.transaction(async (t) => {
-            const result = await filesRepositories.create({ organizationId, path: file.path, mimetype: file.mimetype, name: file.originalname }, t);
-            const base64 = await fileSystemServices.getBase64(result);
-            if (!base64) {
-                throw ERRORS.E500_3
-            }
-            return { id: result.id, file: base64, name: result.name, mimetype: result.mimetype };
-        });
+        const key = `${organizationId}/${uuidv4()}.${extensionFor(file.mimetype)}`;
+        await fileSystemServices.putFile({ key, body: file.buffer, contentType: file.mimetype });
+        try {
+            return await db.sequelize.transaction(async (t) => {
+                const result = await filesRepositories.create({ organizationId, path: key, mimetype: file.mimetype, name: file.originalname }, t);
+                const url = await fileSystemServices.getSignedUrl(key);
+                return { id: result.id, file: url, name: result.name, mimetype: result.mimetype };
+            });
+        } catch (error) {
+            await fileSystemServices.deleteFile(key).catch(() => { });
+            throw error;
+        }
     },
     deleteOne: async ({ id }) => {
         return await db.sequelize.transaction(async (t) => {
@@ -21,26 +68,23 @@ const fileUploadServices = {
             await filesRepositories.deleteById(id, t);
         });
     },
-    cleanGetBase64: async (fileEntity) => {
-        const base64 = await fileSystemServices.getBase64(fileEntity);
-        if (base64) {
-            return base64;
-        } else {
-            //clear file from db
+    getAccessUrl: async (fileEntity) => {
+        const key = await resolveKey(fileEntity);
+        if (!key) {
             await filesRepositories.deleteById(fileEntity.id);
             return null;
         }
+        return fileSystemServices.getSignedUrl(key);
     },
-    cleanGetMultipleBase64: async (fileEntities) => {
+    getAccessUrls: async (fileEntities) => {
         return await Promise.all(fileEntities.map(async (fileEntity) => {
-            return await fileUploadServices.cleanGetBase64(fileEntity);
+            return await fileUploadServices.getAccessUrl(fileEntity);
         }));
     },
     clearUnusedFiles: async () => {
         const files = await filesRepositories.getUnusedFiles();
-        db.sequelize.transaction(async (t) => {
+        await db.sequelize.transaction(async (t) => {
             await Promise.all(files.map(async file => {
-                // Si existe el archivo lo borra
                 const exists = await fileSystemServices.fileExists(file.path);
                 if (exists) {
                     await fileSystemServices.deleteFile(file.path);
@@ -48,8 +92,7 @@ const fileUploadServices = {
             }
             ));
             await filesRepositories.deleteById(files.map(file => file.id), t);
-        }
-        );
+        });
     }
 };
 

@@ -1,16 +1,6 @@
 const multer = require('multer')
 const ERRORS = require('../constants/errors')
-const { envConfig } = require('../config/envConfig')
-const mime = require('mime-types')
-const storage = multer.diskStorage({
-    destination: envConfig.MULTER_DESTINATION,
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-        const ext = mime.extension(file.mimetype)
-        const filename = `file-${uniqueSuffix}.${ext}`
-        cb(null, filename)
-    }
-})
+const storage = multer.memoryStorage()
 
 const filesMiddlewares = {
     uploadSingle: (fileFilter) => {

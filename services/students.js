@@ -107,10 +107,10 @@ const studentsServices = {
         const students = await studentRepositories.getAllByCourseId(courseId, STUDENT_VARIANTS.AVATAR);
         const result = await Promise.all(students.map(async (student) => {
             if (!student.avatar) return student
-            const base64 = await fileUploadServices.cleanGetBase64(student.avatar);
+            const url = await fileUploadServices.getAccessUrl(student.avatar);
             const avatarResult = {
                 id: student.avatar.id,
-                file: base64,
+                file: url,
                 name: student.avatar.name,
                 mimetype: student.avatar.mimetype
             }
@@ -123,10 +123,10 @@ const studentsServices = {
         const student = await studentRepositories.getByIdAndOrganizationId({ id, organizationId: course.organizationId }, STUDENT_VARIANTS.FULL)
         if (!student) throw ERRORS.E404_3;
         if (!student.avatar) return student
-        const base64 = await fileUploadServices.cleanGetBase64(student.avatar);
+        const url = await fileUploadServices.getAccessUrl(student.avatar);
         const avatarResult = {
             id: student.avatar.id,
-            file: base64,
+            file: url,
             name: student.avatar.name,
             mimetype: student.avatar.mimetype
         }
@@ -137,11 +137,11 @@ const studentsServices = {
         if (!student) throw ERRORS.E404_3;
         let result = student.toJSON()
         if (student?.avatar) {
-            const base64 = await fileUploadServices.cleanGetBase64(student.avatar);
+            const url = await fileUploadServices.getAccessUrl(student.avatar);
 
             const avatarResult = {
                 id: student.avatar.id,
-                file: base64,
+                file: url,
                 name: student.avatar.name,
                 mimetype: student.avatar.mimetype
             }
@@ -152,10 +152,10 @@ const studentsServices = {
         }
 
         if (!isEmpty(student.files)) {
-            const base64Files = await fileUploadServices.cleanGetMultipleBase64(student.files);
+            const fileUrls = await fileUploadServices.getAccessUrls(student.files);
             const filesResult = student.files.map((file, index) => ({
                 id: file.id,
-                file: base64Files[index],
+                file: fileUrls[index],
                 name: file.name,
                 mimetype: file.mimetype
             }))
