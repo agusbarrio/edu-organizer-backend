@@ -10,17 +10,12 @@ function extensionFor(mimetype) {
     return mime.extension(mimetype) || "bin";
 }
 
-async function resolveObjectKey(key) {
-    const exists = await fileSystemServices.fileExists(key);
-    return exists ? key : null;
-}
-
 async function promoteLocalFile(fileEntity) {
     const data = await fileSystemServices.readLocalFile(fileEntity.path);
     if (!data) {
         const current = await filesRepositories.getOneById(fileEntity.id);
         if (current && fileSystemServices.isObjectKey(current.path)) {
-            return resolveObjectKey(current.path);
+            return current.path;
         }
         return null;
     }
@@ -33,7 +28,7 @@ async function promoteLocalFile(fileEntity) {
 
 function resolveKey(fileEntity) {
     if (fileSystemServices.isObjectKey(fileEntity.path)) {
-        return resolveObjectKey(fileEntity.path);
+        return fileEntity.path;
     }
     const inFlight = pendingPromotions.get(fileEntity.id);
     if (inFlight) return inFlight;
@@ -70,10 +65,7 @@ const fileUploadServices = {
     },
     getAccessUrl: async (fileEntity) => {
         const key = await resolveKey(fileEntity);
-        if (!key) {
-            await filesRepositories.deleteById(fileEntity.id);
-            return null;
-        }
+        if (!key) return null;
         return fileSystemServices.getSignedUrl(key);
     },
     getAccessUrls: async (fileEntities) => {

@@ -1,17 +1,22 @@
 services:
   backend:
     container_name: edu-organizer-backend-qa
-    image: edu-organizer-backend-qa
+    image: ghcr.io/agusbarrio/edu-organizer-backend:qa
+    pull_policy: always
     ports:
       - "8081:8080"
-    environment:
-      NODE_ENV: qa
     env_file:
-      - .env.qa
+      - .env
     volumes:
       - edu_organizer_qa_uploads_new:/app/uploads
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    networks:
+      - rustfs-net
+
+networks:
+  rustfs-net:
+    external: true
 
 volumes:
   edu_organizer_qa_uploads_new:
