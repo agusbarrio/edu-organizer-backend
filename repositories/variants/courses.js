@@ -22,6 +22,13 @@ const COURSE_VARIANTS_OPTIONS = {
                 model: db.Student,
                 as: 'students',
                 attributes: ['id', 'firstName', 'lastName'],
+                include: [
+                    {
+                        model: db.File,
+                        as: 'avatar',
+                        attributes: ['id', 'path', 'organizationId', 'mimetype', 'name'],
+                    }
+                ],
             },
             {
                 model: db.User,

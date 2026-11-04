@@ -7,6 +7,7 @@ const { validTargetCourse, validTargetCourses, validTargetStudents, validTargetF
 const studentRepositories = require("../repositories/student");
 const _ = require("lodash");
 const filesRepositories = require("../repositories/files");
+const fileUploadServices = require("./files");
 const moment = require("moment");
 const xlsx = require("xlsx-js-style");
 const { normalizeOptionalDateOnlyInput } = require("../utils/dateOnly");
@@ -122,6 +123,21 @@ const coursesServices = {
             result.accessPin = encryptationServices.decrypt({ encryptedData: result.accessPin, iv: result.iv });
         }
         delete result.iv;
+        if (Array.isArray(result.students)) {
+            result.students = await Promise.all(result.students.map(async (student) => {
+                if (!student.avatar) return student
+                const url = await fileUploadServices.getAccessUrl(student.avatar);
+                return {
+                    ...student,
+                    avatar: {
+                        id: student.avatar.id,
+                        file: url,
+                        name: student.avatar.name,
+                        mimetype: student.avatar.mimetype
+                    }
+                }
+            }))
+        }
         return result;
     },
     editMultiple: async function ({ ids, studentAttendanceFormData, user }) {
