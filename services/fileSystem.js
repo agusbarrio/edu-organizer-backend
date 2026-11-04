@@ -1,6 +1,5 @@
 const { S3Client, PutObjectCommand, DeleteObjectCommand, HeadObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
-const fs = require('fs');
 const ERRORS = require('../constants/errors');
 const { envConfig } = require('../config/envConfig');
 
@@ -42,12 +41,6 @@ function getSigningClient() {
     return signingClient;
 }
 
-function isObjectKey(filePath) {
-    return typeof filePath === 'string'
-        && /^[^/\\]+\/[^/\\]+$/.test(filePath)
-        && !filePath.startsWith('uploads/');
-}
-
 function isMissingObject(error) {
     return error?.name === 'NotFound'
         || error?.name === 'NoSuchKey'
@@ -55,7 +48,6 @@ function isMissingObject(error) {
 }
 
 const fileSystemServices = {
-    isObjectKey,
     putFile: async function ({ key, body, contentType }) {
         try {
             await getClient().send(new PutObjectCommand({
@@ -71,14 +63,6 @@ const fileSystemServices = {
     },
     deleteFile: async function (filePath) {
         if (!filePath) return;
-        if (!isObjectKey(filePath)) {
-            try {
-                await fs.promises.unlink(filePath);
-            } catch (error) {
-                if (error.code !== 'ENOENT') throw ERRORS.E500_2;
-            }
-            return;
-        }
         try {
             await getClient().send(new DeleteObjectCommand({
                 Bucket: envConfig.RUSTFS_BUCKET,
@@ -91,14 +75,6 @@ const fileSystemServices = {
     },
     fileExists: async function (filePath) {
         if (!filePath) return false;
-        if (!isObjectKey(filePath)) {
-            try {
-                await fs.promises.access(filePath, fs.constants.F_OK);
-                return true;
-            } catch {
-                return false;
-            }
-        }
         try {
             await getClient().send(new HeadObjectCommand({
                 Bucket: envConfig.RUSTFS_BUCKET,
@@ -124,13 +100,6 @@ const fileSystemServices = {
         } catch (error) {
             if (error?.errorCode) throw error;
             throw ERRORS.E500;
-        }
-    },
-    readLocalFile: async function (filePath) {
-        try {
-            return await fs.promises.readFile(filePath);
-        } catch {
-            return null;
         }
     },
 };

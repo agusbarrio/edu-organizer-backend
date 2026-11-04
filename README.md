@@ -1,4 +1,4 @@
-### QA DOCKER DEPLOYMENT
+### DOCKER DEPLOYMENT
 
 #### MySQL
 
@@ -17,10 +17,6 @@ New uploads go to RustFS. Set these variables in `.env.qa` and `.env.prd`:
 - `RUSTFS_SIGNED_URL_EXPIRES_SECONDS` — optional, default `300`
 
 Allow the frontend origin on the bucket CORS config for `GET`. Responses put that signed URL in the existing `file` field.
-
-Keep the uploads volume mounted until every previously stored file has been read once. The first read copies the local file into the bucket, rewrites `files.path`, and then deletes the local copy.
-
-docker volume create edu_organizer_qa_uploads --opt type=none --opt device=<UPLOADS_LOCAL_DATA_PATH> --opt o=bind
 
 #### Build image
 
