@@ -6,7 +6,7 @@ docker run --name mysql -v <MYSQL_LOCAL_DATA_PATH>:/var/lib/mysql -p 3306:3306 -
 
 #### Files
 
-New uploads go to RustFS. Set these variables in `.env.qa` and `.env.prd`:
+New uploads go to RustFS. Set these variables in `.env`:
 
 - `RUSTFS_ENDPOINT` — URL the API uses for uploads and deletes. Signed URLs use this host too.
 - `RUSTFS_PUBLIC_ENDPOINT` — optional. Set it when the browser must use a different host than `RUSTFS_ENDPOINT`. The signature is built with this host.
